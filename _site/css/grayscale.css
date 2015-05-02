@@ -146,6 +146,36 @@ a:focus {
     -o-background-size: cover;
 }
 
+
+.introlazy {
+
+
+
+
+
+}
+
+<div class="lazy" data-original="img/bmw_m1_hood.jpg" style="background-image: url('img/grey.gif'); width: 765px; height: 574px;"></div>
+
+  $("div.lazy").lazyload({
+      effect : "fadeIn"
+  });
+
+
+
+
+
+// show loading image
+$('#loader_img').show();
+
+// main image loaded ?
+$('#main_img').on('load', function(){
+  // hide/remove the loading image
+  $('#loader_img').hide();
+});
+
+
+
 .intro .intro-body {
     display: table-cell;
     vertical-align: middle;
