@@ -147,32 +147,16 @@ a:focus {
 }
 
 
-.introlazy {
 
-
-
-
-
+.loader {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background: url('images/page-loader.gif') 50% 50% no-repeat rgb(249,249,249);
 }
-
-<div class="lazy" data-original="img/bmw_m1_hood.jpg" style="background-image: url('img/grey.gif'); width: 765px; height: 574px;"></div>
-
-  $("div.lazy").lazyload({
-      effect : "fadeIn"
-  });
-
-
-
-
-
-// show loading image
-$('#loader_img').show();
-
-// main image loaded ?
-$('#main_img').on('load', function(){
-  // hide/remove the loading image
-  $('#loader_img').hide();
-});
 
 
 
