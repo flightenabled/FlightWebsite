@@ -329,39 +329,24 @@ a:focus {
 
 
 
-
-
-/*Map wrapper
+/*MAp wrapper
 ==============================*/
 .map-wrapper{
-    position: relative;
+    position: absolute;
 }
 
 
-.contact-info-inner h3{
-    font-weight: 700;
-    margin-bottom: 25px;
-    font-size: 24px;
-    color: #fff;
+
+
+.map {
+    height: 400px;
+    z-index: 1;
 }
 
-.contact-info h3{
-    margin-top: 42px;
-    font-weight: 700;
-    font-size: 24px;
-}
 
-.contact-info p{
-    font-size: 18px;
-}
-
-.contact-info i{
-    font-size: 18px;
-    margin-right: 10px;
-}
 
 /* Contact inside Map */
-.contact-info-inner {
+.map .contact-info-inner {
     position: relative;
     color: #fff;
     top: 0;
@@ -375,36 +360,27 @@ a:focus {
     right: 70px;
 }
 
-.contact-info-inner p{
+.map .contact-info-inner h3{
+    font-weight: 700;
+    margin-bottom: 25px;
+    font-size: 24px;
+    color: #fff;
+}
+
+.map .contact-info-inner p{
     overflow: hidden;
     margin-bottom: 25px;
 }
 
-.contact-info-inner p strong{
+.map .contact-info-inner p strong{
     display: block;
 }
 
-.contact-info-inner i{
+.map .contact-info-inner i{
     margin-right: 20px !important;
     font-size: 24px;
     margin-top: 5px;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
