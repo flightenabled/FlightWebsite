@@ -275,11 +275,31 @@ a:focus {
     color: #fff;
     background: url(../img/downloads-bg.jpg) no-repeat center center scroll;
     background-color: #000000;
+    text-shadow: 35px;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     background-size: cover;
     -o-background-size: cover;
 }
+.download-section text {
+
+    margin: 0 0 35px;
+    text-transform: uppercase;
+    font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 40px;
+    letter-spacing: 1px;
+    text-shadow: 5px 5px 4px #000000;
+}
+
+
+
+.download-section pt {
+    margin: 0 0 25px;
+    font-size: 25px;
+    line-height: 1.5;
+    text-shadow: 0 0 4px black, 0 0 5px #0000FF;
+}
+
 
 
 
@@ -288,6 +308,9 @@ a:focus {
     height: 200px;
     margin-top: 100px;
 }
+
+
+
 
 @media(min-width:767px) {
     .content-section {
@@ -303,6 +326,90 @@ a:focus {
         margin-top: 250px;
     }
 }
+
+
+
+
+
+/*Map wrapper
+==============================*/
+.map-wrapper{
+    position: relative;
+}
+
+
+.contact-info-inner h3{
+    font-weight: 700;
+    margin-bottom: 25px;
+    font-size: 24px;
+    color: #fff;
+}
+
+.contact-info h3{
+    margin-top: 42px;
+    font-weight: 700;
+    font-size: 24px;
+}
+
+.contact-info p{
+    font-size: 18px;
+}
+
+.contact-info i{
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+/* Contact inside Map */
+.contact-info-inner {
+    position: relative;
+    color: #fff;
+    top: 0;
+    bottom: 0;
+    z-index: 2;
+    background: rgba(0,0,0,.7);
+    padding: 25px 30px;
+    max-width: 400px;
+    max-height: 400px;
+    text-align: left;
+    right: 70px;
+}
+
+.contact-info-inner p{
+    overflow: hidden;
+    margin-bottom: 25px;
+}
+
+.contact-info-inner p strong{
+    display: block;
+}
+
+.contact-info-inner i{
+    margin-right: 20px !important;
+    font-size: 24px;
+    margin-top: 5px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .btn {
     text-transform: uppercase;
@@ -384,5 +491,7 @@ img::-moz-selection {
 body {
     webkit-tap-highlight-color: rgba(255,255,255,.2);
 }
+
+
 
 
