@@ -267,6 +267,7 @@ a:focus {
 
 .content-section {
     padding-top: 100px;
+    padding-bottom: 100px;
 }
 
 .download-section {
@@ -305,8 +306,9 @@ a:focus {
 
 #map {
     width: 100%;
-    height: 200px;
+    height: 300px;
     margin-top: 100px;
+    margin-bottom: 0px;
 }
 
 
@@ -314,8 +316,9 @@ a:focus {
 
 @media(min-width:767px) {
     .content-section {
-        padding-top: 200px;
-    }
+       /* padding-top: 200px;*/
+       padding-bottom: 200px;
+       }
 
     .download-section {
         padding: 100px 0;
@@ -323,8 +326,9 @@ a:focus {
 
     #map {
         height: 400px;
-        margin-top: 250px;
-        
+        margin-top: 25px;
+     
+    
     }
 }
 
@@ -333,59 +337,43 @@ a:focus {
 /*MAp wrapper
 ==============================*/
 .map-wrapper{
-    position: absolute;
+    position: relative;
+
 }
-
-
-
 
 .map {
-    height: 400px;
+    height: 100%;
     z-index: 1;
+  
 }
 
+    /* Contact inside Map */
+    .map .contact-info-inner {
+        position: relative;
+        color: #fff;
+        top: 0;
+        z-index: 2;
+        background: rgba(0,0,0,.7);
+        padding: 25px 30px;
+        max-width: 400px;
+        text-align: left;
+        left:30px;
+    }
 
+    .map .contact-info-inner p{
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
 
-/* Contact inside Map */
-.map .contact-info-inner {
-    position: relative;
-    color: #fff;
-    top: 0;
-    bottom: 0;
-    z-index: 2;
-    background: rgba(0,0,0,.7);
-    padding: 25px 30px;
-    max-width: 400px;
-    max-height: 400px;
-    text-align: left;
-    left:30px;
-}
+    .map .contact-info-inner p strong{
+        display: block;
+    }
 
-.map .contact-info-inner h3{
-    font-weight: 700;
-    margin-bottom: 25px;
-    font-size: 24px;
-    color: #fff;
-}
-
-.map .contact-info-inner p{
-    overflow: hidden;
-    margin-bottom: 25px;
-}
-
-.map .contact-info-inner p strong{
-    display: block;
-}
-
-.map .contact-info-inner i{
-    margin-right: 20px !important;
-    font-size: 24px;
-    margin-top: 5px;
-}
-
-
-
-
+    .map .contact-info-inner i{
+        margin-right: 20px !important;
+        font-size: 24px;
+        margin-top: 5px;
+    }
 
 
 .btn {
