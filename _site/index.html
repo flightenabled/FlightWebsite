@@ -3,9 +3,9 @@
     <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Flight</title>
+    <title>Flight Enabled</title>
     <meta name="viewport" content="width=device-width">
-    <meta name="description" content="A Place where you go to do stuff.">
+    <meta name="description" content="The Future of Transportation">
     <link rel="canonical" href="https://flightenabled.com/grayscale-theme//">
 
    <!-- Bootstrap Core CSS - Uses Bootswatch Flatly Theme: http://bootswatch.com/flatly/ -->
@@ -32,52 +32,67 @@
         $(".loader").fadeOut("slow");
     })
     </script>
+
+
+
 </head>
 
     <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
     <div class="loader"></div>
      <!-- Navigation -->
     <nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">
-                    <i class="fa fa-bars"></i>
-                </button>
-                <a class="navbar-brand page-scroll" href="#page-top">
-                     <img src="img/flightLogo.png" style="position:relative;top:-8px" width="150"  class="img-responsive" alt="Flight Blog">
-                </a>
-            </div>
+        <div id="grad1">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">
+                        <i class="fa fa-bars"></i>
+                    </button>
+                    <a class="navbar-brand page-scroll" href="#page-top">
+                         <img src="img/flightLogo.png" style="position:relative;top:-8px" width="150"  class="img-responsive" alt="Flight Blog">
 
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
-                <ul class="nav navbar-nav">
-                    <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
-                    <li class="hidden">
-                        <a href="#page-top"></a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="#about">About</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="#download">Download</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="#contact">Contact</a>
-                    </li>
-                </ul>
+
+                    </a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
+                    <ul class="nav navbar-nav">
+                        <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
+                        <li class="hidden">
+                            <a href="#page-top"></a>
+                        </li>
+                        <li>
+                            <a class="page-scroll" href="#about">Mission</a>
+                        </li>
+                        <li>
+                            <a class="page-scroll" href="#download">App</a>
+                        </li>
+                        <li>
+                            <a class="page-scroll" href="#contact">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
             </div>
-            <!-- /.navbar-collapse -->
+            <!-- /.container -->
         </div>
-        <!-- /.container -->
+        <!-- /.gradient -->
     </nav>
-        <!-- Intro Header -->
+    
+    
+
+    <!-- Intro Header -->
     <header class="intro">
         <div class="intro-body">
             <div class="container">
                 <div class="row">
                     <div class="col-md-8 col-md-offset-2">
-                        <h1 class="brand-heading">Flight Enabled</h1>
-                        <p class="intro-text">Bringing Flight to Everyone.<br>by Everyone.</p>
+                        <a href="/" title="Return to the homepage" id="logo">
+                           <center> <img src="img/flightLogo600grad.png" class="img-responsive" alt="Flight logo" /></center>
+                        </a>
+                       <!-- <img src="img/flightLogo600.png" class="img-responsive" alt="Flight"></img> -->
+                        <h2 class="brand-heading">Bringing Flight to Everyone</h2>
+                        <!--<p class="intro-text">Bringing Flight to Everyone</p>-->
                         <a href="#about" class="btn btn-circle page-scroll">
                             <i class="fa fa-angle-double-down animated"></i>
                         </a>
@@ -91,11 +106,16 @@
     <section id="about" class="container content-section text-center">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2">
-                <h2>About Grayscale</h2>
-                <p>Grayscale is a free Bootstrap 3 theme created by Start Bootstrap. It can be yours right now, simply download the template on <a href="http://startbootstrap.com/template-overviews/grayscale/">the preview page</a>. The theme is open source, and you can use it for any purpose, personal or commercial.</p>
-                <p>The Jekyll version is brought to you by <a href="https://github.com/jeromelachaud">Jerome Lachaud</a></p>
-                <p>This theme features stock photos by <a href="http://gratisography.com/">Gratisography</a> along with a custom Google Maps skin courtesy of <a href="http://snazzymaps.com/">Snazzy Maps</a>.</p>
-                <p>Grayscale includes full HTML, CSS, and custom JavaScript files along with LESS files for easy customization.</p>
+                <h2>Flight Enabled Mission</h2>
+                <p>
+                      <h4>
+                      1.  Steadily improve small UAVs through iterative software and hardware innovations until they can be trusted to be         
+                      safe, quiet and capable package delivery vehicles a la <a href="https://www.ted.com/talks/andreas_raptopoulos_no_roads_there_s_a_drone_for_that">Matternet</a>. </h4>
+
+                      <h4>2.  As small UAVs are proven, iteratively make them bigger so that they can carry passengers and cargo safely and         
+                      can be piloted as simply as cars.</h4>
+                      <br>
+
             </div>
         </div>
     </section>
@@ -104,9 +124,15 @@
         <div class="download-section">
             <div class="container">
                 <div class="col-lg-8 col-lg-offset-2">
-                    <h2>Download Grayscale</h2>
-                    <p>You can download Grayscale for free on the preview page at Start Bootstrap.</p>
-                    <a href="http://startbootstrap.com/template-overviews/grayscale/" class="btn btn-default btn-lg">Visit Download Page</a>
+                   <center>
+                
+
+                      
+                                <h1>Download Similarize</h1>
+                                <p>You can download Similarize here for free or use the web app at Similarize.com.</p>
+                                <a href="http://app.similarize.com/" class="btn btn-default btn-lg">Similarize Web App</a>
+                  
+                    </center>
                 </div>
             </div>
         </div>
@@ -116,8 +142,8 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2">
                 <h2>Contact</h2>
-                <p>Dolor reprehenderit repellendus, optio labore odio at tempore debitis nisi. Quasi debitis tenetur eaque molestias non porro odio sapiente.</p>
-                <p><a href="mailto:ben@flight">ben@flight</a>
+                <p>We'd love to hear from you.</p>
+                <p><a href="mailto:ben at flightenabled dot com">ben at flightenabled dot com</a>
                 </p>
                 <ul class="list-inline banner-social-buttons">
                     
@@ -126,19 +152,23 @@
                     </li>
                     
                     <li>
-                        <a href="" class="btn btn-default btn-lg"><i class="fa fa-facebook fa-fw"></i> <span class="network-name">facebook</span></a>
+                        <a href="https://facebook.com/flightenabled" class="btn btn-default btn-lg"><i class="fa fa-facebook fa-fw"></i> <span class="network-name">facebook</span></a>
                     </li>
                     
                     <li>
-                        <a href="http://stackoverflow.com/questions/tagged/jekyll" class="btn btn-default btn-lg"><i class="fa fa-stack-overflow fa-fw"></i> <span class="network-name">stack-overflow</span></a>
+                        <a href="https://github.com/flightenabled" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">github</span></a>
                     </li>
                     
                     <li>
-                        <a href="http://bitbucket.org/jekyll" class="btn btn-default btn-lg"><i class="fa fa-bitbucket fa-fw"></i> <span class="network-name">bitbucket</span></a>
+                        <a href="https://www.youtube.com/user/FlightEnabledVideos" class="btn btn-default btn-lg"><i class="fa fa-youtube fa-fw"></i> <span class="network-name">youtube</span></a>
                     </li>
                     
                     <li>
-                        <a href="https://github.com/IronSummitMedia/startbootstrap" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">github</span></a>
+                        <a href="https://www.tumblr.com/blog/flightenabled/" class="btn btn-default btn-lg"><i class="fa fa-tumblr fa-fw"></i> <span class="network-name">tumblr</span></a>
+                    </li>
+                    
+                    <li>
+                        <a href="https://plus.google.com/104385578672139334734/posts" class="btn btn-default btn-lg"><i class="fa fa-google-plus fa-fw"></i> <span class="network-name">google-plus</span></a>
                     </li>
                     
                 </ul>
@@ -146,8 +176,41 @@
         </div>
     </section>
         <!-- Map Section -->
-    <div id="map"></div>
+    <div id="map">
+		<!-- Map start here -->
+		<section id="map-wrapper" class="no-padding">
+			<div class="container">
+				<div class="contact-info-inner wow fadeInUp">
+	    			<h3>Contact Info</h3>
+		    		<div><i class="fa fa-map-marker pull-left"></i>  
+		    			<p><strong>Address</strong>1102 Saint Marys, Junction City, KS</p>
+		    		</div>
+		    		<div><i class="fa fa-phone pull-left"></i>  
+		    			<p><strong>Phone</strong>+(785) 238-4131</p>
+		    		</div>
+		    		<div><i class="fa fa-envelope-o pull-left"></i>  
+		    			<p><strong>Email</strong>info@barrierinco.com</p>
+		    		</div>
+		    		<div><i class="fa fa-compass pull-left"></i>  
+		    			<p><strong>Office Hours</strong>Mon - Friday, 9:00 - 5:00</p>
+		    		</div>
 
+				</div>
+		    </div>
+			<div class="map" id="map"></div>
+		</section><!--/ Map end here -->
+	</div>
+
+
+	<script type="text/javascript" src="js/style-switcher.js"></script>
+    <!-- Google Map API Key Source -->
+    <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <!-- Google Map  Source -->
+    <script type="text/javascript" src="js/gmaps.js"></script>
+	<!-- Wow Animation -->
+    <script type="text/javascript" src="js/wow.min.js"></script>
+    <!-- Custom js source -->
+    <script type="text/javascript" src="js/custom.js"></script>
         <!-- Footer -->
     <footer>
         <div class="container text-center">
@@ -165,9 +228,13 @@
     <script src="/grayscale-theme//js/jquery.easing.min.js"></script>
 
     <!-- Google Maps API Key - Use your own API key to enable the map feature. More information on the Google Maps API can be found at https://developers.google.com/maps/ -->
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRngKslUGJTlibkQ3FkfTxj3Xss1UlZDA&sensor=false"></script>
+   <!-- <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRngKslUGJTlibkQ3FkfTxj3Xss1UlZDA&sensor=false"></script> -->
+
+
 
     <!-- Custom Theme JavaScript -->
     <script src="/grayscale-theme//js/grayscale.js"></script>
+
+
     </body>
 </html>

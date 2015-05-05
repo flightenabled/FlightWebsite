@@ -1,8 +1,8 @@
 # Site settings
-title: Flight
-email: ben@flight
+title: Flight Enabled
+email: general at flightenabled dot com
 url: https://flightenabled.com
-description: "A Place where you go to do stuff."
+description: "The Future of Transportation"
 baseurl: "/grayscale-theme/"
 
 # Color settings
@@ -18,13 +18,17 @@ social:
   - title: twitter
     url: https://twitter.com/Flightenabled
   - title: facebook
-    url:
-  - title: stack-overflow
-    url: http://stackoverflow.com/questions/tagged/jekyll
-  - title: bitbucket
-    url: http://bitbucket.org/jekyll
+    url: https://facebook.com/flightenabled
   - title: github
-    url: https://github.com/IronSummitMedia/startbootstrap
+    url: https://github.com/flightenabled
+  - title: youtube
+    url: https://www.youtube.com/user/FlightEnabledVideos
+  - title: tumblr
+    url: https://www.tumblr.com/blog/flightenabled/
+  - title: google-plus
+    url: https://plus.google.com/104385578672139334734/posts
+    
+
 
 # Build settings
 markdown: kramdown

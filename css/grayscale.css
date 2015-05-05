@@ -115,7 +115,7 @@ a:focus {
         padding: 20px 0;
         border-bottom: 0;
         letter-spacing: 1px;
-        background: 0 0;
+        background: rgba(0,0,0,.5);
         -webkit-transition: background .5s ease-in-out,padding .5s ease-in-out;
         -moz-transition: background .5s ease-in-out,padding .5s ease-in-out;
         transition: background .5s ease-in-out,padding .5s ease-in-out;
@@ -166,11 +166,12 @@ a:focus {
 }
 
 .intro .intro-body .brand-heading {
-    font-size: 40px;
+    font-size: 20px;
 }
 
 .intro .intro-body .intro-text {
     font-size: 18px;
+    text-shadow: 0 0 5px #FF0000, 0 0 8px #0000FF;
 }
 
 @media(min-width:767px) {
@@ -180,11 +181,13 @@ a:focus {
     }
 
     .intro .intro-body .brand-heading {
-        font-size: 100px;
+        font-size: 40px;
+        text-shadow: 0 0 5px #FF0000, 0 0 8px #0000FF;
     }
 
     .intro .intro-body .intro-text {
         font-size: 25px;
+        text-shadow: 0 0 5px #FF0000, 0 0 8px #0000FF;
     }
 }
 
@@ -277,6 +280,8 @@ a:focus {
     background-size: cover;
     -o-background-size: cover;
 }
+
+
 
 #map {
     width: 100%;
@@ -379,3 +384,5 @@ img::-moz-selection {
 body {
     webkit-tap-highlight-color: rgba(255,255,255,.2);
 }
+
+
