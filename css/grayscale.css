@@ -324,6 +324,7 @@ a:focus {
     #map {
         height: 400px;
         margin-top: 250px;
+        
     }
 }
 
@@ -357,7 +358,7 @@ a:focus {
     max-width: 400px;
     max-height: 400px;
     text-align: left;
-    right: 70px;
+    left:30px;
 }
 
 .map .contact-info-inner h3{
