@@ -272,7 +272,8 @@ a:focus {
 
 .download-section {
     width: 100%;
-    padding: 50px 0;
+    height: 600px;
+    /*padding: 50px 0;*/
     color: #fff;
     background: url(../img/downloads-bg.jpg) no-repeat center center scroll;
     background-color: #000000;
@@ -282,7 +283,7 @@ a:focus {
     background-size: cover;
     -o-background-size: cover;
 }
-.download-section text {
+/*.download-section text {
 
     margin: 0 0 35px;
     text-transform: uppercase;
@@ -290,18 +291,37 @@ a:focus {
     font-size: 40px;
     letter-spacing: 1px;
     text-shadow: 5px 5px 4px #000000;
-}
+}*/
 
 
 
 .download-section pt {
-    margin: 0 0 25px;
+    /*margin: 0 0 25px;*/
     font-size: 25px;
     line-height: 1.5;
     text-shadow: 0 0 4px black, 0 0 5px #0000FF;
+
 }
 
 
+
+.outer {
+    position: absolute;
+    background: url(/../img/blurred-backdrop.png);
+    padding: 150px 0;
+    /*background-image: url(/../img/semi-trans-background.png), url(../img/backdrop-white.png);*/
+    background-position: center , center;
+    background-repeat: no-repeat, no-repeat;
+    width: 100%;
+    height: 600px;
+    z-index: 1;
+  }
+  .center {
+    position: absolute;
+    
+ 
+    
+  }
 
 
 #map {
@@ -316,12 +336,13 @@ a:focus {
 
 @media(min-width:767px) {
     .content-section {
-       padding-top:200px;
+       padding-top: 200px;
        padding-bottom: 200px;
        }
 
     .download-section {
-        padding: 100px 0;
+        padding: 00px 0;
+
     }
 
     #map {
@@ -457,6 +478,12 @@ body {
     webkit-tap-highlight-color: rgba(255,255,255,.2);
 }
 
+
+.row.no-gutters > [class^="col-"],
+.row.no-gutters > [class*="col-"] {
+  padding-right: 0;
+  padding-left: 0;
+}
 
 
 
