@@ -36,9 +36,6 @@ $('.navbar-collapse ul li a').click(function() {
 // When the window has finished loading create our google map below
 google.maps.event.addDomListener(window, 'load', init);
     
-google.maps.event.addListener(marker, 'click', function() {
-    window.location.href = this.url;
-    });
 
 function init() {
     // Basic options for a simple Google Map
@@ -183,7 +180,7 @@ function init() {
         icon: image,
         url: "https://www.google.com/maps/place/218+S+200+W,+Farmington,+UT+84025/@40.9765888,-111.8932471,17z/data=!3m1!4b1!4m2!3m1!1s0x8752ff25256a5085:0xe31b526c7bef801e"
     });
-
-    
-    
+    google.maps.event.addListener(beachMarker, 'click', function() {
+    window.location.href = this.url;
+    });
 }
