@@ -176,6 +176,7 @@ function init() {
     var beachMarker = new google.maps.Marker({
         position: myLatLng,
         map: map,
-        icon: image
+        icon: image,
+        url: "https://www.google.com/maps/place/218+S+200+W,+Farmington,+UT+84025/@40.9765888,-111.8932471,17z/data=!3m1!4b1!4m2!3m1!1s0x8752ff25256a5085:0xe31b526c7bef801e"
     });
 }
