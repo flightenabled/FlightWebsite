@@ -275,9 +275,8 @@ a:focus {
     height: 700px;
     /*padding: 50px 0;*/
     color: #fff;
-    background: url(../img/downloads-bg.jpg) center center scroll;
+    background: url(../img/downloads-bg.jpg)  scroll;
     background-color: #000000;
-    background-repeat: no-repeat;
     text-shadow: 35px;
    -webkit-background-size: cover;
     -moz-background-size: cover;
@@ -311,8 +310,8 @@ a:focus {
 /*    background: url(/../img/blurred-backdrop.png);*/
     padding: 150px 0;
     /*background-image: url(/../img/semi-trans-background.png), url(../img/backdrop-white.png);*/
-    background-position: center ;
-    background-repeat: no-repeat;
+    background-position: center , center;
+    background-repeat: no-repeat, no-repeat;
     width: 100%;
     height: 700px;
  
