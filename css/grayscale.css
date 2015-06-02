@@ -272,7 +272,7 @@ a:focus {
 
 .download-section {
     width: 100%;
-    height: 900px;
+    height: 700px;
     /*padding: 50px 0;*/
     color: #fff;
     background: url(../img/downloads-bg.jpg) no-repeat center center scroll;
@@ -306,18 +306,18 @@ a:focus {
 
 
 .outer {
-    position: absolute;
+/*    position: absolute;*/
 /*    background: url(/../img/blurred-backdrop.png);*/
     padding: 150px 0;
     /*background-image: url(/../img/semi-trans-background.png), url(../img/backdrop-white.png);*/
     background-position: center , center;
     background-repeat: no-repeat, no-repeat;
     width: 100%;
-    height: 900px;
+    height: 700px;
     z-index: 1;
   }
   .center {
-    position: absolute;
+/*    position: absolute;*/
   }
 
 
@@ -339,7 +339,7 @@ a:focus {
 
     .download-section {
         padding: 00px 0;
-        height: 900px;
+        height: 700px;
 
     }
 
