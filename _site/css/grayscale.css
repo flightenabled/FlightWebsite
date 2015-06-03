@@ -307,7 +307,7 @@ a:focus {
 
 .outer {
     position: absolute;
-    background: url(/../img/blurred-backdrop.png);
+/*    background: url(/../img/blurred-backdrop.png);*/
     padding: 150px 0;
     /*background-image: url(/../img/semi-trans-background.png), url(../img/backdrop-white.png);*/
     background-position: center , center;
