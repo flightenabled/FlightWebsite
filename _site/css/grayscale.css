@@ -278,7 +278,7 @@ a:focus {
     background: url(../img/downloads-bg.jpg) no-repeat center center scroll;
     background-color: #000000;
     text-shadow: 35px;
-    -webkit-background-size: cover;
+   -webkit-background-size: cover;
     -moz-background-size: cover;
     background-size: cover;
     -o-background-size: cover;
@@ -313,14 +313,11 @@ a:focus {
     background-position: center , center;
     background-repeat: no-repeat, no-repeat;
     width: 100%;
-    height: 600px;
-    z-index: 1;
-  }
-  .center {
-    position: absolute;
-    
+    height: 700px;
  
-    
+  }
+  .centerbg {
+    position: absolute;
   }
 
 
@@ -342,6 +339,7 @@ a:focus {
 
     .download-section {
         padding: 00px 0;
+        height: 700px;
 
     }
 
