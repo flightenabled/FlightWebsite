@@ -173,12 +173,12 @@ function init() {
 
     // Custom Map Marker Icon - Customize the map-marker.png file to customize your icon
     var image = 'img/map-marker.png';
-    var myLatLng = new google.maps.LatLng(40.976603,-111.891916);
+    var myLatLng = new google.maps.LatLng(40.632177,-111.9107067);
     var beachMarker = new google.maps.Marker({
         position: myLatLng,
         map: map,
         icon: image,
-        url: "https://www.google.com/maps/place/218+S+200+W,+Farmington,+UT+84025/@40.9765888,-111.8932471,17z/data=!3m1!4b1!4m2!3m1!1s0x8752ff25256a5085:0xe31b526c7bef801e"
+        url: "https://www.google.com/maps/place/618+W+Winchester+St,+Murray,+UT+84123/@40.632177,-111.9107067,17z/data=!4m2!3m1!1s0x8752890b16583767:0x6b561c885e6688d3"
     });
     google.maps.event.addListener(beachMarker, 'click', function() {
     window.location.href = this.url;
