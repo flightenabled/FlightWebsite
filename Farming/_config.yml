@@ -33,3 +33,4 @@ social:
 # Build settings
 markdown: kramdown
 permalink: pretty
+theme: midnight
