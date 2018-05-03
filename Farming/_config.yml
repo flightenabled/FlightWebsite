@@ -1,0 +1,35 @@
+# Site settings
+title: Flight Enabled
+email: general at flightenabled dot com
+url: https://flightenabled.com
+description: "The Future of Transportation"
+baseurl: ""
+
+# Color settings
+color:
+  primary-dark: '#000000'
+  links: '#219ab3'
+
+# Footer settings
+footer: Flight Enabled
+
+# Social networks usernames (many more available: google-plus, flickr, dribbble, pinterest, instagram, tumblr, linkedin, etc.)
+social:
+  - title: twitter
+    url: https://twitter.com/Flightenabled
+  - title: facebook
+    url: https://facebook.com/flightenabled
+  - title: github
+    url: https://github.com/flightenabled
+  - title: youtube
+    url: https://www.youtube.com/FlightEnabled
+  - title: tumblr
+    url: https://www.tumblr.com/blog/flightenabled/
+  - title: google-plus
+    url: https://plus.google.com/+FlightEnabled
+    
+
+
+# Build settings
+markdown: kramdown
+permalink: pretty
