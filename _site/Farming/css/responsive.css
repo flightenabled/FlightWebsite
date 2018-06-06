@@ -1,0 +1,380 @@
+/* Responsive styles
+================================================== */
+
+/* Large Devices, Wide Screens */
+@media (min-width : 1200px) {
+	
+
+}
+
+
+/* Medium Devices, Desktops */
+@media (min-width : 992px) and (max-width: 1200px) {
+
+.navbar-nav {
+	margin-right: 5px;
+}
+.navbar-nav > li> a {
+    margin-right: -20px;
+}
+#tf-menu a.navbar-brand {
+    font-size: 14px;
+    bottom: 0px!important;
+}
+#tf-menu.navbar-default .navbar-nav > li > a {
+    font-size: 14px
+}
+
+
+/*SLider
+==========================================================*/
+#slider{
+	padding-top: 80px;
+	height: 650px;
+}
+.slider-content h5:after{
+	right: 10px;
+	
+}
+.slider-content h5:before{
+	left: 10px;
+}
+
+
+/*PROFILE
+============================================*/
+#profile .socail-list li{
+	padding: 0px;
+}
+
+
+}
+
+/* Small Devices, Tablets */
+@media (min-width : 768px) and (max-width: 991px) {
+
+
+/*MENU
+======================================*/
+#tf-menu.navbar-default {
+    background-color: #333;
+}
+.navbar-nav {
+	margin-right: 5px;
+}
+.navbar-nav > li> a {
+    margin-right: -20px;
+}
+#tf-menu a.navbar-brand {
+    font-size: 14px;
+    bottom: 0px!important;
+}
+#tf-menu.navbar-default .navbar-nav > li > a {
+    font-size: 12px
+}
+.navbar-nav > li> a {
+    margin-right: -21px;
+}
+#tf-menu.navbar-default .navbar-nav > li > a{
+	letter-spacing: 0px;
+}
+
+/*fixed nav
+=============================*/
+.on.navbar-default .navbar-brand {
+    margin-left: -70px;
+    font-size: 15px;
+}
+
+
+/*SLIDER
+===========================*/
+
+#slider{
+	margin-top: 80px;
+	height: 350px;
+}
+.slider-content {
+	padding-bottom: 20px;
+	top: 30%;
+}
+.slider-content h2 {
+    font-size: 35px;
+    line-height: 30px;
+}
+.slider-content h3{
+	font-size: 16px;
+	line-height: 16px;
+}
+
+.slider-small-text-content h4{
+	font-size: 10px;
+	line-height: 10px;
+}
+
+.slider-content h5 {
+	width: 35%;
+}
+.slider-content a {
+    color: #FFF;
+    font-size: 20px;
+    line-height: 25px;
+    padding: 5px 10px;
+    margin-bottom: 20px;
+}	
+
+.slider-content h5:before,.slider-content h5:after{
+	display: none;
+}
+
+/*CAROUSEL CONTROLS
+=================================*/
+.carousel-control{
+	top: 30%;
+}
+.carousel-control i {
+    line-height: 36px;
+    width: 35px;
+    height: 35px;
+    font-size: 20px
+}
+#main-slide:hover .carousel-control.left{
+	left: 10px;
+}
+#main-slide:hover .carousel-control.right{
+	right: 10px;
+}
+
+
+
+/*Title HEADING
+============================*/
+.big-title {
+    font-size: 25px;
+    font-weight: 700;
+    line-height: 50px;
+    width: 50%;
+    padding: 15px 0px;
+}
+
+
+
+/*SKILL bar
+=====================================*/
+
+#skill-bar .sub-heading h2 {
+	font-size: 20px;
+}
+.circle,.circle1,.circle2,.circle3,.circle4,.circle5{
+	margin: 0 auto;
+}
+
+.skill-content {
+    margin-left: 0px;
+}
+
+
+
+
+/*Feature
+======================*/
+
+#feature-tab .nav-tabs li{
+	width: 50%;
+}
+#feature-tab .nav-tabs li a {
+    border-radius: 0px;
+    font-size: 16px;
+    padding: 20px 0px;
+}
+.feature-icon {
+	margin-right: 20px;
+}
+.feature-icon i {
+    font-size: 30px;
+    width: 70px;
+    height: 70px;
+    line-height: 62px;
+}
+
+.feature-content{
+	margin-left: 88px;
+}
+
+.feature-desc {
+    width: 50%;
+    float: left;
+}
+
+
+/*TEAM members
+===========================*/
+.single-member{
+	margin-bottom: 20px;
+}
+
+
+}
+
+/* Small Devices Potrait */
+@media (max-width : 767px){
+	
+	
+}
+
+/* Extra Small Devices, Phones */ 
+@media (min-width : 450px) and(max-width : 479px) {
+  
+}
+
+/* Custom, iPhone Retina */ 
+@media (min-width : 320px) and (max-width: 767px)  {
+
+
+/*MENU
+======================================*/
+#tf-menu.navbar-default {
+    background-color: #333;
+}
+.on.navbar-default .navbar-brand {
+    margin-left: -70px;
+}
+
+/*slider
+===============================*/
+
+#slider{
+	margin-top: 80px;
+	max-height: 215px;
+}
+.slider-content {
+	padding-bottom: 40px;
+	height: 100%;
+}
+.slider-content h2 {
+    font-size: 22px;
+    line-height: 0px;
+}
+.slider-content h3{
+	font-size: 14px;
+	line-height: 16px;
+}
+
+.slider-small-text-content h4{
+	font-size: 10px;
+	line-height: 10px;
+}
+
+.slider-content h5 {
+	width: 35%;
+}
+.slider-content a {
+    color: #FFF;
+    font-size: 20px;
+    line-height: 25px;
+    padding: 5px 10px;
+    margin-bottom: 20px;
+}	
+
+.slider-content h5:before,.slider-content h5:after{
+	display: none;
+}
+
+/*CAROUSEL CONTROLS
+=================================*/
+.carousel-control i {
+    line-height: 36px;
+    width: 35px;
+    height: 35px;
+    font-size: 20px
+}
+#main-slide:hover .carousel-control.left{
+	left: 10px;
+}
+#main-slide:hover .carousel-control.right{
+	right: 10px;
+}
+
+
+/*Title HEADING
+============================*/
+.big-title {
+    font-size: 25px;
+    font-weight: 700;
+    line-height: 50px;
+    width: 50%;
+    padding: 15px 0px;
+}
+
+
+
+/*SKILL bar
+=====================================*/
+
+#skill-bar .sub-heading h2 {
+	font-size: 20px;
+}
+
+.skill-content {
+    margin-left: 35px;
+}
+
+
+
+/*Feature TAB
+===================================*/
+#feature-tab{}
+
+#feature-tab .nav-tabs li{
+	width: 50%;
+}
+#feature-tab .nav-tabs li a {
+    border-radius: 0px;
+    font-size: 16px;
+    padding: 20px 0px;
+}
+.feature-icon {
+	margin-right: 20px;
+}
+.feature-icon i {
+    font-size: 30px;
+    width: 70px;
+    height: 70px;
+    line-height: 62px;
+}
+
+.feature-content{
+	margin-left: 88px;
+}
+
+
+
+/*BLOG SECTION
+=========================================*/
+.socail-list a i {
+    font-size: 15px;
+    width: 35px;
+    height: 35px;
+    padding: 9px 0px 0px 10px;
+}
+
+.blog-content h4.blog-title {
+    margin-top: 10px;
+}
+
+.blink{
+    left: 34%;
+}
+.blog-overlay a {
+    color: #FFF;
+    padding: 8px 10px;
+}
+
+/*BACK TO TOP
+=======================*/
+#back-to-top {
+    right: 15px;
+}
+
+
+}

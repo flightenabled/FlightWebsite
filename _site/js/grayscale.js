@@ -45,7 +45,7 @@ function init() {
         zoom: 15,
 
         // The latitude and longitude to center the map (always required)
-        center: new google.maps.LatLng(40.632177,-111.9107067), // Utah
+        center: new google.maps.LatLng(40.632249, -111.908540), // Utah
 
         // Disables the default Google Maps UI components
         disableDefaultUI: true,
@@ -173,7 +173,7 @@ function init() {
 
     // Custom Map Marker Icon - Customize the map-marker.png file to customize your icon
     var image = 'img/map-marker.png';
-    var myLatLng = new google.maps.LatLng(40.632177,-111.9107067);
+    var myLatLng = new google.maps.LatLng(40.632249, -111.908540);
     var beachMarker = new google.maps.Marker({
         position: myLatLng,
         map: map,

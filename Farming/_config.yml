@@ -33,4 +33,9 @@ social:
 # Build settings
 markdown: kramdown
 permalink: pretty
+<<<<<<< Updated upstream
 theme: midnight
+||||||| merged common ancestors
+=======
+theme: midnight
+>>>>>>> Stashed changes
