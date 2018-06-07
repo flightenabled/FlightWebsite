@@ -1,0 +1,125 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+  <title>Example : jQuery - Background Video</title>
+  <meta charset="UTF-8" />
+  <style type="text/css" media="screen">
+    * { margin:0px;padding:0px; }
+    html, body {
+      background:#000;
+      font-family:sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+  <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+  <script src="../jquery.backgroundvideo.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      var videobackground = new $.backgroundVideo($('body'), {
+        "align": "centerXY",
+        "width": 1280,
+        "height": 720,
+        "path": "media/",
+        "filename": "cloud",
+        "types": ["mp4","ogg","webm"]
+      });
+    });
+  </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial;
+    font-size: 17px;
+}
+
+#myVideo {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%; 
+    min-height: 100%;
+}
+
+.content {
+    position: fixed;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    color: #f1f1f1;
+    width: 100%;
+    padding: 20px;
+}
+
+#myBtn {
+    width: 200px;
+    font-size: 18px;
+    padding: 10px;
+    border: none;
+    background: #000;
+    color: #fff;
+    cursor: pointer;
+}
+
+#myBtn:hover {
+    background: #ddd;
+    color: black;
+}
+</style>
+</head>
+<body>
+
+<video poster="media/cloud.jpg" autoplay muted loop id="myVideo">
+  <source src="media/cloud.mp4" type="video/mp4">
+  Your browser does not support HTML5 video.
+</video>
+
+<div class="content">
+  <!-- <h1>Heading</h1>
+  <p>Lorem ipsum dolor sit amet, an his etiam torquatos. Tollit soleat phaedrum te duo, eum cu recteque expetendis neglegentur. Cu mentitum maiestatis persequeris pro, pri ponderum tractatos ei. Id qui nemore latine molestiae, ad mutat oblique delicatissimi pro.</p>
+ -->  
+  <button id="myBtn" onclick="myFunction()">Play</button>
+</div>
+
+<script>
+var video = document.getElementById("myVideo");
+var btn = document.getElementById("myBtn");
+
+function myFunction() {
+  if (video.paused) {
+    video.play();
+    btn.innerHTML = "Pause";
+  } else {
+    video.pause();
+    btn.innerHTML = "Play";
+  }
+}
+</script>
+
+</body>
+</html>
+
+
+<!-- <script>
+  $(document).ready(function() {
+    var videobackground = new $.backgroundVideo($('body'), {
+      "align": "centerXY",
+      "width": 1280,
+      "height": 720,
+      "path": "media/",
+      "filename": "cloud",
+      "types": ["mp4","ogg","webm"]
+    });
+  });
+</script> -->
