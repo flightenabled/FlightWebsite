@@ -15,8 +15,8 @@ footer: Flight Enabled
 
 # Social networks usernames (many more available: google-plus, flickr, dribbble, pinterest, instagram, tumblr, linkedin, etc.)
 social:
-  - title: X
-    url: https://x.com/Flightenabled
+  - title: X this
+    url: https://x.com/FlightEnabled
   - title: facebook
     url: https://facebook.com/flightenabled
   - title: github
@@ -25,9 +25,6 @@ social:
     url: https://www.youtube.com/FlightEnabled
   - title: tumblr
     url: https://www.tumblr.com/blog/flightenabled/
- 
-    
-
 
 # Build settings
 markdown: kramdown
