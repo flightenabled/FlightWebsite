@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Enabled</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to bottom, #000, #1a1a2e);
+            color: #fff;
+            overflow-x: hidden;
+        }
+        header {
+            text-align: center;
+            padding: 50px 20px;
+            background: rgba(0, 0, 0, 0.8);
+        }
+        header h1 {
+            font-size: 3em;
+            margin: 0;
+            animation: fadeIn 1s ease-in;
+        }
+        section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        p, ul {
+            line-height: 1.6;
+            font-size: 1.1em;
+        }
+        a {
+            color: #00bfff;
+            text-decoration: none;
+        }
+        #demo {
+            height: 400px;
+            position: relative;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #000;
+            font-size: 0.9em;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @media (max-width: 768px) {
+            header h1 { font-size: 2em; }
+            section { padding: 20px; }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Flight Enabled</h1>
+    </header>
+    <section id="mission">
+        <h2>Our Mission</h2>
+        <p>Enable flight for everyone.</p>
+        <ol>
+            <li>Prove the capabilities of small unmanned aerial vehicles (UAVs).</li>
+            <li>Iteratively increase their sizes to safely carry passengers and cargo, piloting them as simply as cars.</li>
+        </ol>
+        <p>We are developing an app called Similarize to help more people collaborate on this mission. Check it out at <a href="http://similarize.com/">similarize.com</a>.</p>
+    </section>
+    <section id="demo">
+        <h2>Interactive UAV Flight Demo</h2>
+        <p>Explore a 3D simulation of Earth with orbiting UAVs, demonstrating our vision for scalable flight technology.</p>
+        <div id="threejs-container" style="width: 100%; height: 300px;"></div>
+    </section>
+    <section id="contact">
+        <h2>Contact Us</h2>
+        <ul>
+            <li>Email: general@flightenabled.com</li>
+            <li>Address: 618 W Winchester St, Murray, UT 84123</li>
+            <li>Phone: +1 (801) 810-4798</li>
+            <li>Office Hours: Mon - Fri, 9:00am - 5:00pm</li>
+        </ul>
+    </section>
+    <footer>
+        © 2025 Flight Enabled. All rights reserved.
+    </footer>
+    <script>
+        // Enhanced Three.js setup for realistic Earth and UAVs
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 300, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, 300);
+        document.getElementById('threejs-container').appendChild(renderer.domElement);
+
+        // Load textures (using 2k for faster loading; change to 8k for higher res)
+        const loader = new THREE.TextureLoader();
+        const dayTexture = loader.load('https://www.solarsystemscope.com/textures/download/2k_earth_daymap.jpg');
+        const nightTexture = loader.load('https://www.solarsystemscope.com/textures/download/2k_earth_nightmap.jpg');
+        const normalTexture = loader.load('https://www.solarsystemscope.com/textures/download/2k_earth_normal_map.tif');
+        const specularTexture = loader.load('https://www.solarsystemscope.com/textures/download/2k_earth_specular_map.tif');
+        const cloudsTexture = loader.load('https://www.solarsystemscope.com/textures/download/2k_earth_clouds.jpg');
+
+        // Earth
+        const geometry = new THREE.SphereGeometry(1, 64, 64);
+        const earthMaterial = new THREE.MeshPhongMaterial({
+            map: dayTexture,
+            normalMap: normalTexture,
+            normalScale: new THREE.Vector2(0.5, 0.5),
+            specularMap: specularTexture,
+            emissiveMap: nightTexture,
+            emissive: new THREE.Color(0x222222),
+            shininess: 10
+        });
+        const earth = new THREE.Mesh(geometry, earthMaterial);
+        scene.add(earth);
+
+        // Clouds
+        const cloudsGeometry = new THREE.SphereGeometry(1.01, 64, 64);
+        const cloudsMaterial = new THREE.MeshPhongMaterial({
+            map: cloudsTexture,
+            transparent: true,
+            opacity: 0.8,
+            depthWrite: false
+        });
+        const clouds = new THREE.Mesh(cloudsGeometry, cloudsMaterial);
+        scene.add(clouds);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0x333333);
+        scene.add(ambientLight);
+        const sunLight = new THREE.DirectionalLight(0xffffff, 1.5);
+        sunLight.position.set(5, 3, 5);
+        scene.add(sunLight);
+
+        // Stars background
+        const starsGeometry = new THREE.BufferGeometry();
+        const starsVertices = [];
+        for (let i = 0; i < 10000; i++) {
+            starsVertices.push(Math.random() * 2000 - 1000, Math.random() * 2000 - 1000, Math.random() * 2000 - 1000);
+        }
+        starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starsVertices, 3));
+        const starsMaterial = new THREE.PointsMaterial({ color: 0x888888, size: 0.1 });
+        const stars = new THREE.Points(starsGeometry, starsMaterial);
+        scene.add(stars);
+
+        // Simple UAV model
+        function createUAV() {
+            const group = new THREE.Group();
+
+            // Body
+            const bodyGeometry = new THREE.BoxGeometry(0.1, 0.05, 0.1);
+            const bodyMaterial = new THREE.MeshPhongMaterial({ color: 0xaaaaaa });
+            const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+            group.add(body);
+
+            // Arms
+            for (let i = 0; i < 4; i++) {
+                const armGeometry = new THREE.CylinderGeometry(0.005, 0.005, 0.15, 8);
+                const armMaterial = new THREE.MeshPhongMaterial({ color: 0x666666 });
+                const arm = new THREE.Mesh(armGeometry, armMaterial);
+                arm.rotation.z = Math.PI / 2;
+                arm.position.set(
+                    (i % 2 === 0 ? 0.08 : -0.08),
+                    0,
+                    (i < 2 ? 0.08 : -0.08)
+                );
+                group.add(arm);
+            }
+
+            // Propellers
+            for (let i = 0; i < 4; i++) {
+                const propGeometry = new THREE.CircleGeometry(0.04, 16);
+                const propMaterial = new THREE.MeshPhongMaterial({ color: 0xdddddd, side: THREE.DoubleSide });
+                const prop = new THREE.Mesh(propGeometry, propMaterial);
+                prop.rotation.x = Math.PI / 2;
+                prop.position.set(
+                    (i % 2 === 0 ? 0.08 : -0.08),
+                    0.03,
+                    (i < 2 ? 0.08 : -0.08)
+                );
+                group.add(prop);
+            }
+
+            group.scale.set(0.5, 0.5, 0.5);
+            return group;
+        }
+
+        // Add UAV
+        const uav = createUAV();
+        scene.add(uav);
+
+        camera.position.z = 2;
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+        let time = 0;
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.005;
+
+            earth.rotation.y += 0.001;
+            clouds.rotation.y += 0.0012;
+
+            // UAV orbit
+            uav.position.x = Math.sin(time) * 1.5;
+            uav.position.y = Math.sin(time * 0.5) * 0.5;
+            uav.position.z = Math.cos(time) * 1.5;
+            uav.lookAt(earth.position); // Face towards Earth
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Resize handler
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / 300;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, 300);
+        });
+    </script>
+</body>
+</html>
