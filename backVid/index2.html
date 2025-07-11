@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Enabled</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to bottom, #000, #1a1a2e);
+            color: #fff;
+            overflow-x: hidden;
+        }
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(0, 0, 0, 0.8);
+        }
+        header h1 {
+            font-size: 3em;
+            margin: 0;
+            animation: fadeIn 1s ease-in;
+        }
+        section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            text-align: center; /* Center content */
+        }
+        h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        p, ul {
+            line-height: 1.6;
+            font-size: 1.1em;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        a {
+            color: #00bfff;
+            text-decoration: none;
+        }
+        #demo {
+            position: relative;
+            height: 60vh; /* Larger, responsive height */
+            min-height: 400px;
+            padding: 0;
+            overflow: hidden;
+        }
+        #threejs-container {
+            width: 100%;
+            height: 100%;
+            margin: 0 auto;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #000;
+            font-size: 0.9em;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @media (max-width: 768px) {
+            header h1 { font-size: 2em; }
+            section { padding: 20px; }
+            #demo { height: 50vh; }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Flight Enabled</h1>
+    </header>
+    <section id="mission">
+        <h2>Our Mission</h2>
+        <p>Enable flight for everyone.</p>
+        <ol>
+            <li>Prove the capabilities of small unmanned aerial vehicles (UAVs).</li>
+            <li>Iteratively increase their sizes to safely carry passengers and cargo, piloting them as simply as cars.</li>
+        </ol>
+        <p>We are developing an app called Similarize to help more people collaborate on this mission. Check it out at <a href="http://similarize.com/">similarize.com</a>.</p>
+    </section>
+    <section id="demo">
+        <h2>Interactive UAV Flight Demo</h2>
+        <p>Explore a 3D simulation of Earth with orbiting UAVs, symbolizing how accessible flight will make the world smaller and more connected, allowing everyone to access every location beyond local boundaries.</p>
+        <div id="threejs-container"></div>
+    </section>
+    <section id="contact">
+        <h2>Contact Us</h2>
+        <ul>
+            <li>Email: general@flightenabled.com</li>
+            <li>Address: 618 W Winchester St, Murray, UT 84123</li>
+            <li>Phone: +1 (801) 810-4798</li>
+            <li>Office Hours: Mon - Fri, 9:00am - 5:00pm</li>
+        </ul>
+    </section>
+    <footer>
+        © 2025 Flight Enabled. All rights reserved.
+    </footer>
+    <script>
+        // Enhanced Three.js setup for realistic Earth and multiple UAVs
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000); // Use full aspect
+        const renderer = new THREE.WebGLRenderer({ alpha: true }); // Alpha for blending
+        renderer.setClearColor(0x000000, 0); // Transparent background to blend
+        renderer.setSize(window.innerWidth, window.innerHeight * 0.6); // Initial size
+        document.getElementById('threejs-container').appendChild(renderer.domElement);
+
+        // Use reliable texture sources (from three.js examples via CDN)
+        const loader = new THREE.TextureLoader();
+        loader.crossOrigin = 'anonymous'; // Help with CORS
+        const dayTexture = loader.load('https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg');
+        const specularTexture = loader.load('https://threejs.org/examples/textures/planets/earth_specular_2048.jpg');
+        const cloudsTexture = loader.load('https://threejs.org/examples/textures/planets/earth_clouds_2048.png');
+        const normalTexture = loader.load('https://threejs.org/examples/textures/planets/earth_normal_2048.jpg');
+        const nightTexture = loader.load('https://threejs.org/examples/textures/planets/earth_lights_2048.png');
+
+        // Earth
+        const geometry = new THREE.SphereGeometry(1, 64, 64);
+        const earthMaterial = new THREE.MeshPhongMaterial({
+            map: dayTexture,
+            normalMap: normalTexture,
+            normalScale: new THREE.Vector2(0.5, 0.5),
+            specularMap: specularTexture,
+            emissiveMap: nightTexture,
+            emissive: new THREE.Color(0x222222),
+            shininess: 10,
+            color: 0x0077ff // Fallback color if textures fail
+        });
+        const earth = new THREE.Mesh(geometry, earthMaterial);
+        scene.add(earth);
+
+        // Clouds
+        const cloudsGeometry = new THREE.SphereGeometry(1.01, 64, 64);
+        const cloudsMaterial = new THREE.MeshPhongMaterial({
+            map: cloudsTexture,
+            transparent: true,
+            opacity: 0.8,
+            depthWrite: false
+        });
+        const clouds = new THREE.Mesh(cloudsGeometry, cloudsMaterial);
+        scene.add(clouds);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0x404040, 1.5); // Brighter ambient to avoid black
+        scene.add(ambientLight);
+        const sunLight = new THREE.DirectionalLight(0xffffff, 2);
+        sunLight.position.set(5, 3, 5);
+        scene.add(sunLight);
+
+        // Stars background
+        const starsGeometry = new THREE.BufferGeometry();
+        const starsVertices = [];
+        for (let i = 0; i = 10000; i++) {
+            starsVertices.push(Math.random() * 2000 - 1000, Math.random() * 2000 - 1000, Math.random() * 2000 - 1000);
+        }
+        starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starsVertices, 3));
+        const starsMaterial = new THREE.PointsMaterial({ color: 0x888888, size: 0.1 });
+        const stars = new THREE.Points(starsGeometry, starsMaterial);
+        scene.add(stars);
+
+        // Improved UAV model (futuristic drone-like)
+        function createUAV() {
+            const group = new THREE.Group();
+
+            // Body (more aerodynamic)
+            const bodyGeometry = new THREE.ConeGeometry(0.05, 0.2, 32);
+            const bodyMaterial = new THREE.MeshPhongMaterial({ color: 0xaaaaaa, shininess: 50 });
+            const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+            body.rotation.x = Math.PI / 2;
+            group.add(body);
+
+            // Wings
+            for (let i = 0; i < 2; i++) {
+                const wingGeometry = new THREE.BoxGeometry(0.15, 0.01, 0.05);
+                const wingMaterial = new THREE.MeshPhongMaterial({ color: 0x666666 });
+                const wing = new THREE.Mesh(wingGeometry, wingMaterial);
+                wing.position.set(0, 0, (i === 0 ? 0.05 : -0.05));
+                group.add(wing);
+            }
+
+            // Propellers (simplified)
+            for (let i = 0; i < 4; i++) {
+                const propGeometry = new THREE.CircleGeometry(0.03, 16);
+                const propMaterial = new THREE.MeshPhongMaterial({ color: 0xdddddd, side: THREE.DoubleSide });
+                const prop = new THREE.Mesh(propGeometry, propMaterial);
+                prop.rotation.x = Math.PI / 2;
+                prop.position.set(
+                    (i % 2 === 0 ? 0.1 : -0.1),
+                    0.01,
+                    (i < 2 ? 0.1 : -0.1)
+                );
+                group.add(prop);
+            }
+
+            group.scale.set(0.3, 0.3, 0.3);
+            return group;
+        }
+
+        // Add multiple UAVs
+        const uavs = [];
+        for (let i = 0; i < 5; i++) { // 5 UAVs for more dynamic scene
+            const uav = createUAV();
+            scene.add(uav);
+            uavs.push(uav);
+        }
+
+        camera.position.z = 3; // Farther for better view
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableZoom = true;
+
+        let time = 0;
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.005;
+
+            earth.rotation.y += 0.001;
+            clouds.rotation.y += 0.0012;
+
+            // Animate multiple UAVs in different orbits
+            uavs.forEach((uav, index) => {
+                const radius = 1.5 + index * 0.2;
+                const speed = 0.5 + index * 0.1;
+                uav.position.x = Math.sin(time * speed) * radius;
+                uav.position.y = Math.cos(time * speed * 0.5) * (radius / 2);
+                uav.position.z = Math.cos(time * speed) * radius;
+                uav.lookAt(earth.position);
+            });
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Resize handler for full responsiveness
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / (window.innerHeight * 0.6);
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight * 0.6);
+        });
+    </script>
+</body>
+</html>
