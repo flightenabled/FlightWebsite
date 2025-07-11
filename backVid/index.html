@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Enabled</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to bottom, #000, #1a1a2e);
+            color: #fff;
+            overflow-x: hidden;
+        }
+        header {
+            text-align: center;
+            padding: 50px 20px;
+            background: rgba(0, 0, 0, 0.8);
+        }
+        header h1 {
+            font-size: 3em;
+            margin: 0;
+            animation: fadeIn 1s ease-in;
+        }
+        section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        p, ul {
+            line-height: 1.6;
+            font-size: 1.1em;
+        }
+        a {
+            color: #00bfff;
+            text-decoration: none;
+        }
+        #demo {
+            height: 400px;
+            position: relative;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #000;
+            font-size: 0.9em;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @media (max-width: 768px) {
+            header h1 { font-size: 2em; }
+            section { padding: 20px; }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Flight Enabled</h1>
+    </header>
+    <section id="mission">
+        <h2>Our Mission</h2>
+        <p>Enable flight for everyone.</p>
+        <ol>
+            <li>Prove the capabilities of small unmanned aerial vehicles (UAVs).</li>
+            <li>Iteratively increase their sizes to safely carry passengers and cargo, piloting them as simply as cars.</li>
+        </ol>
+        <p>We are developing an app called Similarize to help more people collaborate on this mission. Check it out at <a href="http://similarize.com/">similarize.com</a>.</p>
+    </section>
+    <section id="demo">
+        <h2>Interactive UAV Flight Demo</h2>
+        <p>Explore a 3D simulation of Earth with orbiting UAVs, demonstrating our vision for scalable flight technology.</p>
+        <div id="threejs-container" style="width: 100%; height: 300px;"></div>
+    </section>
+    <section id="contact">
+        <h2>Contact Us</h2>
+        <ul>
+            <li>Email: general@flightenabled.com</li>
+            <li>Address: 618 W Winchester St, Murray, UT 84123</li>
+            <li>Phone: +1 (801) 810-4798</li>
+            <li>Office Hours: Mon - Fri, 9:00am - 5:00pm</li>
+        </ul>
+    </section>
+    <footer>
+        &copy; 2025 Flight Enabled. All rights reserved.
+    </footer>
+    <script>
+        // Basic Three.js setup inspired by Grok 4's generation example
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 300, 0.1, 1000); // Adjusted for container height
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, 300); // Match container
+        document.getElementById('threejs-container').appendChild(renderer.domElement);
+
+        // Earth sphere
+        const geometry = new THREE.SphereGeometry(1, 32, 32);
+        const material = new THREE.MeshBasicMaterial({ color: 0x0077ff }); // Simple blue for Earth
+        const earth = new THREE.Mesh(geometry, material);
+        scene.add(earth);
+
+        // Simple "UAV" orbits (lines for simulation)
+        const uavCurve = new THREE.EllipseCurve(0, 0, 1.5, 1.5);
+        const uavPoints = uavCurve.getPoints(50);
+        const uavGeometry = new THREE.BufferGeometry().setFromPoints(uavPoints);
+        const uavMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
+        const uavOrbit = new THREE.Line(uavGeometry, uavMaterial);
+        scene.add(uavOrbit);
+
+        camera.position.z = 3;
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+        function animate() {
+            requestAnimationFrame(animate);
+            earth.rotation.y += 0.005; // Rotate Earth
+            uavOrbit.rotation.z += 0.01; // Orbit animation
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Resize handler for responsiveness
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / 300;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, 300);
+        });
+    </script>
+</body>
+</html>
