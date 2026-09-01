@@ -1,3 +1,470 @@
 ---
-layout: default
+layout: null
 ---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flight Enabled — Still Has Value and Similarize</title>
+  <meta name="description" content="Flight Enabled steadily improves small UAVs until they can be trusted as safe, quiet, capable package delivery vehicles, then larger craft for passengers and cargo. Parent company of Still Has Value and Similarize. Murray, Utah.">
+  <link rel="canonical" href="https://www.flightenabled.com/">
+  <link rel="icon" type="image/png" href="img/favicon.png">
+  <meta name="theme-color" content="#070b14">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.flightenabled.com/">
+  <meta property="og:title" content="Flight Enabled — Still Has Value and Similarize">
+  <meta property="og:description" content="Steadily improve small UAVs until they can be trusted as safe, quiet package delivery vehicles, then scale to passengers and cargo. Parent company of Still Has Value and Similarize.">
+  <meta property="og:image" content="https://www.flightenabled.com/img/flightLogo600grad.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Flight Enabled">
+  <meta name="twitter:description" content="Parent company of Still Has Value and Similarize. Enabling flight for everyone should involve everyone.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Flight Enabled",
+    "url": "https://www.flightenabled.com",
+    "image": "https://www.flightenabled.com/img/flightLogo600grad.png",
+    "email": "general@flightenabled.com",
+    "telephone": "+1-801-747-9799",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "618 W Winchester St",
+      "addressLocality": "Murray",
+      "addressRegion": "UT",
+      "postalCode": "84123",
+      "addressCountry": "US"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 40.6553,
+      "longitude": -111.9073
+    },
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+      "opens": "09:00",
+      "closes": "17:00"
+    },
+    "description": "Flight Enabled steadily improves small UAVs until they can be trusted as safe, quiet, capable package delivery vehicles, then iteratively increases sizes so they can carry passengers and cargo safely and be piloted as simply as cars. Parent company of Still Has Value and Similarize.",
+    "sameAs": [
+      "https://stillhasvalue.com",
+      "https://similarize.com",
+      "https://github.com/flightenabled",
+      "https://x.com/FlightEnabled"
+    ]
+  }
+  </script>
+  <style>
+    :root {
+      --ink: #0c1222;
+      --muted: #4b5563;
+      --line: #e5e2d9;
+      --paper: #f7f5ef;
+      --card: #ffffff;
+      --hero: #070b14;
+      --hero-2: #121a2b;
+      --green: #15803d;
+      --green-ink: #14532d;
+      --amber: #d97706;
+      --amber-ink: #9a5704;
+      --on-dark: #f4f1ea;
+      --on-dark-muted: #b8c0cc;
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(7, 11, 20, 0.08);
+      --max: 68rem;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.55;
+      font-size: 1.05rem;
+    }
+    img { max-width: 100%; height: auto; }
+    a { color: var(--green-ink); }
+    a:hover { color: var(--green); }
+    .skip {
+      position: absolute;
+      left: -999px;
+      top: 0;
+      background: var(--green);
+      color: #fff;
+      padding: 0.6rem 1rem;
+      z-index: 100;
+    }
+    .skip:focus { left: 0.75rem; top: 0.75rem; }
+    .wrap {
+      width: min(var(--max), calc(100% - 2rem));
+      margin-inline: auto;
+    }
+    header.nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(7, 11, 20, 0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      min-height: 4.25rem;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      color: var(--on-dark);
+      text-decoration: none;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+    .brand img { width: 132px; height: auto; }
+    .brand span { display: none; }
+    nav ul {
+      display: flex;
+      gap: 0.25rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    nav a {
+      color: var(--on-dark);
+      text-decoration: none;
+      font-size: 0.92rem;
+      font-weight: 500;
+      padding: 0.45rem 0.7rem;
+      border-radius: 999px;
+    }
+    nav a:hover, nav a:focus-visible {
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+    }
+    .hero {
+      background:
+        radial-gradient(1200px 500px at 80% -10%, rgba(21, 128, 61, 0.22), transparent 55%),
+        radial-gradient(900px 420px at 0% 100%, rgba(217, 119, 6, 0.12), transparent 50%),
+        linear-gradient(180deg, var(--hero) 0%, var(--hero-2) 100%);
+      color: var(--on-dark);
+      padding: 3.5rem 0 4.25rem;
+    }
+    .hero img.logo {
+      width: min(280px, 70vw);
+      display: block;
+      margin-bottom: 1.25rem;
+    }
+    .hero h1 {
+      font-family: "IBM Plex Serif", Georgia, serif;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      line-height: 1.15;
+      margin: 0 0 0.85rem;
+      font-weight: 600;
+    }
+    .hero .lede {
+      font-size: clamp(1.1rem, 2.4vw, 1.4rem);
+      color: var(--on-dark-muted);
+      max-width: 38rem;
+      margin: 0 0 1.75rem;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 0.75rem 1.15rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .btn-green {
+      background: var(--green);
+      color: #fff;
+    }
+    .btn-green:hover { background: #166534; color: #fff; }
+    .btn-amber {
+      background: var(--amber);
+      color: #111;
+    }
+    .btn-amber:hover { background: #b45309; color: #fff; }
+    .btn-ghost {
+      border: 1px solid rgba(255,255,255,0.28);
+      color: var(--on-dark);
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.08); color: #fff; }
+    section { padding: 3.5rem 0; }
+    .section-kicker {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--green);
+      margin: 0 0 0.5rem;
+    }
+    h2 {
+      font-family: "IBM Plex Serif", Georgia, serif;
+      font-size: clamp(1.7rem, 3vw, 2.2rem);
+      margin: 0 0 1.5rem;
+      line-height: 1.2;
+    }
+    .mission {
+      background: var(--card);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    ol.mission-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 1rem;
+    }
+    ol.mission-list li {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1rem;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.15rem 1.2rem;
+    }
+    .num {
+      width: 2.2rem;
+      height: 2.2rem;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      color: #fff;
+      background: var(--ink);
+      flex-shrink: 0;
+    }
+    ol.mission-list li:nth-child(2) .num { background: var(--amber); color: #111; }
+    ol.mission-list p {
+      margin: 0.15rem 0 0;
+      font-size: 1.05rem;
+    }
+    .involve {
+      margin: 1.5rem 0 0;
+      font-family: "IBM Plex Serif", Georgia, serif;
+      font-style: italic;
+      font-size: 1.2rem;
+    }
+    .cards {
+      display: grid;
+      gap: 1.25rem;
+    }
+    article.card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.5rem 1.4rem 1.4rem;
+      border: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    article.card h3 {
+      margin: 0;
+      font-size: 1.45rem;
+    }
+    article.card p { margin: 0; color: var(--muted); }
+    .tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 0.28rem 0.55rem;
+      border-radius: 999px;
+      width: fit-content;
+    }
+    .tag-green { background: #dcfce7; color: var(--green-ink); }
+    .tag-amber { background: #ffedd5; color: var(--amber-ink); }
+    article.shv { border-top: 4px solid var(--green); }
+    article.sim { border-top: 4px solid var(--amber); }
+    .card-actions { margin-top: auto; padding-top: 0.5rem; }
+    .contact-grid {
+      display: grid;
+      gap: 0.9rem;
+    }
+    .contact-item {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 1rem 1.1rem;
+    }
+    .contact-item dt {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .contact-item dd {
+      margin: 0.2rem 0 0;
+      font-weight: 600;
+    }
+    .contact-item a { text-decoration: none; color: inherit; }
+    .contact-item a:hover { color: var(--green); }
+    footer.site {
+      background: var(--hero);
+      color: var(--on-dark-muted);
+      padding: 2rem 0;
+      font-size: 0.92rem;
+    }
+    footer.site .wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: space-between;
+      align-items: center;
+    }
+    footer.site a { color: var(--on-dark); text-decoration: none; }
+    footer.site a:hover { color: #fff; }
+    .social { display: flex; gap: 1rem; flex-wrap: wrap; }
+    @media (min-width: 720px) {
+      .brand span { display: inline; }
+.cards { grid-template-columns: 1fr 1fr; }
+      .contact-grid { grid-template-columns: 1fr 1fr; }
+      ol.mission-list { grid-template-columns: 1fr; }
+    }
+    @media (min-width: 960px) {
+      .contact-grid { grid-template-columns: repeat(4, 1fr); }
+      .hero { padding: 5rem 0 5.5rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#mission">Skip to mission</a>
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="/">
+        <img src="img/flightLogo.png" width="150" height="40" alt="Flight Enabled">
+        <span>Flight Enabled</span>
+      </a>
+      <nav aria-label="Primary">
+        <ul>
+          <li><a href="#mission">Mission</a></li>
+          <li><a href="#companies">Companies</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <img class="logo" src="img/flightLogo600grad.png" width="280" height="90" alt="Flight Enabled">
+        <h1>Flight Enabled</h1>
+        <p class="lede">Enabling flight for everyone should involve everyone.</p>
+        <div class="actions">
+          <a class="btn btn-green" href="https://stillhasvalue.com">Still Has Value</a>
+          <a class="btn btn-amber" href="https://similarize.com">Similarize</a>
+          <a class="btn btn-ghost" href="#mission">Read the mission</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mission" id="mission">
+    <div class="wrap">
+      <p class="section-kicker">Mission</p>
+      <h2>What we are doing</h2>
+      <ol class="mission-list">
+        <li>
+          <span class="num" aria-hidden="true">1</span>
+          <p>Steadily improve small UAVs through iterative software and hardware until they can be trusted to be safe, quiet, capable package delivery vehicles.</p>
+        </li>
+        <li>
+          <span class="num" aria-hidden="true">2</span>
+          <p>As small UAVs are proven, increase sizes so they can carry passengers and cargo safely and be piloted as simply as cars.</p>
+        </li>
+      </ol>
+      <p class="involve">Enabling flight for everyone should involve everyone.</p>
+    </div>
+  </section>
+
+  <section id="companies">
+    <div class="wrap">
+      <p class="section-kicker">Companies</p>
+      <h2>Flight Enabled companies</h2>
+      <div class="cards">
+        <article class="card shv">
+          <span class="tag tag-green">Pays the way</span>
+          <h3>Still Has Value</h3>
+          <p>Used goods. Free Salt Lake valley pickup, then we revive and sell pieces that still have value. The shop and Cybertruck fleet pay the way and prove useful machines.</p>
+          <div class="card-actions">
+            <a class="btn btn-green" href="https://stillhasvalue.com">stillhasvalue.com</a>
+          </div>
+        </article>
+        <article class="card sim">
+          <span class="tag tag-amber">Being rebuilt</span>
+          <h3>Similarize</h3>
+          <p>A Flight Enabled company. An app so more people can work together on hard missions by finding how to say things so others can agree. Currently being rebuilt.</p>
+          <div class="card-actions">
+            <a class="btn btn-amber" href="https://similarize.com">similarize.com</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <p class="section-kicker">Murray, Utah</p>
+      <h2>Contact</h2>
+      <dl class="contact-grid">
+        <div class="contact-item">
+          <dt>Email</dt>
+          <dd>general at flightenabled dot com</dd>
+        </div>
+        <div class="contact-item">
+          <dt>Address</dt>
+          <dd><a href="https://maps.google.com/?q=618+W+Winchester+St,+Murray,+UT+84123">618 W Winchester St, Murray, UT 84123</a></dd>
+        </div>
+        <div class="contact-item">
+          <dt>Phone</dt>
+          <dd><a href="tel:+18017479799">+1 (801) 747-9799</a></dd>
+        </div>
+        <div class="contact-item">
+          <dt>Office hours</dt>
+          <dd>Monday–Friday, 9:00am–5:00pm</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <footer class="site">
+    <div class="wrap">
+      <p>© 2026 Flight Enabled</p>
+      <div class="social">
+        <a href="https://github.com/flightenabled">GitHub</a>
+        <a href="https://x.com/FlightEnabled">X</a>
+        <a href="https://www.youtube.com/FlightEnabled">YouTube</a>
+        <a href="https://facebook.com/flightenabled">Facebook</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
