@@ -6,22 +6,22 @@ layout: null
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Flight Enabled — Still Has Value and Similarize</title>
-  <meta name="description" content="Flight Enabled steadily improves small UAVs until they can be trusted as safe, quiet, capable package delivery vehicles, then larger craft for passengers and cargo. Parent company of Still Has Value and Similarize. Murray, Utah.">
+  <title>Flight Enabled — Bringing flight to everyone</title>
+  <meta name="description" content="A shop in Murray, Utah — not an airline. Skeleton drone on the bench, hardware inbound, looking for a Salt Lake valley test site. Parent of Still Has Value and Similarize.">
   <link rel="canonical" href="https://www.flightenabled.com/">
   <link rel="icon" type="image/png" href="img/favicon.png">
-  <meta name="theme-color" content="#070b14">
+  <meta name="theme-color" content="#05070c">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.flightenabled.com/">
-  <meta property="og:title" content="Flight Enabled — Still Has Value and Similarize">
-  <meta property="og:description" content="Steadily improve small UAVs until they can be trusted as safe, quiet package delivery vehicles, then scale to passengers and cargo. Parent company of Still Has Value and Similarize.">
+  <meta property="og:title" content="Flight Enabled — Bringing flight to everyone">
+  <meta property="og:description" content="A shop in Murray, Utah — not an airline. Skeleton drone on the bench. Hardware inbound. Looking for a place to test.">
   <meta property="og:image" content="https://www.flightenabled.com/img/flightLogo600grad.png">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Flight Enabled">
-  <meta name="twitter:description" content="Parent company of Still Has Value and Similarize. Enabling flight for everyone should involve everyone.">
+  <meta name="twitter:description" content="A shop, not an airline. Skeleton drone, hardware, Utah test site. Bringing flight to everyone.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -50,7 +50,7 @@ layout: null
       "opens": "09:00",
       "closes": "17:00"
     },
-    "description": "Flight Enabled steadily improves small UAVs until they can be trusted as safe, quiet, capable package delivery vehicles, then iteratively increases sizes so they can carry passengers and cargo safely and be piloted as simply as cars. Parent company of Still Has Value and Similarize.",
+    "description": "Flight Enabled is a shop in Murray, Utah building a skeleton drone, obtaining hardware, and looking for a Salt Lake valley place to test and iterate. The aim is to improve small UAVs until they can be trusted as safe, quiet, capable package delivery vehicles, then increase size so they can carry passengers and cargo and be piloted as simply as cars. Parent of Still Has Value and Similarize. Not an airline; no passenger flights, deliveries, certified aircraft, or flying fleet today.",
     "sameAs": [
       "https://stillhasvalue.com",
       "https://similarize.com",
@@ -61,36 +61,31 @@ layout: null
   </script>
   <style>
     :root {
-      --ink: #0c1222;
-      --muted: #4b5563;
-      --line: #e5e2d9;
-      --paper: #f7f5ef;
-      --card: #ffffff;
-      --hero: #070b14;
-      --hero-2: #121a2b;
+      --bg: #05070c;
+      --bg-2: #0a0f18;
+      --panel: #0e141d;
+      --ink: #e8eef2;
+      --muted: #93a0ae;
+      --line: rgba(232, 238, 242, 0.10);
       --green: #15803d;
-      --green-ink: #14532d;
+      --green-glow: #34d399;
       --amber: #d97706;
-      --amber-ink: #9a5704;
-      --on-dark: #f4f1ea;
-      --on-dark-muted: #b8c0cc;
-      --radius: 16px;
-      --shadow: 0 10px 30px rgba(7, 11, 20, 0.08);
-      --max: 68rem;
+      --amber-soft: #fbbf24;
+      --max: 72rem;
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
       margin: 0;
-      font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+      background: var(--bg);
       color: var(--ink);
-      background: var(--paper);
-      line-height: 1.55;
+      font-family: Outfit, "Segoe UI", system-ui, sans-serif;
       font-size: 1.05rem;
+      line-height: 1.55;
     }
     img { max-width: 100%; height: auto; }
-    a { color: var(--green-ink); }
-    a:hover { color: var(--green); }
+    a { color: var(--green-glow); }
+    a:hover { color: #fff; }
     .skip {
       position: absolute;
       left: -999px;
@@ -98,42 +93,40 @@ layout: null
       background: var(--green);
       color: #fff;
       padding: 0.6rem 1rem;
-      z-index: 100;
+      z-index: 80;
     }
     .skip:focus { left: 0.75rem; top: 0.75rem; }
     .wrap {
       width: min(var(--max), calc(100% - 2rem));
       margin-inline: auto;
     }
+
     header.nav {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      background: rgba(7, 11, 20, 0.92);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      z-index: 30;
+      background: linear-gradient(180deg, rgba(5,7,12,0.72), transparent);
     }
     .nav-inner {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
-      min-height: 4.25rem;
+      min-height: 4.4rem;
     }
     .brand {
       display: flex;
       align-items: center;
       gap: 0.7rem;
-      color: var(--on-dark);
       text-decoration: none;
+      color: var(--ink);
       font-weight: 600;
-      letter-spacing: 0.02em;
     }
-    .brand img { width: 132px; height: auto; }
+    .brand img { width: 148px; height: auto; }
     .brand span { display: none; }
     nav ul {
       display: flex;
-      gap: 0.25rem;
+      gap: 0.15rem;
       list-style: none;
       margin: 0;
       padding: 0;
@@ -141,193 +134,291 @@ layout: null
       justify-content: flex-end;
     }
     nav a {
-      color: var(--on-dark);
+      color: var(--ink);
       text-decoration: none;
-      font-size: 0.92rem;
+      font-size: 0.88rem;
       font-weight: 500;
-      padding: 0.45rem 0.7rem;
+      padding: 0.4rem 0.65rem;
       border-radius: 999px;
     }
     nav a:hover, nav a:focus-visible {
       background: rgba(255,255,255,0.08);
-      color: #fff;
     }
+
     .hero {
-      background:
-        radial-gradient(1200px 500px at 80% -10%, rgba(21, 128, 61, 0.22), transparent 55%),
-        radial-gradient(900px 420px at 0% 100%, rgba(217, 119, 6, 0.12), transparent 50%),
-        linear-gradient(180deg, var(--hero) 0%, var(--hero-2) 100%);
-      color: var(--on-dark);
-      padding: 3.5rem 0 4.25rem;
+      position: relative;
+      min-height: 100svh;
+      display: grid;
+      align-items: end;
+      overflow: hidden;
+      background: #05070c;
     }
-    .hero img.logo {
-      width: min(280px, 70vw);
+    #globe-stage {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+    #globe {
       display: block;
-      margin-bottom: 1.25rem;
+      width: 100%;
+      height: 100%;
+    }
+    #globe-fallback {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(5,7,12,0.35), rgba(5,7,12,0.82)),
+        url("img/intro-bg.jpg") center / cover no-repeat;
+    }
+    #globe-fallback img.fallback-logo {
+      position: absolute;
+      right: 8%;
+      top: 18%;
+      width: min(280px, 50vw);
+      opacity: 0.85;
+    }
+    .hero-scrim {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, rgba(5,7,12,0.88) 0%, rgba(5,7,12,0.55) 42%, rgba(5,7,12,0.12) 70%, rgba(5,7,12,0.45) 100%),
+        linear-gradient(180deg, rgba(5,7,12,0.2) 0%, transparent 28%, rgba(5,7,12,0.75) 100%);
+    }
+    .hero-copy {
+      position: relative;
+      z-index: 2;
+      padding: 6.5rem 0 2.6rem;
+      max-width: 38rem;
+    }
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--amber-soft);
+      margin: 0 0 0.85rem;
+    }
+    .kicker::before {
+      content: "";
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 50%;
+      background: var(--amber);
+      box-shadow: 0 0 12px var(--amber);
     }
     .hero h1 {
-      font-family: "IBM Plex Serif", Georgia, serif;
-      font-size: clamp(2rem, 5vw, 3.4rem);
-      line-height: 1.15;
-      margin: 0 0 0.85rem;
+      font-family: Syne, Outfit, sans-serif;
+      font-weight: 800;
+      font-size: clamp(2.35rem, 7.2vw, 4.6rem);
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.9rem;
+    }
+    .shop-line {
+      font-size: clamp(1.05rem, 2.2vw, 1.35rem);
       font-weight: 600;
+      color: var(--green-glow);
+      margin: 0 0 0.85rem;
     }
-    .hero .lede {
-      font-size: clamp(1.1rem, 2.4vw, 1.4rem);
-      color: var(--on-dark-muted);
-      max-width: 38rem;
-      margin: 0 0 1.75rem;
+    .now-line {
+      color: var(--muted);
+      margin: 0 0 1.4rem;
+      max-width: 34rem;
     }
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
+    .globe-caption {
+      font-size: 0.82rem;
+      color: var(--muted);
+      border-left: 2px solid var(--green);
+      padding-left: 0.75rem;
+      margin: 0 0 1.6rem;
+      max-width: 28rem;
     }
+    .actions { display: flex; flex-wrap: wrap; gap: 0.7rem; }
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       text-decoration: none;
       border-radius: 999px;
-      padding: 0.75rem 1.15rem;
+      padding: 0.72rem 1.15rem;
       font-weight: 600;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
     }
-    .btn-green {
-      background: var(--green);
-      color: #fff;
-    }
+    .btn-green { background: var(--green); color: #fff; }
     .btn-green:hover { background: #166534; color: #fff; }
-    .btn-amber {
-      background: var(--amber);
-      color: #111;
-    }
-    .btn-amber:hover { background: #b45309; color: #fff; }
     .btn-ghost {
-      border: 1px solid rgba(255,255,255,0.28);
-      color: var(--on-dark);
+      border: 1px solid rgba(255,255,255,0.22);
+      color: var(--ink);
     }
     .btn-ghost:hover { background: rgba(255,255,255,0.08); color: #fff; }
-    section { padding: 3.5rem 0; }
+
+    section { padding: 4rem 0; }
     .section-kicker {
       text-transform: uppercase;
-      letter-spacing: 0.12em;
-      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+      font-size: 0.74rem;
       font-weight: 700;
-      color: var(--green);
-      margin: 0 0 0.5rem;
+      color: var(--green-glow);
+      margin: 0 0 0.45rem;
     }
     h2 {
-      font-family: "IBM Plex Serif", Georgia, serif;
-      font-size: clamp(1.7rem, 3vw, 2.2rem);
-      margin: 0 0 1.5rem;
-      line-height: 1.2;
+      font-family: Syne, Outfit, sans-serif;
+      font-weight: 700;
+      font-size: clamp(1.55rem, 3vw, 2.15rem);
+      letter-spacing: -0.02em;
+      margin: 0 0 1.25rem;
+      line-height: 1.15;
     }
-    .mission {
-      background: var(--card);
+    .lede { color: var(--muted); margin: 0 0 1.4rem; max-width: 40rem; }
+
+    .now {
+      background: var(--bg-2);
       border-top: 1px solid var(--line);
       border-bottom: 1px solid var(--line);
     }
-    ol.mission-list {
-      list-style: none;
-      margin: 0;
-      padding: 0;
+    .now-grid {
       display: grid;
       gap: 1rem;
+    }
+    .fact {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 1.15rem 1.2rem;
+    }
+    .fact strong {
+      display: block;
+      font-family: Syne, sans-serif;
+      margin-bottom: 0.35rem;
+    }
+    .fact p { margin: 0; color: var(--muted); }
+    .contrast {
+      margin-top: 1.5rem;
+      padding: 1.25rem 1.3rem;
+      border-radius: 14px;
+      background:
+        linear-gradient(90deg, rgba(21,128,61,0.12), rgba(217,119,6,0.10));
+      border: 1px solid var(--line);
+    }
+    .contrast p { margin: 0; }
+    .contrast .vs {
+      color: var(--amber-soft);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+
+    .aim { background: var(--bg); }
+    ol.mission-list {
+      list-style: none;
+      margin: 0 0 1.5rem;
+      padding: 0;
+      display: grid;
+      gap: 0.9rem;
     }
     ol.mission-list li {
       display: grid;
       grid-template-columns: auto 1fr;
       gap: 1rem;
-      background: var(--paper);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 1.15rem 1.2rem;
+      align-items: start;
     }
     .num {
-      width: 2.2rem;
-      height: 2.2rem;
+      width: 2.1rem;
+      height: 2.1rem;
       border-radius: 999px;
       display: grid;
       place-items: center;
       font-weight: 700;
+      font-size: 0.9rem;
       color: #fff;
-      background: var(--ink);
-      flex-shrink: 0;
+      background: var(--green);
     }
     ol.mission-list li:nth-child(2) .num { background: var(--amber); color: #111; }
-    ol.mission-list p {
-      margin: 0.15rem 0 0;
-      font-size: 1.05rem;
+    ol.mission-list p { margin: 0.15rem 0 0; }
+    .hint {
+      margin: 0 0 1.2rem;
+      padding: 1.2rem 1.3rem;
+      border-left: 3px solid var(--amber);
+      background: rgba(217, 119, 6, 0.08);
+      border-radius: 0 12px 12px 0;
+      max-width: 42rem;
     }
+    .hint p { margin: 0; }
     .involve {
-      margin: 1.5rem 0 0;
-      font-family: "IBM Plex Serif", Georgia, serif;
-      font-style: italic;
-      font-size: 1.2rem;
+      font-family: Syne, sans-serif;
+      font-size: 1.15rem;
+      margin: 0;
+      color: var(--ink);
     }
-    .cards {
-      display: grid;
-      gap: 1.25rem;
-    }
+
+    .cards { display: grid; gap: 1.15rem; }
     article.card {
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 1.5rem 1.4rem 1.4rem;
+      background: var(--panel);
       border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 1.4rem;
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: 0.55rem;
     }
-    article.card h3 {
-      margin: 0;
-      font-size: 1.45rem;
-    }
+    article.shv { border-top: 3px solid var(--green); }
+    article.sim { border-top: 3px solid var(--amber); }
+    article.card h3 { margin: 0; font-family: Syne, sans-serif; font-size: 1.4rem; }
     article.card p { margin: 0; color: var(--muted); }
-    .tag {
-      display: inline-block;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      padding: 0.28rem 0.55rem;
-      border-radius: 999px;
-      width: fit-content;
+    .card-actions { margin-top: auto; padding-top: 0.7rem; }
+
+    .join { background: var(--bg-2); border-top: 1px solid var(--line); }
+    .join ul {
+      margin: 0 0 1.2rem;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
-    .tag-green { background: #dcfce7; color: var(--green-ink); }
-    .tag-amber { background: #ffedd5; color: var(--amber-ink); }
-    article.shv { border-top: 4px solid var(--green); }
-    article.sim { border-top: 4px solid var(--amber); }
-    .card-actions { margin-top: auto; padding-top: 0.5rem; }
+    .join li {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0.4rem 0.8rem;
+      color: var(--ink);
+      font-weight: 500;
+      font-size: 0.92rem;
+    }
+
     .contact-grid {
       display: grid;
-      gap: 0.9rem;
+      gap: 0.85rem;
     }
     .contact-item {
-      background: var(--card);
+      background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 12px;
       padding: 1rem 1.1rem;
     }
     .contact-item dt {
-      font-size: 0.78rem;
+      font-size: 0.74rem;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.1em;
       color: var(--muted);
       font-weight: 700;
     }
-    .contact-item dd {
-      margin: 0.2rem 0 0;
-      font-weight: 600;
-    }
+    .contact-item dd { margin: 0.25rem 0 0; font-weight: 600; }
     .contact-item a { text-decoration: none; color: inherit; }
-    .contact-item a:hover { color: var(--green); }
+    .contact-item a:hover { color: var(--green-glow); }
+
     footer.site {
-      background: var(--hero);
-      color: var(--on-dark-muted);
-      padding: 2rem 0;
-      font-size: 0.92rem;
+      border-top: 1px solid var(--line);
+      padding: 1.6rem 0 2rem;
+      color: var(--muted);
+      font-size: 0.9rem;
     }
     footer.site .wrap {
       display: flex;
@@ -336,18 +427,26 @@ layout: null
       justify-content: space-between;
       align-items: center;
     }
-    footer.site a { color: var(--on-dark); text-decoration: none; }
+    footer.site a { color: var(--ink); text-decoration: none; }
     footer.site a:hover { color: #fff; }
     .social { display: flex; gap: 1rem; flex-wrap: wrap; }
+
     @media (min-width: 720px) {
       .brand span { display: inline; }
-.cards { grid-template-columns: 1fr 1fr; }
+      .now-grid { grid-template-columns: repeat(3, 1fr); }
+      .cards { grid-template-columns: 1fr 1fr; }
       .contact-grid { grid-template-columns: 1fr 1fr; }
-      ol.mission-list { grid-template-columns: 1fr; }
     }
     @media (min-width: 960px) {
       .contact-grid { grid-template-columns: repeat(4, 1fr); }
-      .hero { padding: 5rem 0 5.5rem; }
+      .hero-copy { padding-bottom: 3.4rem; }
+    }
+    @media (max-width: 719px) {
+      nav a { font-size: 0.8rem; padding: 0.35rem 0.5rem; }
+      .hero-scrim {
+        background:
+          linear-gradient(180deg, rgba(5,7,12,0.35) 0%, rgba(5,7,12,0.25) 40%, rgba(5,7,12,0.92) 100%);
+      }
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
@@ -355,52 +454,88 @@ layout: null
   </style>
 </head>
 <body>
-  <a class="skip" href="#mission">Skip to mission</a>
+  <a class="skip" href="#now">Skip to what’s happening now</a>
   <header class="nav">
     <div class="wrap nav-inner">
       <a class="brand" href="/">
-        <img src="img/flightLogo.png" width="150" height="40" alt="Flight Enabled">
+        <img src="img/flightLogo600grad.png" width="150" height="48" alt="Flight Enabled">
         <span>Flight Enabled</span>
       </a>
       <nav aria-label="Primary">
         <ul>
-          <li><a href="#mission">Mission</a></li>
+          <li><a href="#now">Now</a></li>
+          <li><a href="#aim">Aim</a></li>
           <li><a href="#companies">Companies</a></li>
+          <li><a href="#join">Want in</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
       </nav>
     </div>
   </header>
 
-  <section class="hero">
-    <div class="wrap">
-      <div>
-        <img class="logo" src="img/flightLogo600grad.png" width="280" height="90" alt="Flight Enabled">
-        <h1>Flight Enabled</h1>
-        <p class="lede">Enabling flight for everyone should involve everyone.</p>
-        <div class="actions">
-          <a class="btn btn-green" href="https://stillhasvalue.com">Still Has Value</a>
-          <a class="btn btn-amber" href="https://similarize.com">Similarize</a>
-          <a class="btn btn-ghost" href="#mission">Read the mission</a>
-        </div>
+  <section class="hero" id="top">
+    <div id="globe-stage" aria-hidden="true">
+      <canvas id="globe"></canvas>
+      <div id="globe-fallback" hidden>
+        <img class="fallback-logo" src="img/flightLogo600grad.png" width="280" height="90" alt="">
+      </div>
+    </div>
+    <div class="hero-scrim" aria-hidden="true"></div>
+    <div class="wrap hero-copy">
+      <p class="kicker">Murray, Utah · on the bench</p>
+      <h1>Bringing flight to everyone</h1>
+      <p class="shop-line">This is a shop, not an airline.</p>
+      <p class="now-line">Skeleton drone going together. Hardware inbound. Looking for a field in the Salt Lake valley to test and iterate. No passenger flights, deliveries, certified aircraft, or fleet — not today.</p>
+      <p class="globe-caption">Arcs on the globe are the world’s passenger-class eVTOL moment, 2026 — state of the art elsewhere, not Flight Enabled products.</p>
+      <div class="actions">
+        <a class="btn btn-green" href="#join">Want in</a>
+        <a class="btn btn-ghost" href="#now">What we’re doing now</a>
       </div>
     </div>
   </section>
 
-  <section class="mission" id="mission">
+  <section class="now" id="now">
     <div class="wrap">
-      <p class="section-kicker">Mission</p>
-      <h2>What we are doing</h2>
+      <p class="section-kicker">Right now</p>
+      <h2>A skeleton airframe, not a flying company</h2>
+      <div class="now-grid">
+        <div class="fact">
+          <strong>Skeleton drone</strong>
+          <p>In the middle of building a skeleton drone — the airframe on the bench, iteration one.</p>
+        </div>
+        <div class="fact">
+          <strong>Hardware</strong>
+          <p>Obtaining motors, electronics, and the rest of the bits a small UAV actually needs.</p>
+        </div>
+        <div class="fact">
+          <strong>Test site</strong>
+          <p>Finding a place in Utah — Murray / Salt Lake valley — to test and iterate without pretending we already fly.</p>
+        </div>
+      </div>
+      <div class="contrast">
+        <span class="vs">The gap is the story</span>
+        <p>The world is building passenger-class eVTOLs. We are in the shop with a skeleton airframe. If you want to help close that gap, you’re invited.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="aim" id="aim">
+    <div class="wrap">
+      <p class="section-kicker">The aim</p>
+      <h2>Where this is going</h2>
       <ol class="mission-list">
         <li>
           <span class="num" aria-hidden="true">1</span>
-          <p>Steadily improve small UAVs through iterative software and hardware until they can be trusted to be safe, quiet, capable package delivery vehicles.</p>
+          <p>Improve small UAVs iteratively until they can be trusted as safe, quiet, capable package delivery vehicles.</p>
         </li>
         <li>
           <span class="num" aria-hidden="true">2</span>
-          <p>As small UAVs are proven, increase sizes so they can carry passengers and cargo safely and be piloted as simply as cars.</p>
+          <p>Then increase size so they can carry passengers and cargo and be piloted as simply as cars.</p>
         </li>
       </ol>
+      <blockquote class="hint">
+        <p>Autonomous cars are a good hint at the end goal of Flight Enabled: making travel less of a pain, so that people and things are easier to bring together. We are not building robotaxis. Self-driving cars show where this is going; flight is the same idea in the air, so people and cargo can meet without the trip being the hard part.</p>
+      </blockquote>
       <p class="involve">Enabling flight for everyone should involve everyone.</p>
     </div>
   </section>
@@ -408,25 +543,39 @@ layout: null
   <section id="companies">
     <div class="wrap">
       <p class="section-kicker">Companies</p>
-      <h2>Flight Enabled companies</h2>
+      <h2>Still Has Value and Similarize</h2>
       <div class="cards">
         <article class="card shv">
-          <span class="tag tag-green">Pays the way</span>
           <h3>Still Has Value</h3>
-          <p>Used goods. Free Salt Lake valley pickup, then we revive and sell pieces that still have value. The shop and Cybertruck fleet pay the way and prove useful machines.</p>
+          <p>A real shop: used goods, Salt Lake valley pickup, a Cybertruck that earns its keep. stillhasvalue.com</p>
           <div class="card-actions">
             <a class="btn btn-green" href="https://stillhasvalue.com">stillhasvalue.com</a>
           </div>
         </article>
         <article class="card sim">
-          <span class="tag tag-amber">Being rebuilt</span>
           <h3>Similarize</h3>
-          <p>A Flight Enabled company. An app so more people can work together on hard missions by finding how to say things so others can agree. Currently being rebuilt.</p>
+          <p>Wording so more people can work together. similarize.com</p>
           <div class="card-actions">
-            <a class="btn btn-amber" href="https://similarize.com">similarize.com</a>
+            <a class="btn btn-ghost" href="https://similarize.com">similarize.com</a>
           </div>
         </article>
       </div>
+    </div>
+  </section>
+
+  <section class="join" id="join">
+    <div class="wrap">
+      <p class="section-kicker">Want in</p>
+      <h2>If you can make, fly, or think — write us</h2>
+      <p class="lede">Not a careers page at a Series B. If you can weld, code, fly RC, find a field, or think, you can help close the gap between a skeleton airframe and machines people can trust.</p>
+      <ul>
+        <li>Weld</li>
+        <li>Code</li>
+        <li>Fly RC</li>
+        <li>Find a field</li>
+        <li>Think</li>
+      </ul>
+      <a class="btn btn-green" href="mailto:general@flightenabled.com">general@flightenabled.com</a>
     </div>
   </section>
 
@@ -437,7 +586,7 @@ layout: null
       <dl class="contact-grid">
         <div class="contact-item">
           <dt>Email</dt>
-          <dd>general at flightenabled dot com</dd>
+          <dd><a href="mailto:general@flightenabled.com">general@flightenabled.com</a></dd>
         </div>
         <div class="contact-item">
           <dt>Address</dt>
@@ -448,8 +597,8 @@ layout: null
           <dd><a href="tel:+18017479799">+1 (801) 747-9799</a></dd>
         </div>
         <div class="contact-item">
-          <dt>Office hours</dt>
-          <dd>Monday–Friday, 9:00am–5:00pm</dd>
+          <dt>Hours</dt>
+          <dd>Weekdays 9:00am–5:00pm</dd>
         </div>
       </dl>
     </div>
@@ -466,5 +615,8 @@ layout: null
       </div>
     </div>
   </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+  <script src="globe.js" defer></script>
 </body>
 </html>
