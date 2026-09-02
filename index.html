@@ -5,7 +5,10 @@ layout: null
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Flight Enabled — Bringing flight to everyone</title>
   <meta name="description" content="A shop in Murray, Utah — not an airline. Skeleton drone on the bench, hardware inbound, looking for a Salt Lake valley test site. Parent of Still Has Value and Similarize.">
   <link rel="canonical" href="https://www.flightenabled.com/">
@@ -77,14 +80,22 @@ layout: null
       --max: 72rem;
     }
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    html {
+      scroll-behavior: smooth;
+      min-height: 100%;
+      min-height: 100dvh;
+    }
     body {
       margin: 0;
+      min-height: 100%;
+      min-height: 100dvh;
       background: var(--bg);
       color: var(--ink);
       font-family: Outfit, "Segoe UI", system-ui, sans-serif;
       font-size: 1.05rem;
       line-height: 1.55;
+      padding-left: env(safe-area-inset-left, 0px);
+      padding-right: env(safe-area-inset-right, 0px);
     }
     img { max-width: 100%; height: auto; }
     a { color: var(--green-glow); }
@@ -108,6 +119,7 @@ layout: null
       position: absolute;
       top: 0; left: 0; right: 0;
       z-index: 30;
+      padding-top: env(safe-area-inset-top, 0px);
       background: linear-gradient(180deg, rgba(5,7,12,0.72), transparent);
     }
     .nav-inner {
@@ -150,7 +162,9 @@ layout: null
 
     .hero {
       position: relative;
+      min-height: 100vh;
       min-height: 100svh;
+      min-height: 100dvh;
       display: grid;
       align-items: end;
       overflow: hidden;
@@ -192,7 +206,7 @@ layout: null
     .hero-copy {
       position: relative;
       z-index: 2;
-      padding: 6.5rem 0 2.6rem;
+      padding: calc(6.5rem + env(safe-area-inset-top, 0px)) 0 calc(2.6rem + env(safe-area-inset-bottom, 0px));
       max-width: 38rem;
     }
     .kicker {
@@ -419,7 +433,7 @@ layout: null
 
     footer.site {
       border-top: 1px solid var(--line);
-      padding: 1.6rem 0 2rem;
+      padding: 1.6rem 0 calc(2rem + env(safe-area-inset-bottom, 0px));
       color: var(--muted);
       font-size: 0.9rem;
     }
@@ -461,10 +475,23 @@ layout: null
       user-select: text;
       touch-action: manipulation;
     }
-    @media (display-mode: standalone), (display-mode: fullscreen) {
+    @media (max-width: 719px) {
       input, textarea, select, [contenteditable], [contenteditable="true"] {
         font-size: 16px;
       }
+    }
+    @media (display-mode: standalone), (display-mode: fullscreen) {
+      html, body {
+        overscroll-behavior: none;
+        overscroll-behavior-y: none;
+      }
+      input, textarea, select, [contenteditable], [contenteditable="true"] {
+        font-size: 16px;
+      }
+    }
+    html.standalone, html.standalone body {
+      overscroll-behavior: none;
+      overscroll-behavior-y: none;
     }
   </style>
 </head>
@@ -634,21 +661,29 @@ layout: null
 
   <script>
     (function () {
+      if (window.navigator.standalone) document.documentElement.classList.add('standalone');
       var SEL = 'input, textarea, select, [contenteditable], [contenteditable="true"]';
       function fieldFrom(el) {
         if (!el) return null;
         if (el.nodeType !== 1) el = el.parentElement;
         if (!el) return null;
         if (el.matches && el.matches(SEL)) return el;
-        return el.closest ? el.closest(SEL) : null;
+        var field = el.closest ? el.closest(SEL) : null;
+        if (field) return field;
+        var label = el.closest ? el.closest('label') : null;
+        if (!label) return null;
+        if (label.control) return label.control;
+        var id = label.getAttribute('for');
+        if (id) return document.getElementById(id);
+        return label.querySelector(SEL);
       }
-      function onPointerUp(e) {
+      function onPointerDown(e) {
         var field = fieldFrom(e.target);
         if (!field || field.disabled) return;
         if (document.activeElement !== field) field.focus();
       }
-      document.addEventListener('touchend', onPointerUp, true);
-      document.addEventListener('mouseup', onPointerUp, true);
+      document.addEventListener('touchstart', onPointerDown, true);
+      document.addEventListener('mousedown', onPointerDown, true);
     })();
   </script>
 
