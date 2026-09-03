@@ -298,6 +298,32 @@ layout: null
       border-top: 1px solid var(--line);
       border-bottom: 1px solid var(--line);
     }
+    .stills { margin-top: 1.5rem; }
+    .still {
+      margin: 0 0 1rem;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .still img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    .still figcaption {
+      padding: 0.7rem 1rem 0.9rem;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+    .stills-row {
+      display: grid;
+      gap: 1rem;
+    }
+    @media (min-width: 720px) {
+      .stills-row { grid-template-columns: 1fr 1fr; }
+    }
+
     .now-grid {
       display: grid;
       gap: 1rem;
@@ -559,6 +585,16 @@ layout: null
         <span class="vs">The gap is the story</span>
         <p>The world is building passenger-class eVTOLs. Hardware is in storage — including the skeleton — because current space isn’t conducive to the bench work we’ve already done with large motors and props. If you can help with space, motors, or props, you’re invited.</p>
       </div>
+      <div class="stills">
+        <figure class="still">
+          <img src="img/shop-concept-day.png?v=20260903" alt="AI concept still of a Flight Enabled shop: skeleton airframe on a workbench in daylight" width="1536" height="1024">
+          <figcaption>AI concept still — the shop we’re aiming for once we have space. Skeleton on a bench. Not a photo of 618 W Winchester today. The badge on the frame is the generator mark.</figcaption>
+        </figure>
+        <figure class="still">
+          <img src="img/shop-concept-dusk.png?v=20260903" alt="AI concept still of a Flight Enabled shop at dusk with skeleton airframe on a bench" width="1536" height="1024">
+          <figcaption>AI concept still — same target shop, dusk. Hardware in storage today; this is not current workspace.</figcaption>
+        </figure>
+      </div>
     </div>
   </section>
 
@@ -568,6 +604,11 @@ layout: null
       <p class="section-kicker">Latest motors &amp; props</p>
       <h2>What the industry is actually certifying</h2>
       <p class="lede">We watch the motors and props the industry is actually certifying — not brochure peaks. Sourced September 2026. This is not Flight Enabled hardware in the air.</p>
+      <figure class="still">
+        <img src="img/shop-concept-motors.png?v=20260903" alt="AI concept still of U15-class motors and large carbon propellers on a workbench" width="1536" height="1024">
+        <figcaption>AI concept still — U15-class motors and 36–40 inch carbon props on a bench. Not a photo of today’s shop. Badge on the frame is the generator mark.</figcaption>
+      </figure>
+
       <ol class="mission-list">
         <li>
           <span class="num" aria-hidden="true">1</span>
