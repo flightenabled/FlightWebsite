@@ -417,6 +417,22 @@ layout: null
     article.sim { border-top: 3px solid var(--amber); }
     article.card h3 { margin: 0; font-family: Syne, sans-serif; font-size: 1.4rem; }
     article.card p { margin: 0; color: var(--muted); }
+    .card-logo {
+      display: inline-flex;
+      align-items: center;
+      align-self: flex-start;
+      text-decoration: none;
+      line-height: 0;
+    }
+    .card-logo img {
+      display: block;
+      max-height: 52px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      margin-bottom: 0.2rem;
+    }
+    article.sim .card-logo img { max-height: 48px; }
     .card-actions { margin-top: auto; padding-top: 0.7rem; }
 
     .join { background: var(--bg-2); border-top: 1px solid var(--line); }
@@ -678,6 +694,9 @@ layout: null
       <h2>Still Has Value and Similarize</h2>
       <div class="cards">
         <article class="card shv">
+          <a class="card-logo" href="https://stillhasvalue.com" aria-label="Still Has Value">
+            <img src="img/stillhasvalue-logo.png" alt="Still Has Value" width="1024" height="1024">
+          </a>
           <h3>Still Has Value</h3>
           <p>A working shop: used goods, Salt Lake Valley pickup, a Cybertruck that earns its keep.</p>
           <div class="card-actions">
@@ -685,9 +704,11 @@ layout: null
           </div>
         </article>
         <article class="card sim">
-          <h3>We help you say it better.</h3>
-          <p>Say what you mean — blunt, messy, or from your corner.</p>
-          <p>Clearer ways to keep your honest point, and where perspectives overlap or clash — without watering down the truth or forcing one opinion.</p>
+          <a class="card-logo" href="https://similarize.com" aria-label="Similarize">
+            <img src="img/similarize-mark.svg" alt="Similarize" width="48" height="48">
+          </a>
+          <h3>Similarize</h3>
+          <p>Rewrites what you mean so different perspectives can hear it — same honest point, clearer and more receivable.</p>
           <div class="card-actions">
             <a class="btn btn-ghost" href="https://similarize.com">Try Similarize</a>
           </div>
