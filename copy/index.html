@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Flight Enabled — Site copy revision</title>
+  <meta name="description" content="Flight Enabled revised site copy — Murray, Utah shop restarting after hibernation. Not an airline.">
+  <meta name="robots" content="noindex">
+  <link rel="canonical" href="https://www.flightenabled.com/copy/">
+  <link rel="icon" href="/icon.svg?v=20260901c" type="image/svg+xml">
+  <meta name="theme-color" content="#05070c">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #05070c;
+      --bg-2: #0a0f18;
+      --panel: #0e141d;
+      --ink: #e8eef2;
+      --muted: #93a0ae;
+      --line: rgba(232, 238, 242, 0.10);
+      --green: #15803d;
+      --green-glow: #34d399;
+      --amber: #d97706;
+      --amber-soft: #fbbf24;
+      --max: 72rem;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Outfit, "Segoe UI", system-ui, sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.55;
+    }
+    img { max-width: 100%; height: auto; display: block; }
+    a { color: var(--green-glow); }
+    a:hover { color: #fff; }
+    .wrap { width: min(var(--max), calc(100% - 2rem)); margin-inline: auto; }
+    header.nav {
+      position: sticky; top: 0; z-index: 30;
+      background: rgba(5,7,12,0.92);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(10px);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; min-height: 4rem;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 0.7rem;
+      text-decoration: none; color: var(--ink); font-weight: 600;
+    }
+    .brand img { width: 132px; height: auto; }
+    nav ul {
+      display: flex; gap: 0.15rem; list-style: none; margin: 0; padding: 0;
+      flex-wrap: wrap; justify-content: flex-end;
+    }
+    nav a {
+      color: var(--ink); text-decoration: none; font-size: 0.85rem;
+      font-weight: 500; padding: 0.35rem 0.6rem; border-radius: 999px;
+    }
+    nav a:hover { background: rgba(255,255,255,0.08); }
+    .hero {
+      position: relative;
+      padding: 3.5rem 0 3rem;
+      background:
+        radial-gradient(ellipse 80% 60% at 70% 20%, rgba(21,128,61,0.18), transparent 55%),
+        linear-gradient(180deg, #0a0f18, #05070c 70%);
+      border-bottom: 1px solid var(--line);
+    }
+    .kicker {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--amber-soft); margin: 0 0 0.85rem;
+    }
+    .kicker::before {
+      content: ""; width: 0.55rem; height: 0.55rem; border-radius: 50%;
+      background: var(--amber); box-shadow: 0 0 12px var(--amber);
+    }
+    .hero h1 {
+      font-family: Syne, Outfit, sans-serif; font-weight: 800;
+      font-size: clamp(2.2rem, 6.5vw, 4.2rem); line-height: 0.98;
+      letter-spacing: -0.03em; margin: 0 0 0.85rem; max-width: 18ch;
+    }
+    .shop-line {
+      font-size: clamp(1.05rem, 2.2vw, 1.35rem); font-weight: 600;
+      color: var(--green-glow); margin: 0 0 0.85rem;
+    }
+    .lede-hero { color: var(--muted); margin: 0 0 1.25rem; max-width: 38rem; }
+    .status {
+      margin: 0 0 1.4rem; max-width: 40rem; padding: 1.1rem 1.2rem;
+      border-radius: 14px; border: 1px solid var(--line);
+      background: linear-gradient(90deg, rgba(21,128,61,0.14), rgba(217,119,6,0.08));
+    }
+    .status strong {
+      display: block; font-family: Syne, sans-serif; color: var(--amber-soft);
+      letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.78rem;
+      margin-bottom: 0.4rem;
+    }
+    .status p { margin: 0; color: var(--ink); }
+    .globe-caption {
+      font-size: 0.82rem; color: var(--muted);
+      border-left: 2px solid var(--green); padding-left: 0.75rem;
+      margin: 0 0 1.4rem; max-width: 32rem;
+    }
+    .actions { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      text-decoration: none; border-radius: 999px; padding: 0.72rem 1.15rem;
+      font-weight: 600; font-size: 0.92rem;
+    }
+    .btn-green { background: var(--green); color: #fff; }
+    .btn-green:hover { background: #166534; color: #fff; }
+    .btn-ghost { border: 1px solid rgba(255,255,255,0.22); color: var(--ink); }
+    .btn-ghost:hover { background: rgba(255,255,255,0.08); color: #fff; }
+    section { padding: 4rem 0; }
+    .section-kicker {
+      text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.74rem;
+      font-weight: 700; color: var(--green-glow); margin: 0 0 0.45rem;
+    }
+    h2 {
+      font-family: Syne, Outfit, sans-serif; font-weight: 700;
+      font-size: clamp(1.55rem, 3vw, 2.15rem); letter-spacing: -0.02em;
+      margin: 0 0 1.25rem; line-height: 1.15;
+    }
+    .lede { color: var(--muted); margin: 0 0 1.4rem; max-width: 40rem; }
+    .now { background: var(--bg-2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .now-grid { display: grid; gap: 1rem; }
+    .fact {
+      background: var(--panel); border: 1px solid var(--line);
+      border-radius: 14px; padding: 1.15rem 1.2rem;
+    }
+    .fact strong { display: block; font-family: Syne, sans-serif; margin-bottom: 0.35rem; }
+    .fact p { margin: 0; color: var(--muted); }
+    .fact p a { color: var(--green-glow); }
+    .contrast {
+      margin-top: 1.5rem; padding: 1.25rem 1.3rem; border-radius: 14px;
+      background: linear-gradient(90deg, rgba(21,128,61,0.12), rgba(217,119,6,0.10));
+      border: 1px solid var(--line);
+    }
+    .contrast p { margin: 0; }
+    .contrast .vs {
+      color: var(--amber-soft); font-weight: 700; letter-spacing: 0.08em;
+      font-size: 0.75rem; text-transform: uppercase; display: block; margin-bottom: 0.4rem;
+    }
+    .stills { margin-top: 1.5rem; display: grid; gap: 1rem; }
+    @media (min-width: 720px) { .stills { grid-template-columns: 1fr 1fr; } }
+    .still {
+      margin: 0; background: var(--panel); border: 1px solid var(--line);
+      border-radius: 14px; overflow: hidden;
+    }
+    .still figcaption { padding: 0.7rem 1rem 0.9rem; color: var(--muted); font-size: 0.88rem; }
+    .legend {
+      margin-top: 0.85rem; font-size: 0.82rem; color: var(--muted);
+      border-left: 2px solid var(--amber); padding-left: 0.75rem;
+    }
+    ol.mission-list {
+      list-style: none; margin: 0 0 1.5rem; padding: 0; display: grid; gap: 0.9rem;
+    }
+    ol.mission-list li {
+      display: grid; grid-template-columns: auto 1fr; gap: 1rem; align-items: start;
+    }
+    .num {
+      width: 2.1rem; height: 2.1rem; border-radius: 999px; display: grid;
+      place-items: center; font-weight: 700; font-size: 0.9rem; color: #fff;
+      background: var(--green); flex-shrink: 0;
+    }
+    ol.mission-list li:nth-child(2) .num { background: var(--amber); color: #111; }
+    ol.mission-list p { margin: 0.15rem 0 0; }
+    .aim { background: var(--bg); }
+    .hint {
+      margin: 0 0 1.2rem; padding: 1.2rem 1.3rem; border-left: 3px solid var(--amber);
+      background: rgba(217, 119, 6, 0.08); border-radius: 0 12px 12px 0; max-width: 42rem;
+    }
+    .hint p { margin: 0; }
+    .involve { font-family: Syne, sans-serif; font-size: 1.15rem; margin: 0; color: var(--ink); }
+    .cards { display: grid; gap: 1.15rem; }
+    article.card {
+      background: var(--panel); border: 1px solid var(--line); border-radius: 16px;
+      padding: 1.4rem; display: flex; flex-direction: column; gap: 0.55rem;
+    }
+    article.shv { border-top: 3px solid var(--green); }
+    article.sim { border-top: 3px solid var(--amber); }
+    article.card h3 { margin: 0; font-family: Syne, sans-serif; font-size: 1.4rem; }
+    article.card p { margin: 0; color: var(--muted); }
+    .card-actions { margin-top: auto; padding-top: 0.7rem; }
+    .join { background: var(--bg-2); border-top: 1px solid var(--line); }
+    .join ul {
+      margin: 0 0 1.2rem; padding: 0; list-style: none;
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+    }
+    .join li {
+      border: 1px solid var(--line); border-radius: 999px; padding: 0.4rem 0.8rem;
+      color: var(--ink); font-weight: 500; font-size: 0.92rem;
+    }
+    .contact-grid { display: grid; gap: 0.85rem; }
+    .contact-item {
+      background: var(--panel); border: 1px solid var(--line);
+      border-radius: 12px; padding: 1rem 1.1rem;
+    }
+    .contact-item dt {
+      font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--muted); font-weight: 700;
+    }
+    .contact-item dd { margin: 0.25rem 0 0; font-weight: 600; }
+    .contact-item a { text-decoration: none; color: inherit; }
+    .contact-item a:hover { color: var(--green-glow); }
+    footer.site {
+      border-top: 1px solid var(--line);
+      padding: 1.6rem 0 2rem; color: var(--muted); font-size: 0.9rem;
+    }
+    footer.site .wrap {
+      display: flex; flex-wrap: wrap; gap: 1rem;
+      justify-content: space-between; align-items: center;
+    }
+    footer.site a { color: var(--ink); text-decoration: none; }
+    footer.site a:hover { color: #fff; }
+    .note {
+      font-size: 0.82rem; color: var(--muted); margin: 0 0 1rem;
+      padding: 0.65rem 0.85rem; border: 1px dashed var(--line); border-radius: 10px;
+      max-width: 40rem;
+    }
+    @media (min-width: 720px) {
+      .now-grid { grid-template-columns: repeat(3, 1fr); }
+      .cards { grid-template-columns: 1fr 1fr; }
+      .contact-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (min-width: 960px) {
+      .contact-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+    @media (max-width: 719px) {
+      nav a { font-size: 0.78rem; padding: 0.3rem 0.45rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="/">
+        <img src="/img/flightLogo600grad.png" width="150" height="48" alt="Flight Enabled">
+        <span>Flight Enabled</span>
+      </a>
+      <nav aria-label="Primary">
+        <ul>
+          <li><a href="#now">Now</a></li>
+          <li><a href="#industry">Industry</a></li>
+          <li><a href="#aim">Aim</a></li>
+          <li><a href="#companies">Companies</a></li>
+          <li><a href="#join">Want in</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero" id="top">
+    <div class="wrap">
+      <p class="note">Revised site copy preview · 2026-09-22 · <a href="/">Live homepage</a></p>
+      <p class="kicker">Murray, Utah · starting up again</p>
+      <h1>Bringing flight to everyone</h1>
+      <p class="shop-line">This is a shop, not an airline.</p>
+      <p class="lede-hero">Flight Enabled is rebuilding toward flight that people can trust — safe, quiet, and practical enough that travel stops being the hard part of bringing people and goods together.</p>
+      <aside class="status" id="status">
+        <strong>Status</strong>
+        <p>Flight Enabled is a Murray, Utah shop restarting after hibernation. Hardware — including our skeleton airframe — is in storage while we secure suitable workspace in the Salt Lake Valley. We have previously run large motors and propellers on the bench; that work is paused until space allows. We do not currently offer passenger flights, deliveries, certified aircraft, aircraft sales, or a flying fleet.</p>
+      </aside>
+      <p class="globe-caption">The world’s passenger-class eVTOL moment, 2026 — industry state of the art for context.</p>
+      <div class="actions">
+        <a class="btn btn-green" href="#join">Want in</a>
+        <a class="btn btn-ghost" href="#now">Right now</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="now" id="now">
+    <div class="wrap">
+      <p class="section-kicker">Right now</p>
+      <h2>Right now</h2>
+      <div class="now-grid">
+        <div class="fact">
+          <strong>Status</strong>
+          <p>Flight Enabled is a Murray, Utah shop restarting after hibernation. Hardware — including our skeleton airframe — is in storage while we secure suitable workspace in the Salt Lake Valley. We have previously run large motors and propellers on the bench; that work is paused until space allows. We do not currently offer passenger flights, deliveries, certified aircraft, aircraft sales, or a flying fleet.</p>
+        </div>
+        <div class="fact">
+          <strong>Hardware on hand</strong>
+          <p>Several large octocopters, many hexacopters, a dodecacopter, a Skydio, a DJI under the FAA 250&nbsp;g small-UAS threshold, and complementary equipment.</p>
+        </div>
+        <div class="fact">
+          <strong>Latest motors &amp; props</strong>
+          <p>A look at where the industry actually stands in 2026 — certified kilowatt-class machines, shop-floor outrunners, and what remains difficult. <a href="#industry">Read it.</a></p>
+        </div>
+      </div>
+      <div class="contrast">
+        <span class="vs">The gap is the story</span>
+        <p>The world is building passenger-class eVTOLs. Our hardware is in storage — including the skeleton — until we have space to resume the bench work we have already demonstrated with large motors and props. If you can help with space, motors, or props, you are invited.</p>
+      </div>
+      <div class="stills">
+        <figure class="still">
+          <img src="/img/shop-concept-day.png?v=20260903" alt="Concept still of a Flight Enabled shop: skeleton airframe on a workbench in daylight" width="1536" height="1024">
+          <figcaption>Concept stills of the shop we are aiming for once we have space — skeleton on a bench. Not photographs of 618 W Winchester today. Frame badges are generator marks.</figcaption>
+        </figure>
+        <figure class="still">
+          <img src="/img/shop-concept-dusk.png?v=20260903" alt="Concept still of a Flight Enabled shop at dusk with skeleton airframe on a bench" width="1536" height="1024">
+          <figcaption>Same target shop at dusk.</figcaption>
+        </figure>
+      </div>
+      <p class="legend">Concept imagery; not photographs of our current workspace.</p>
+    </div>
+  </section>
+
+  <section class="now" id="industry">
+    <div class="wrap">
+      <p class="section-kicker">Latest motors &amp; props</p>
+      <h2>What the industry is actually certifying</h2>
+      <p class="lede">We follow the motors and propellers the industry is actually certifying — not brochure peaks. Figures sourced September 2026.</p>
+      <figure class="still" style="margin-bottom:1.4rem">
+        <img src="/img/shop-concept-motors.png?v=20260903" alt="Concept still of U15-class motors and large carbon propellers on a workbench" width="1536" height="1024">
+        <figcaption>Concept imagery — U15-class motors and 36–40 inch carbon props on a bench. Frame badges are generator marks.</figcaption>
+      </figure>
+      <ol class="mission-list">
+        <li>
+          <span class="num" aria-hidden="true">1</span>
+          <p>Published aviation motors that are certified or near certification sit roughly 4–6 kW/kg as manufacturers report them. Safran’s <a href="https://www.safran-group.com/pressroom/safran-obtains-easa-certification-first-electric-motor-new-air-mobility-2025-02-03">ENGINeUS 100</a> (125 kW, about 5 kW/kg, air-cooled) is the unit EASA has certified for new air mobility.</p>
+        </li>
+        <li>
+          <span class="num" aria-hidden="true">2</span>
+          <p><a href="https://beta.team/motor">BETA</a> publishes an H500B pusher at 640 kW maximum / 300 kW continuous, 75 kg with inverters (6.0 / 4.2 kW/kg), and a V600A lift motor at 1,500 rpm (4.2 kW/kg continuous). <a href="https://www.magnix.aero/electric-engines">magniX</a> operates in the same 165–515 kW continuous class on test airframes.</p>
+        </li>
+        <li>
+          <span class="num" aria-hidden="true">3</span>
+          <p><a href="https://verticalmag.com/press-releases/hartzell-and-beta-technologies-achieve-faa-certification-for-first-part-35-electric-propeller/">Hartzell and BETA</a> received the first U.S. Part 35 propeller type certificate written around an electric engine (21 July 2025): five-blade carbon, ground-adjustable fixed pitch. Diameter is not stated in the certification announcements, so we do not invent one.</p>
+        </li>
+        <li>
+          <span class="num" aria-hidden="true">4</span>
+          <p>As of 2 September 2026, there is no U.S. passenger eVTOL type certificate. Joby and Archer have FAA §21.17(b) special-class criteria, not a type certificate. EHang’s CAAC approvals are not an FAA certificate. Passenger layouts remain tilt-six or lift-plus-pusher; community quietness is still being measured, not solved.</p>
+        </li>
+        <li>
+          <span class="num" aria-hidden="true">5</span>
+          <p>Industrial heavy-lift hardware still centers on large outrunners and 36–40 inch carbon propellers — <a href="https://store.tmotor.com/product/u15-v2-motor-u-power-kv80.html">T-MOTOR U15-class</a> and similar. That is the family of hardware we know from the shop floor, held in storage while we secure workspace. It is not a Part 33 engine.</p>
+        </li>
+        <li>
+          <span class="num" aria-hidden="true">6</span>
+          <p>When benches are active again, 4–6 kW/kg certified-class machines and electric-engine propellers are the class we study — heat, noise, and certification realities, not brochure claims.</p>
+        </li>
+        <li>
+          <span class="num" aria-hidden="true">7</span>
+          <p>Quiet propellers are a research thread here. Our archive includes propeller CAD and a 2018 plan for quieter, more efficient blades. We conducted vibration testing with <a href="https://vibrationtechnology.net/">Vibration Technology (Vibetech)</a> in Pleasant Grove — measuring and correcting propeller and rotor vibration. NASA and passenger eVTOL programs are likewise still measuring noise. Quiet props will be part of what we study when the bench is running again; we do not hold a certified quiet propeller.</p>
+        </li>
+      </ol>
+      <div class="contrast">
+        <span class="vs">Still hard</span>
+        <p>Peak power is not continuous power. Dry mass is not installed mass. High voltage at altitude. Community noise. FAA §21.17(b) and EASA SC-VTOL are not one standard. Batteries still limit range. Catalog density claims at 20,000 rpm are not drop-in replacements for a large direct-drive propeller.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="aim" id="aim">
+    <div class="wrap">
+      <p class="section-kicker">The aim</p>
+      <h2>Where this is going</h2>
+      <ol class="mission-list">
+        <li>
+          <span class="num" aria-hidden="true">1</span>
+          <p>Improve small UAVs iteratively until they can be trusted as safe, quiet, capable package-delivery vehicles.</p>
+        </li>
+        <li>
+          <span class="num" aria-hidden="true">2</span>
+          <p>Then increase scale so they can carry passengers and cargo, and be piloted as simply as cars.</p>
+        </li>
+      </ol>
+      <blockquote class="hint">
+        <p>Autonomous cars hint at the destination: travel that is less of a burden, so people and things are easier to bring together. We are not building robotaxis. Self-driving cars show the direction; flight is the same idea in the air — so meeting up does not have to mean the trip is the hard part.</p>
+      </blockquote>
+      <p class="involve">Enabling flight for everyone should involve everyone.</p>
+    </div>
+  </section>
+
+  <section id="companies">
+    <div class="wrap">
+      <p class="section-kicker">Companies</p>
+      <h2>Still Has Value and Similarize</h2>
+      <div class="cards">
+        <article class="card shv">
+          <h3>Still Has Value</h3>
+          <p>A working shop: used goods, Salt Lake Valley pickup, a Cybertruck that earns its keep.</p>
+          <div class="card-actions">
+            <a class="btn btn-green" href="https://stillhasvalue.com">stillhasvalue.com</a>
+          </div>
+        </article>
+        <article class="card sim">
+          <h3>Similarize</h3>
+          <p>Wording so more people can work together.</p>
+          <div class="card-actions">
+            <a class="btn btn-ghost" href="https://similarize.com">similarize.com</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="join" id="join">
+    <div class="wrap">
+      <p class="section-kicker">Want in</p>
+      <h2>If you can make, fly, or think — write us</h2>
+      <p class="lede">This is not a Series B careers page. If you can weld, code, fly RC, find a field, research motors and props, or think clearly about the problem, you can help close the gap between hardware on the shelf and machines people can trust.</p>
+      <ul>
+        <li>Weld</li>
+        <li>Code</li>
+        <li>Fly RC</li>
+        <li>Find a field</li>
+        <li>Think</li>
+      </ul>
+      <a class="btn btn-green" href="mailto:general@flightenabled.com">general@flightenabled.com</a>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <p class="section-kicker">Murray, Utah</p>
+      <h2>Contact</h2>
+      <dl class="contact-grid">
+        <div class="contact-item">
+          <dt>Email</dt>
+          <dd><a href="mailto:general@flightenabled.com">general@flightenabled.com</a></dd>
+        </div>
+        <div class="contact-item">
+          <dt>Address</dt>
+          <dd><a href="https://maps.google.com/?q=618+W+Winchester+St,+Murray,+UT+84123">618 W Winchester St, Murray, UT 84123</a></dd>
+        </div>
+        <div class="contact-item">
+          <dt>Phone</dt>
+          <dd><a href="tel:+18017479799">+1 (801) 747-9799</a></dd>
+        </div>
+        <div class="contact-item">
+          <dt>Hours</dt>
+          <dd>Weekdays 9:00 a.m.–5:00 p.m.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <footer class="site">
+    <div class="wrap">
+      <p>© 2026 Flight Enabled · copy revision preview</p>
+      <div class="social">
+        <a href="/">Homepage</a>
+        <a href="https://github.com/flightenabled">GitHub</a>
+        <a href="https://x.com/FlightEnabled">X</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
