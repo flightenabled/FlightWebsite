@@ -12,16 +12,16 @@ layout: null
   <title>Flight Enabled — Bringing flight to everyone</title>
   <meta name="description" content="Flight Enabled is a Murray, Utah shop — not an airline — that has been hibernating for years; considering a restart late this year, but still hibernating. Recent AI advances — Claude, Grok, ChatGPT, Gemini — may help make a restart possible. Hardware in storage while we secure Salt Lake Valley workspace. Parent of Still Has Value and Similarize.">
   <link rel="canonical" href="https://www.flightenabled.com/">
-  <link rel="icon" href="icon.svg?v=20260901c" type="image/svg+xml">
-  <link rel="icon" href="icon-32.png?v=20260901c" type="image/png" sizes="32x32">
-  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=20260901c">
-  <link rel="manifest" href="manifest.webmanifest?v=20260901c">
+  <link rel="icon" href="icon.svg?v=20260924v8" type="image/svg+xml">
+  <link rel="icon" href="icon-32.png?v=20260924v8" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=20260924v8">
+  <link rel="manifest" href="manifest.webmanifest?v=20260924v8">
   <meta name="theme-color" content="#05070c">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.flightenabled.com/">
   <meta property="og:title" content="Flight Enabled — Bringing flight to everyone">
   <meta property="og:description" content="A Murray, Utah shop that has been hibernating for years; considering a restart late this year, but still hibernating. Recent AI advances — Claude, Grok, ChatGPT, Gemini — may help make a restart possible. Hardware in storage. Looking for Salt Lake Valley workspace. Not an airline.">
-  <meta property="og:image" content="https://www.flightenabled.com/img/flightLogo600grad.png">
+  <meta property="og:image" content="https://www.flightenabled.com/img/fe-og-v8.png">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Flight Enabled">
   <meta name="twitter:description" content="A shop, not an airline. Has been hibernating for years; considering a restart late this year, but still hibernating. Recent AI advances — Claude, Grok, ChatGPT, Gemini — may help make a restart possible. Looking for Utah workspace. Bringing flight to everyone.">
@@ -34,7 +34,7 @@ layout: null
     "@type": "LocalBusiness",
     "name": "Flight Enabled",
     "url": "https://www.flightenabled.com",
-    "image": "https://www.flightenabled.com/img/flightLogo600grad.png",
+    "image": "https://www.flightenabled.com/img/fe-og-v8.png",
     "email": "general@flightenabled.com",
     "telephone": "+1-801-747-9799",
     "address": {
@@ -137,8 +137,8 @@ layout: null
       color: var(--ink);
       font-weight: 600;
     }
-    .brand img { width: 148px; height: auto; }
-    .brand span { display: none; }
+    .brand img { width: 40px; height: auto; }
+    .brand span { display: inline; }
     nav ul {
       display: flex;
       gap: 0.15rem;
@@ -191,8 +191,9 @@ layout: null
       position: absolute;
       right: 8%;
       top: 18%;
-      width: min(280px, 50vw);
-      opacity: 0.85;
+      width: min(120px, 28vw);
+      height: auto;
+      opacity: 0.9;
     }
     .hero-scrim {
       position: absolute;
@@ -520,7 +521,6 @@ layout: null
     .social { display: flex; gap: 1rem; flex-wrap: wrap; }
 
     @media (min-width: 720px) {
-      .brand span { display: inline; }
       .now-grid { grid-template-columns: repeat(3, 1fr); }
       .cards { grid-template-columns: 1fr 1fr; }
       .contact-grid { grid-template-columns: 1fr 1fr; }
@@ -571,7 +571,7 @@ layout: null
   <header class="nav">
     <div class="wrap nav-inner">
       <a class="brand" href="/">
-        <img src="img/flightLogo600grad.png" width="150" height="48" alt="Flight Enabled">
+        <img src="img/fe-mark-v8.svg" width="40" height="40" alt="">
         <span>Flight Enabled</span>
       </a>
       <nav aria-label="Primary">
@@ -590,7 +590,7 @@ layout: null
     <div id="globe-stage" aria-hidden="true">
       <canvas id="globe"></canvas>
       <div id="globe-fallback" hidden>
-        <img class="fallback-logo" src="img/flightLogo600grad.png" width="280" height="90" alt="">
+        <img class="fallback-logo" src="img/fe-mark-v8.svg" width="120" height="120" alt="">
       </div>
     </div>
     <div class="hero-scrim" aria-hidden="true"></div>
