@@ -201,6 +201,15 @@
       height: auto;
       object-fit: contain;
     }
+    .card-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      align-self: flex-start;
+    }
+    .card-brand .card-logo { align-self: center; }
+    .card-brand h3 { margin: 0; }
+    article.sim .card-logo img { max-height: 80px; }
     .card-actions { margin-top: auto; padding-top: 0.7rem; }
     .join { background: var(--bg-2); border-top: 1px solid var(--line); }
     .join ul {
@@ -402,17 +411,18 @@
           <a class="card-logo" href="https://stillhasvalue.com" aria-label="Still Has Value">
             <img src="/img/stillhasvalue-mark.png" alt="Still Has Value" width="358" height="240">
           </a>
-          <h3>Still Has Value</h3>
           <p>A working shop: used goods, Salt Lake Valley pickup, a Cybertruck that earns its keep.</p>
           <div class="card-actions">
             <a class="btn btn-green" href="https://stillhasvalue.com">stillhasvalue.com</a>
           </div>
         </article>
         <article class="card sim">
-          <a class="card-logo" href="https://similarize.com" aria-label="Similarize">
-            <img src="/img/similarize-imi.png" alt="Similarize" width="80" height="80">
-          </a>
-          <h3>Similarize</h3>
+          <div class="card-brand">
+            <a class="card-logo" href="https://similarize.com" aria-label="Similarize">
+              <img src="/img/similarize-imi.png" alt="" width="80" height="80">
+            </a>
+            <h3>Similarize</h3>
+          </div>
           <p>Rewrites what you mean so different perspectives can hear it — same honest point, clearer and more receivable.</p>
           <div class="card-actions">
             <a class="btn btn-ghost" href="https://similarize.com">Try Similarize</a>
