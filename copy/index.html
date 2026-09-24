@@ -204,12 +204,25 @@
     .card-brand {
       display: flex;
       align-items: center;
-      gap: 0.85rem;
+      gap: 1.15rem;
       align-self: flex-start;
     }
     .card-brand .card-logo { align-self: center; }
-    .card-brand h3 { margin: 0; }
-    article.sim .card-logo img { max-height: 80px; }
+    .card-brand h3 {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      line-height: 1.1;
+    }
+    article.sim .card-logo img {
+      max-height: 64px;
+      width: 64px;
+      height: 64px;
+    }
+    article.sim .card-brand {
+      margin-bottom: 0.15rem;
+    }
     .card-actions { margin-top: auto; padding-top: 0.7rem; }
     .join { background: var(--bg-2); border-top: 1px solid var(--line); }
     .join ul {
@@ -419,7 +432,7 @@
         <article class="card sim">
           <div class="card-brand">
             <a class="card-logo" href="https://similarize.com" aria-label="Similarize">
-              <img src="/img/similarize-imi.png" alt="" width="80" height="80">
+              <img src="/img/similarize-imi.png" alt="" width="64" height="64">
             </a>
             <h3>Similarize</h3>
           </div>
