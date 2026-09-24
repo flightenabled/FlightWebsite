@@ -59,7 +59,7 @@
 
   var R = 1;
   var mobile = isMobile();
-  var segs = mobile ? 32 : 64;
+  var segs = mobile ? 48 : 96;
 
   function latLonToVec3(lat, lon, radius) {
     var phi = (90 - lat) * Math.PI / 180;
@@ -71,47 +71,80 @@
     );
   }
 
-  function makeEarthTexture() {
+  function makeEarthTextures() {
     var w = mobile ? 1024 : 1536;
     var h = w / 2;
     var c = document.createElement("canvas");
     c.width = w;
     c.height = h;
     var ctx = c.getContext("2d");
+
+    // Deep ocean base — green-tinted so the sphere reads as a planet
     var g = ctx.createLinearGradient(0, 0, 0, h);
-    g.addColorStop(0, "#071018");
-    g.addColorStop(0.5, "#05080f");
-    g.addColorStop(1, "#071018");
+    g.addColorStop(0, "#041210");
+    g.addColorStop(0.18, "#062a22");
+    g.addColorStop(0.5, "#08382c");
+    g.addColorStop(0.82, "#062a22");
+    g.addColorStop(1, "#041210");
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, w, h);
+
+    // Subtle ocean depth bands (latitude shading helps the sphere read)
+    ctx.globalAlpha = 0.18;
+    for (var band = 0; band < 8; band++) {
+      var by = (band / 8) * h;
+      ctx.fillStyle = band % 2 === 0 ? "#0a4a38" : "#052820";
+      ctx.fillRect(0, by, w, h / 8);
+    }
+    ctx.globalAlpha = 1;
 
     function lonLatToXY(lon, lat) {
       return [(lon + 180) / 360 * w, (90 - lat) / 180 * h];
     }
 
-    // Soft land masses — dark, not a political map.
+    // Land masses — brighter green so continents are obvious
     var lands = [
-      { lon: -100, lat: 45, rx: 0.16, ry: 0.14, color: "#0c1c18" },
-      { lon: -100, lat: 55, rx: 0.18, ry: 0.10, color: "#0b1916" },
-      { lon: -62, lat: -10, rx: 0.09, ry: 0.18, color: "#0c1a16" },
-      { lon: 15, lat: 10, rx: 0.12, ry: 0.18, color: "#0d1c14" },
-      { lon: 20, lat: 50, rx: 0.10, ry: 0.08, color: "#0c1a18" },
-      { lon: 90, lat: 45, rx: 0.22, ry: 0.14, color: "#0b1915" },
-      { lon: 105, lat: 25, rx: 0.16, ry: 0.12, color: "#0c1b16" },
-      { lon: 135, lat: -25, rx: 0.08, ry: 0.07, color: "#0c1a16" },
-      { lon: 25, lat: -25, rx: 0.06, ry: 0.08, color: "#0c1a14" },
-      { lon: -45, lat: 70, rx: 0.10, ry: 0.06, color: "#0a1618" }
+      { lon: -100, lat: 45, rx: 0.17, ry: 0.15, color: "#248a52" },
+      { lon: -100, lat: 55, rx: 0.19, ry: 0.11, color: "#1f7a48" },
+      { lon: -62, lat: -10, rx: 0.10, ry: 0.19, color: "#269456" },
+      { lon: 15, lat: 10, rx: 0.13, ry: 0.19, color: "#228850" },
+      { lon: 20, lat: 50, rx: 0.11, ry: 0.09, color: "#1e7644" },
+      { lon: 90, lat: 45, rx: 0.23, ry: 0.15, color: "#1c7342" },
+      { lon: 105, lat: 25, rx: 0.17, ry: 0.13, color: "#21864e" },
+      { lon: 135, lat: -25, rx: 0.09, ry: 0.08, color: "#249052" },
+      { lon: 25, lat: -25, rx: 0.07, ry: 0.09, color: "#20824c" },
+      { lon: -45, lat: 70, rx: 0.11, ry: 0.07, color: "#1a6840" },
+      { lon: -70, lat: -40, rx: 0.05, ry: 0.12, color: "#1e7846" },
+      { lon: 38, lat: -5, rx: 0.05, ry: 0.06, color: "#248c50" }
     ];
     lands.forEach(function (L) {
       var p = lonLatToXY(L.lon, L.lat);
-      ctx.fillStyle = L.color;
+      // Soft outer glow for continent edges
+      var rg = ctx.createRadialGradient(p[0], p[1], 0, p[0], p[1], L.rx * w);
+      rg.addColorStop(0, L.color);
+      rg.addColorStop(0.55, L.color);
+      rg.addColorStop(1, "rgba(8, 40, 28, 0)");
+      ctx.fillStyle = rg;
       ctx.beginPath();
       ctx.ellipse(p[0], p[1], L.rx * w, L.ry * h, 0, 0, Math.PI * 2);
       ctx.fill();
+      // Core fill for solid land read
+      ctx.fillStyle = L.color;
+      ctx.beginPath();
+      ctx.ellipse(p[0], p[1], L.rx * w * 0.72, L.ry * h * 0.72, 0, 0, Math.PI * 2);
+      ctx.fill();
     });
 
-    // Faint lat/lon grid
-    ctx.strokeStyle = "rgba(80, 140, 110, 0.12)";
+    // Ice caps — pale mint so poles read as globe features
+    ctx.fillStyle = "rgba(180, 220, 200, 0.35)";
+    ctx.fillRect(0, 0, w, h * 0.06);
+    ctx.fillRect(0, h * 0.94, w, h * 0.06);
+    ctx.fillStyle = "rgba(160, 210, 190, 0.22)";
+    ctx.fillRect(0, h * 0.06, w, h * 0.04);
+    ctx.fillRect(0, h * 0.90, w, h * 0.04);
+
+    // Lat/lon grid — stronger so curvature is obvious
+    ctx.strokeStyle = "rgba(110, 200, 160, 0.22)";
     ctx.lineWidth = 1;
     var i;
     for (i = 1; i < 12; i++) {
@@ -121,7 +154,7 @@
       ctx.lineTo(w, y);
       ctx.stroke();
     }
-    ctx.strokeStyle = "rgba(80, 140, 110, 0.10)";
+    ctx.strokeStyle = "rgba(110, 200, 160, 0.16)";
     for (i = 1; i < 24; i++) {
       var x = (i / 24) * w;
       ctx.beginPath();
@@ -129,42 +162,98 @@
       ctx.lineTo(x, h);
       ctx.stroke();
     }
+    // Equator + prime meridian emphasis
+    ctx.strokeStyle = "rgba(150, 230, 190, 0.28)";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(0, h / 2);
+    ctx.lineTo(w, h / 2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(w / 2, 0);
+    ctx.lineTo(w / 2, h);
+    ctx.stroke();
 
-    // Speckle / city-light noise on land bands
+    // City-light speckles on land
     var img = ctx.getImageData(0, 0, w, h);
     var d = img.data;
-    var n = mobile ? 4000 : 9000;
+    var n = mobile ? 5000 : 11000;
     for (i = 0; i < n; i++) {
       var px = (Math.random() * w) | 0;
       var py = (Math.random() * h) | 0;
       var idx = (py * w + px) * 4;
-      if (d[idx + 1] > 12) {
+      if (d[idx + 1] > 55) {
         var a = Math.random();
-        if (a > 0.55) {
-          d[idx] = 180 + (Math.random() * 50) | 0;
-          d[idx + 1] = 160 + (Math.random() * 40) | 0;
-          d[idx + 2] = 80 + (Math.random() * 40) | 0;
+        if (a > 0.5) {
+          d[idx] = 200 + (Math.random() * 40) | 0;
+          d[idx + 1] = 180 + (Math.random() * 50) | 0;
+          d[idx + 2] = 90 + (Math.random() * 40) | 0;
           d[idx + 3] = 255;
         }
       }
     }
     ctx.putImageData(img, 0, 0);
 
-    var tex = new THREE.CanvasTexture(c);
-    tex.encoding = THREE.sRGBEncoding;
-    tex.anisotropy = 4;
-    tex.wrapS = THREE.ClampToEdgeWrapping;
-    tex.wrapT = THREE.ClampToEdgeWrapping;
-    return tex;
+    var colorTex = new THREE.CanvasTexture(c);
+    colorTex.encoding = THREE.sRGBEncoding;
+    colorTex.anisotropy = 4;
+    colorTex.wrapS = THREE.ClampToEdgeWrapping;
+    colorTex.wrapT = THREE.ClampToEdgeWrapping;
+
+    // Specular map: oceans shiny, land matte
+    var sc = document.createElement("canvas");
+    sc.width = w;
+    sc.height = h;
+    var sctx = sc.getContext("2d");
+    sctx.fillStyle = "#888888";
+    sctx.fillRect(0, 0, w, h);
+    lands.forEach(function (L) {
+      var p = lonLatToXY(L.lon, L.lat);
+      sctx.fillStyle = "#111111";
+      sctx.beginPath();
+      sctx.ellipse(p[0], p[1], L.rx * w * 0.85, L.ry * h * 0.85, 0, 0, Math.PI * 2);
+      sctx.fill();
+    });
+    // Ice caps less specular
+    sctx.fillStyle = "#333333";
+    sctx.fillRect(0, 0, w, h * 0.08);
+    sctx.fillRect(0, h * 0.92, w, h * 0.08);
+    var specTex = new THREE.CanvasTexture(sc);
+    specTex.wrapS = THREE.ClampToEdgeWrapping;
+    specTex.wrapT = THREE.ClampToEdgeWrapping;
+
+    // Bump from land silhouettes
+    var bc = document.createElement("canvas");
+    bc.width = w;
+    bc.height = h;
+    var bctx = bc.getContext("2d");
+    bctx.fillStyle = "#404040";
+    bctx.fillRect(0, 0, w, h);
+    lands.forEach(function (L) {
+      var p = lonLatToXY(L.lon, L.lat);
+      bctx.fillStyle = "#a0a0a0";
+      bctx.beginPath();
+      bctx.ellipse(p[0], p[1], L.rx * w * 0.8, L.ry * h * 0.8, 0, 0, Math.PI * 2);
+      bctx.fill();
+    });
+    var bumpTex = new THREE.CanvasTexture(bc);
+    bumpTex.wrapS = THREE.ClampToEdgeWrapping;
+    bumpTex.wrapT = THREE.ClampToEdgeWrapping;
+
+    return { color: colorTex, specular: specTex, bump: bumpTex };
   }
 
+  var tex = makeEarthTextures();
   var earthMat = new THREE.MeshPhongMaterial({
-    map: makeEarthTexture(),
+    map: tex.color,
+    specularMap: tex.specular,
+    bumpMap: tex.bump,
+    bumpScale: 0.035,
     color: 0xffffff,
-    specular: 0x1a2a22,
-    shininess: 8,
-    emissive: 0x07140f,
-    emissiveIntensity: 0.35
+    specular: 0x4a8f6e,
+    shininess: 42,
+    emissive: 0x041a12,
+    emissiveIntensity: 0.22
   });
   var earth = new THREE.Mesh(
     new THREE.SphereGeometry(R, segs, segs),
@@ -172,38 +261,125 @@
   );
   root.add(earth);
 
+  // Soft cloud layer for depth / spherical read
+  (function clouds() {
+    var cw = mobile ? 512 : 768;
+    var ch = cw / 2;
+    var cc = document.createElement("canvas");
+    cc.width = cw;
+    cc.height = ch;
+    var cctx = cc.getContext("2d");
+    cctx.clearRect(0, 0, cw, ch);
+    cctx.fillStyle = "rgba(200, 240, 220, 0.55)";
+    var cn = mobile ? 40 : 70;
+    for (var i = 0; i < cn; i++) {
+      var cx = Math.random() * cw;
+      var cy = Math.random() * ch;
+      var crx = (0.02 + Math.random() * 0.08) * cw;
+      var cry = crx * (0.25 + Math.random() * 0.35);
+      cctx.globalAlpha = 0.15 + Math.random() * 0.25;
+      cctx.beginPath();
+      cctx.ellipse(cx, cy, crx, cry, Math.random() * Math.PI, 0, Math.PI * 2);
+      cctx.fill();
+    }
+    cctx.globalAlpha = 1;
+    var cloudTex = new THREE.CanvasTexture(cc);
+    cloudTex.encoding = THREE.sRGBEncoding;
+    var cloudMesh = new THREE.Mesh(
+      new THREE.SphereGeometry(R * 1.012, segs, segs),
+      new THREE.MeshPhongMaterial({
+        map: cloudTex,
+        transparent: true,
+        opacity: 0.32,
+        depthWrite: false,
+        specular: 0x222222,
+        shininess: 4,
+        emissive: 0x000000
+      })
+    );
+    root.add(cloudMesh);
+    earth.userData.clouds = cloudMesh;
+  })();
+
+  // Atmosphere rim — BackSide glow for clear limb / spherical silhouette
   var atmos = new THREE.Mesh(
-    new THREE.SphereGeometry(R * 1.045, segs, segs),
+    new THREE.SphereGeometry(R * 1.08, segs, segs),
     new THREE.MeshBasicMaterial({
-      color: 0x15803d,
+      color: 0x34d399,
       transparent: true,
-      opacity: 0.11,
+      opacity: 0.14,
       side: THREE.BackSide,
-      depthWrite: false
+      depthWrite: false,
+      blending: THREE.AdditiveBlending
     })
   );
   root.add(atmos);
 
   var atmos2 = new THREE.Mesh(
-    new THREE.SphereGeometry(R * 1.018, segs, segs),
+    new THREE.SphereGeometry(R * 1.035, segs, segs),
     new THREE.MeshBasicMaterial({
-      color: 0x5eead4,
+      color: 0x6ee7b7,
       transparent: true,
-      opacity: 0.07,
+      opacity: 0.10,
       side: THREE.BackSide,
-      depthWrite: false
+      depthWrite: false,
+      blending: THREE.AdditiveBlending
     })
   );
   root.add(atmos2);
 
-  scene.add(new THREE.AmbientLight(0x6b8f7a, 0.55));
-  var sun = new THREE.DirectionalLight(0xcfe8d8, 0.85);
-  sun.position.set(-2.2, 0.6, 1.4);
+  // Thin bright limb ring (helps silhouette against dark bg)
+  var limb = new THREE.Mesh(
+    new THREE.SphereGeometry(R * 1.002, segs, segs),
+    new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      side: THREE.FrontSide,
+      blending: THREE.AdditiveBlending,
+      uniforms: {
+        glowColor: { value: new THREE.Color(0x5eead4) }
+      },
+      vertexShader: [
+        "varying vec3 vNormal;",
+        "varying vec3 vView;",
+        "void main() {",
+        "  vNormal = normalize(normalMatrix * normal);",
+        "  vec4 mv = modelViewMatrix * vec4(position, 1.0);",
+        "  vView = normalize(-mv.xyz);",
+        "  gl_Position = projectionMatrix * mv;",
+        "}"
+      ].join("\n"),
+      fragmentShader: [
+        "uniform vec3 glowColor;",
+        "varying vec3 vNormal;",
+        "varying vec3 vView;",
+        "void main() {",
+        "  float fresnel = pow(1.0 - max(dot(vNormal, vView), 0.0), 3.2);",
+        "  gl_FragColor = vec4(glowColor, fresnel * 0.55);",
+        "}"
+      ].join("\n")
+    })
+  );
+  root.add(limb);
+
+  // Lighting: strong key + fill so day/night terminator reads as a sphere
+  scene.add(new THREE.AmbientLight(0x3d5c4a, 0.28));
+  var hemi = new THREE.HemisphereLight(0xa8e6c8, 0x04120e, 0.45);
+  scene.add(hemi);
+
+  var sun = new THREE.DirectionalLight(0xe8fff0, 1.15);
+  sun.position.set(-2.4, 0.85, 1.6);
   scene.add(sun);
-  var rim = new THREE.DirectionalLight(0x15803d, 0.35);
-  rim.position.set(2.5, 0.2, -1.2);
+
+  var sun2 = new THREE.DirectionalLight(0x9fd4b8, 0.35);
+  sun2.position.set(-1.2, -0.6, 2.0);
+  scene.add(sun2);
+
+  var rim = new THREE.DirectionalLight(0x10b981, 0.55);
+  rim.position.set(2.8, 0.15, -1.4);
   scene.add(rim);
-  var amberFill = new THREE.PointLight(0xd97706, 0.25, 6);
+
+  var amberFill = new THREE.PointLight(0xd97706, 0.22, 6);
   amberFill.position.set(0.8, 0.4, 2.2);
   scene.add(amberFill);
 
@@ -327,6 +503,276 @@
     return pts;
   }
 
+  // ——— Vehicle meshes (passenger drones, rockets, craft) ———
+  function mat(color, opts) {
+    opts = opts || {};
+    return new THREE.MeshPhongMaterial({
+      color: color,
+      emissive: opts.emissive || 0x000000,
+      emissiveIntensity: opts.ei || 0.15,
+      specular: opts.specular || 0x335544,
+      shininess: opts.shininess != null ? opts.shininess : 40,
+      flatShading: !!opts.flat
+    });
+  }
+
+  function makePassengerDrone(accent) {
+    var g = new THREE.Group();
+    var bodyCol = accent || 0x6ee7b7;
+    var cabin = new THREE.Mesh(
+      new THREE.SphereGeometry(0.018, 10, 8),
+      mat(0xd1fae5, { emissive: bodyCol, ei: 0.25, shininess: 60 })
+    );
+    cabin.scale.set(1.35, 0.85, 1.1);
+    g.add(cabin);
+
+    var belly = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.012, 0.014, 0.022, 8),
+      mat(0x0f3d2e, { flat: true })
+    );
+    belly.rotation.z = Math.PI / 2;
+    belly.position.y = -0.008;
+    g.add(belly);
+
+    // Quad arms + rotors
+    var armMat = mat(0x14532d);
+    var rotorMat = mat(bodyCol, { emissive: bodyCol, ei: 0.4, shininess: 20 });
+    var arms = [
+      [0.028, 0.028], [0.028, -0.028], [-0.028, 0.028], [-0.028, -0.028]
+    ];
+    var rotors = [];
+    arms.forEach(function (xy) {
+      var arm = new THREE.Mesh(
+        new THREE.BoxGeometry(0.004, 0.003, 0.032),
+        armMat
+      );
+      arm.position.set(xy[0] * 0.5, 0.004, xy[1] * 0.5);
+      arm.lookAt(xy[0], 0.004, xy[1]);
+      g.add(arm);
+
+      var hub = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.003, 0.003, 0.006, 6),
+        armMat
+      );
+      hub.position.set(xy[0], 0.008, xy[1]);
+      g.add(hub);
+
+      var disc = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.014, 0.014, 0.0015, 12),
+        new THREE.MeshBasicMaterial({
+          color: bodyCol,
+          transparent: true,
+          opacity: 0.45,
+          depthWrite: false
+        })
+      );
+      disc.position.set(xy[0], 0.011, xy[1]);
+      g.add(disc);
+      rotors.push(disc);
+
+      // Blade cross for silhouette when spinning slowly
+      var blade = new THREE.Mesh(
+        new THREE.BoxGeometry(0.026, 0.001, 0.003),
+        rotorMat
+      );
+      blade.position.set(xy[0], 0.012, xy[1]);
+      g.add(blade);
+      rotors.push(blade);
+    });
+
+    // Cabin windows (passenger cue)
+    var win = new THREE.Mesh(
+      new THREE.SphereGeometry(0.008, 8, 6),
+      mat(0x86efac, { emissive: 0x34d399, ei: 0.5, shininess: 80 })
+    );
+    win.scale.set(1.1, 0.7, 0.55);
+    win.position.set(0, 0.004, 0.012);
+    g.add(win);
+
+    g.userData.rotors = rotors;
+    g.scale.setScalar(2.8);
+    return g;
+  }
+
+  function makeRocket(accent) {
+    var g = new THREE.Group();
+    var bodyCol = accent || 0x34d399;
+    var body = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.01, 0.012, 0.055, 10),
+      mat(0xecfdf5, { emissive: bodyCol, ei: 0.12, shininess: 70 })
+    );
+    g.add(body);
+
+    var nose = new THREE.Mesh(
+      new THREE.ConeGeometry(0.01, 0.022, 10),
+      mat(bodyCol, { emissive: bodyCol, ei: 0.35, shininess: 50 })
+    );
+    nose.position.y = 0.038;
+    g.add(nose);
+
+    var stripe = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.0105, 0.0105, 0.008, 10),
+      mat(0xd97706, { emissive: 0xd97706, ei: 0.3 })
+    );
+    stripe.position.y = 0.01;
+    g.add(stripe);
+
+    // Fins
+    var finMat = mat(0x166534);
+    for (var i = 0; i < 3; i++) {
+      var fin = new THREE.Mesh(
+        new THREE.BoxGeometry(0.002, 0.018, 0.014),
+        finMat
+      );
+      var ang = (i / 3) * Math.PI * 2;
+      fin.position.set(Math.cos(ang) * 0.011, -0.022, Math.sin(ang) * 0.011);
+      fin.rotation.y = -ang;
+      g.add(fin);
+    }
+
+    // Exhaust glow
+    var flame = new THREE.Mesh(
+      new THREE.ConeGeometry(0.008, 0.028, 8),
+      new THREE.MeshBasicMaterial({
+        color: 0xfbbf24,
+        transparent: true,
+        opacity: 0.75,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+      })
+    );
+    flame.rotation.x = Math.PI;
+    flame.position.y = -0.04;
+    g.add(flame);
+    g.userData.flame = flame;
+
+    var glow = new THREE.Mesh(
+      new THREE.SphereGeometry(0.01, 8, 8),
+      new THREE.MeshBasicMaterial({
+        color: 0xf59e0b,
+        transparent: true,
+        opacity: 0.5,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+      })
+    );
+    glow.position.y = -0.03;
+    g.add(glow);
+    g.userData.glow = glow;
+
+    g.scale.setScalar(2.6);
+    return g;
+  }
+
+  function makeHexacopter(accent) {
+    var g = new THREE.Group();
+    var bodyCol = accent || 0x5eead4;
+    var hub = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.014, 0.016, 0.012, 6),
+      mat(0x064e3b, { flat: true, emissive: 0x022c22, ei: 0.2 })
+    );
+    g.add(hub);
+
+    var dome = new THREE.Mesh(
+      new THREE.SphereGeometry(0.012, 10, 8),
+      mat(0xa7f3d0, { emissive: bodyCol, ei: 0.3, shininess: 70 })
+    );
+    dome.scale.set(1, 0.65, 1);
+    dome.position.y = 0.006;
+    g.add(dome);
+
+    var rotors = [];
+    for (var i = 0; i < 6; i++) {
+      var ang = (i / 6) * Math.PI * 2;
+      var ax = Math.cos(ang) * 0.032;
+      var az = Math.sin(ang) * 0.032;
+      var arm = new THREE.Mesh(
+        new THREE.BoxGeometry(0.028, 0.003, 0.004),
+        mat(0x14532d)
+      );
+      arm.position.set(ax * 0.5, 0.002, az * 0.5);
+      arm.rotation.y = -ang;
+      g.add(arm);
+
+      var disc = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.011, 0.011, 0.0012, 10),
+        new THREE.MeshBasicMaterial({
+          color: bodyCol,
+          transparent: true,
+          opacity: 0.4,
+          depthWrite: false
+        })
+      );
+      disc.position.set(ax, 0.008, az);
+      g.add(disc);
+      rotors.push(disc);
+    }
+    g.userData.rotors = rotors;
+    g.scale.setScalar(2.7);
+    return g;
+  }
+
+  function makeWingedCraft(accent) {
+    var g = new THREE.Group();
+    var bodyCol = accent || 0x6ee7b7;
+    var fuselage = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.006, 0.008, 0.048, 8),
+      mat(0xecfdf5, { emissive: bodyCol, ei: 0.15, shininess: 55 })
+    );
+    fuselage.rotation.z = Math.PI / 2;
+    g.add(fuselage);
+
+    var nose = new THREE.Mesh(
+      new THREE.ConeGeometry(0.006, 0.016, 8),
+      mat(bodyCol, { emissive: bodyCol, ei: 0.3 })
+    );
+    nose.rotation.z = -Math.PI / 2;
+    nose.position.x = 0.03;
+    g.add(nose);
+
+    var wing = new THREE.Mesh(
+      new THREE.BoxGeometry(0.016, 0.002, 0.055),
+      mat(0x166534)
+    );
+    g.add(wing);
+
+    var tail = new THREE.Mesh(
+      new THREE.BoxGeometry(0.01, 0.014, 0.002),
+      mat(0x166534)
+    );
+    tail.position.set(-0.02, 0.008, 0);
+    g.add(tail);
+
+    // Twin lift props on wingtips (eVTOL cue)
+    [-0.024, 0.024].forEach(function (z) {
+      var disc = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.009, 0.009, 0.001, 10),
+        new THREE.MeshBasicMaterial({
+          color: bodyCol,
+          transparent: true,
+          opacity: 0.45,
+          depthWrite: false
+        })
+      );
+      disc.position.set(0, 0.006, z);
+      g.add(disc);
+    });
+
+    g.scale.setScalar(2.7);
+    return g;
+  }
+
+  var VEHICLE_BUILDERS = [
+    makePassengerDrone,
+    makeRocket,
+    makeHexacopter,
+    makeWingedCraft,
+    makePassengerDrone,
+    makeRocket,
+    makeHexacopter,
+    makeWingedCraft
+  ];
+
   // World eVTOL-hub arcs — context, not Flight Enabled routes.
   var ARCS = [
     [[37.44, -122.16], [48.86, 2.35]],
@@ -339,34 +785,34 @@
     [[48.86, 2.35], [40.6553, -111.9073]]
   ];
 
+  var _fwd = new THREE.Vector3();
+
   var travelers = [];
   ARCS.forEach(function (pair, idx) {
     var pts = greatCircle(pair[0], pair[1], mobile ? 40 : 72);
     var geo = new THREE.BufferGeometry().setFromPoints(pts);
-    var mat = new THREE.LineBasicMaterial({
-      color: idx >= 6 ? 0xd97706 : 0x34d399,
+    var isMurray = idx >= 6;
+    var matLine = new THREE.LineBasicMaterial({
+      color: isMurray ? 0xd97706 : 0x34d399,
       transparent: true,
-      opacity: idx >= 6 ? 0.38 : 0.55,
+      opacity: isMurray ? 0.38 : 0.52,
       blending: THREE.AdditiveBlending,
       depthWrite: false
     });
-    var line = new THREE.Line(geo, mat);
+    var line = new THREE.Line(geo, matLine);
     earth.add(line);
 
-    var dot = new THREE.Mesh(
-      new THREE.SphereGeometry(0.012, 8, 8),
-      new THREE.MeshBasicMaterial({
-        color: idx >= 6 ? 0xd97706 : 0x6ee7b7,
-        transparent: true,
-        opacity: 0.95
-      })
-    );
-    earth.add(dot);
+    var accent = isMurray ? 0xd97706 : 0x6ee7b7;
+    var craft = VEHICLE_BUILDERS[idx % VEHICLE_BUILDERS.length](accent);
+    earth.add(craft);
+
     travelers.push({
-      mesh: dot,
+      mesh: craft,
       pts: pts,
       t: idx / ARCS.length,
-      speed: 0.00035 + idx * 0.00004
+      speed: 0.00032 + idx * 0.000035,
+      kind: idx % 4,
+      isRocket: (idx % 4) === 1
     });
   });
 
@@ -443,11 +889,15 @@
 
     if (!reduced) {
       root.rotation.y += 0.00018 * dt;
+      if (earth.userData.clouds) {
+        earth.userData.clouds.rotation.y += 0.00005 * dt;
+      }
       var pulse = (Math.sin(now * 0.0024) + 1) * 0.5;
       ring.scale.setScalar(1 + pulse * 0.55);
       ring.material.opacity = 0.75 - pulse * 0.45;
       ring2.scale.setScalar(1.4 + pulse * 0.9);
       ring2.material.opacity = 0.35 - pulse * 0.25;
+
       travelers.forEach(function (tr) {
         tr.t = (tr.t + tr.speed * dt) % 1;
         var pts = tr.pts;
@@ -457,6 +907,34 @@
         var a = pts[i];
         var b = pts[Math.min(i + 1, pts.length - 1)];
         tr.mesh.position.lerpVectors(a, b, frac);
+
+        // Orient craft along path; rockets nose-forward, drones belly-to-globe
+        _fwd.subVectors(b, a);
+        if (_fwd.lengthSq() > 1e-10) {
+          _fwd.normalize();
+          var radial = tr.mesh.position.clone().normalize();
+          tr.mesh.up.copy(radial);
+          tr.mesh.lookAt(tr.mesh.position.clone().add(_fwd));
+          if (tr.isRocket) {
+            // Rocket mesh nose is +Y; lookAt aims -Z, so tip nose into flight
+            tr.mesh.rotateX(-Math.PI / 2);
+          }
+        }
+
+        // Spin rotors / flicker rocket exhaust
+        if (tr.mesh.userData.rotors) {
+          tr.mesh.userData.rotors.forEach(function (r, ri) {
+            r.rotation.y += (0.04 + ri * 0.01) * dt;
+          });
+        }
+        if (tr.mesh.userData.flame) {
+          var flicker = 0.55 + 0.35 * Math.sin(now * 0.02 + tr.t * 20);
+          tr.mesh.userData.flame.scale.setScalar(0.85 + flicker * 0.4);
+          tr.mesh.userData.flame.material.opacity = 0.45 + flicker * 0.4;
+          if (tr.mesh.userData.glow) {
+            tr.mesh.userData.glow.material.opacity = 0.3 + flicker * 0.35;
+          }
+        }
       });
     } else {
       ring.scale.setScalar(1.15);
