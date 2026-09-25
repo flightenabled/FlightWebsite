@@ -503,274 +503,243 @@
     return pts;
   }
 
-  // ——— Vehicle meshes (passenger drones, rockets, craft) ———
+  // ——— Vehicle meshes ———
+  // Nose is -Z, belly is -Y, so lookAt (which aims -Z) flies them along the arc
+  // with the belly toward the globe. Rotors spin on local +Y.
   function mat(color, opts) {
     opts = opts || {};
     return new THREE.MeshPhongMaterial({
       color: color,
       emissive: opts.emissive || 0x000000,
-      emissiveIntensity: opts.ei || 0.15,
-      specular: opts.specular || 0x335544,
-      shininess: opts.shininess != null ? opts.shininess : 40,
+      emissiveIntensity: opts.ei || 0.18,
+      specular: opts.specular || 0x9fb4c4,
+      shininess: opts.shininess != null ? opts.shininess : 48,
       flatShading: !!opts.flat
     });
   }
 
-  function makePassengerDrone(accent) {
-    var g = new THREE.Group();
-    var bodyCol = accent || 0x6ee7b7;
-    var cabin = new THREE.Mesh(
-      new THREE.SphereGeometry(0.018, 10, 8),
-      mat(0xd1fae5, { emissive: bodyCol, ei: 0.25, shininess: 60 })
-    );
-    cabin.scale.set(1.35, 0.85, 1.1);
-    g.add(cabin);
-
-    var belly = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.012, 0.014, 0.022, 8),
-      mat(0x0f3d2e, { flat: true })
-    );
-    belly.rotation.z = Math.PI / 2;
-    belly.position.y = -0.008;
-    g.add(belly);
-
-    // Quad arms + rotors
-    var armMat = mat(0x14532d);
-    var rotorMat = mat(bodyCol, { emissive: bodyCol, ei: 0.4, shininess: 20 });
-    var arms = [
-      [0.028, 0.028], [0.028, -0.028], [-0.028, 0.028], [-0.028, -0.028]
-    ];
-    var rotors = [];
-    arms.forEach(function (xy) {
-      var arm = new THREE.Mesh(
-        new THREE.BoxGeometry(0.004, 0.003, 0.032),
-        armMat
-      );
-      arm.position.set(xy[0] * 0.5, 0.004, xy[1] * 0.5);
-      arm.lookAt(xy[0], 0.004, xy[1]);
-      g.add(arm);
-
-      var hub = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.003, 0.003, 0.006, 6),
-        armMat
-      );
-      hub.position.set(xy[0], 0.008, xy[1]);
-      g.add(hub);
-
-      var disc = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.014, 0.014, 0.0015, 12),
-        new THREE.MeshBasicMaterial({
-          color: bodyCol,
-          transparent: true,
-          opacity: 0.45,
-          depthWrite: false
-        })
-      );
-      disc.position.set(xy[0], 0.011, xy[1]);
-      g.add(disc);
-      rotors.push(disc);
-
-      // Blade cross for silhouette when spinning slowly
-      var blade = new THREE.Mesh(
-        new THREE.BoxGeometry(0.026, 0.001, 0.003),
-        rotorMat
-      );
-      blade.position.set(xy[0], 0.012, xy[1]);
-      g.add(blade);
-      rotors.push(blade);
-    });
-
-    // Cabin windows (passenger cue)
-    var win = new THREE.Mesh(
-      new THREE.SphereGeometry(0.008, 8, 6),
-      mat(0x86efac, { emissive: 0x34d399, ei: 0.5, shininess: 80 })
-    );
-    win.scale.set(1.1, 0.7, 0.55);
-    win.position.set(0, 0.004, 0.012);
-    g.add(win);
-
-    g.userData.rotors = rotors;
-    g.scale.setScalar(2.8);
-    return g;
+  function paint(color, ei) {
+    return mat(color, { emissive: color, ei: ei == null ? 0.22 : ei, shininess: 28 });
   }
 
-  function makeRocket(accent) {
-    var g = new THREE.Group();
-    var bodyCol = accent || 0x34d399;
-    var body = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.01, 0.012, 0.055, 10),
-      mat(0xecfdf5, { emissive: bodyCol, ei: 0.12, shininess: 70 })
+  function addRotor(g, rotors, x, y, z, radius, tint) {
+    var motor = new THREE.Mesh(
+      new THREE.CylinderGeometry(radius * 0.22, radius * 0.26, radius * 0.38, 8),
+      mat(0x1f2937, { emissive: 0x0f172a, ei: 0.3, shininess: 20 })
     );
-    g.add(body);
+    motor.position.set(x, y - radius * 0.12, z);
+    g.add(motor);
 
-    var nose = new THREE.Mesh(
-      new THREE.ConeGeometry(0.01, 0.022, 10),
-      mat(bodyCol, { emissive: bodyCol, ei: 0.35, shininess: 50 })
-    );
-    nose.position.y = 0.038;
-    g.add(nose);
-
-    var stripe = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.0105, 0.0105, 0.008, 10),
-      mat(0xd97706, { emissive: 0xd97706, ei: 0.3 })
-    );
-    stripe.position.y = 0.01;
-    g.add(stripe);
-
-    // Fins
-    var finMat = mat(0x166534);
-    for (var i = 0; i < 3; i++) {
-      var fin = new THREE.Mesh(
-        new THREE.BoxGeometry(0.002, 0.018, 0.014),
-        finMat
-      );
-      var ang = (i / 3) * Math.PI * 2;
-      fin.position.set(Math.cos(ang) * 0.011, -0.022, Math.sin(ang) * 0.011);
-      fin.rotation.y = -ang;
-      g.add(fin);
-    }
-
-    // Exhaust glow
-    var flame = new THREE.Mesh(
-      new THREE.ConeGeometry(0.008, 0.028, 8),
-      new THREE.MeshBasicMaterial({
-        color: 0xfbbf24,
-        transparent: true,
-        opacity: 0.75,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending
-      })
-    );
-    flame.rotation.x = Math.PI;
-    flame.position.y = -0.04;
-    g.add(flame);
-    g.userData.flame = flame;
-
-    var glow = new THREE.Mesh(
-      new THREE.SphereGeometry(0.01, 8, 8),
-      new THREE.MeshBasicMaterial({
-        color: 0xf59e0b,
-        transparent: true,
-        opacity: 0.5,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending
-      })
-    );
-    glow.position.y = -0.03;
-    g.add(glow);
-    g.userData.glow = glow;
-
-    g.scale.setScalar(2.6);
-    return g;
-  }
-
-  function makeHexacopter(accent) {
-    var g = new THREE.Group();
-    var bodyCol = accent || 0x5eead4;
     var hub = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.014, 0.016, 0.012, 6),
-      mat(0x064e3b, { flat: true, emissive: 0x022c22, ei: 0.2 })
+      new THREE.CylinderGeometry(radius * 0.1, radius * 0.1, radius * 0.16, 8),
+      mat(tint || 0xe2e8f0, { emissive: tint || 0xe2e8f0, ei: 0.25 })
     );
+    hub.position.set(x, y + radius * 0.08, z);
     g.add(hub);
 
-    var dome = new THREE.Mesh(
-      new THREE.SphereGeometry(0.012, 10, 8),
-      mat(0xa7f3d0, { emissive: bodyCol, ei: 0.3, shininess: 70 })
+    var spin = new THREE.Group();
+    spin.position.set(x, y + radius * 0.16, z);
+    var bladeMat = mat(0xf8fafc, { emissive: 0xdbe4ee, ei: 0.35, shininess: 16 });
+    var blade = new THREE.Mesh(new THREE.BoxGeometry(radius * 1.85, radius * 0.06, radius * 0.22), bladeMat);
+    spin.add(blade);
+    var bladeB = blade.clone();
+    bladeB.rotation.y = Math.PI / 2;
+    spin.add(bladeB);
+    g.add(spin);
+    rotors.push(spin);
+
+    var disc = new THREE.Mesh(
+      new THREE.CircleGeometry(radius * 0.92, 18),
+      new THREE.MeshBasicMaterial({
+        color: tint || 0xd1fae5,
+        transparent: true,
+        opacity: 0.22,
+        side: THREE.DoubleSide,
+        depthWrite: false
+      })
     );
-    dome.scale.set(1, 0.65, 1);
-    dome.position.y = 0.006;
-    g.add(dome);
+    disc.rotation.x = -Math.PI / 2;
+    disc.position.set(x, y + radius * 0.2, z);
+    g.add(disc);
+  }
 
+  function fuselage(g, len, rad, color) {
+    var body = new THREE.Mesh(
+      new THREE.CylinderGeometry(rad * 0.72, rad, len, 12),
+      paint(color, 0.28)
+    );
+    body.rotation.x = Math.PI / 2;
+    body.position.z = len * 0.05;
+    g.add(body);
+    var nose = new THREE.Mesh(
+      new THREE.ConeGeometry(rad * 0.72, len * 0.38, 12),
+      paint(color, 0.3)
+    );
+    nose.rotation.x = Math.PI / 2;
+    nose.position.z = -len * 0.55;
+    g.add(nose);
+    var canopy = new THREE.Mesh(
+      new THREE.SphereGeometry(rad * 0.78, 12, 8),
+      mat(0x0f172a, { emissive: 0x164e63, ei: 0.45, shininess: 80, specular: 0xb6e3f4 })
+    );
+    canopy.scale.set(0.85, 0.62, 1.25);
+    canopy.position.set(0, rad * 0.35, -len * 0.12);
+    g.add(canopy);
+  }
+
+  function wingHalf(g, span, chord, thick, color, y, z, dihedral) {
+    var wing = new THREE.Mesh(
+      new THREE.BoxGeometry(span, thick, chord),
+      paint(color, 0.16)
+    );
+    wing.position.set((span / 2) * (dihedral >= 0 ? 1 : -1), y, z);
+    wing.rotation.z = dihedral;
+    g.add(wing);
+  }
+
+  // Joby-style tilt-six: wing plus two tail rotors, six discs total.
+  function makeJoby(accent) {
+    var g = new THREE.Group();
     var rotors = [];
-    for (var i = 0; i < 6; i++) {
-      var ang = (i / 6) * Math.PI * 2;
-      var ax = Math.cos(ang) * 0.032;
-      var az = Math.sin(ang) * 0.032;
-      var arm = new THREE.Mesh(
-        new THREE.BoxGeometry(0.028, 0.003, 0.004),
-        mat(0x14532d)
-      );
-      arm.position.set(ax * 0.5, 0.002, az * 0.5);
-      arm.rotation.y = -ang;
-      g.add(arm);
-
-      var disc = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.011, 0.011, 0.0012, 10),
-        new THREE.MeshBasicMaterial({
-          color: bodyCol,
-          transparent: true,
-          opacity: 0.4,
-          depthWrite: false
-        })
-      );
-      disc.position.set(ax, 0.008, az);
-      g.add(disc);
-      rotors.push(disc);
-    }
+    var white = 0xf4f7fb;
+    var wingC = 0xd7dee8;
+    fuselage(g, 0.062, 0.009, white);
+    wingHalf(g, 0.034, 0.014, 0.0024, wingC, 0.004, -0.004, 0.08);
+    wingHalf(g, 0.034, 0.014, 0.0024, wingC, 0.004, -0.004, -0.08);
+    // V-tail
+    [-1, 1].forEach(function (s) {
+      var fin = new THREE.Mesh(new THREE.BoxGeometry(0.002, 0.016, 0.012), paint(wingC, 0.16));
+      fin.position.set(s * 0.008, 0.008, 0.03);
+      fin.rotation.z = s * -0.7;
+      g.add(fin);
+    });
+    [[-0.014, -0.006], [0.014, -0.006], [-0.03, -0.004], [0.03, -0.004]].forEach(function (p) {
+      addRotor(g, rotors, p[0], 0.01, p[1], 0.009, accent);
+    });
+    addRotor(g, rotors, -0.012, 0.012, 0.03, 0.008, accent);
+    addRotor(g, rotors, 0.012, 0.012, 0.03, 0.008, accent);
     g.userData.rotors = rotors;
-    g.scale.setScalar(2.7);
+    g.scale.setScalar(2.15);
     return g;
   }
 
-  function makeWingedCraft(accent) {
+  // Archer-style lift-plus-cruise: long wing, a row of lift rotors, tail.
+  function makeArcher(accent) {
     var g = new THREE.Group();
-    var bodyCol = accent || 0x6ee7b7;
-    var fuselage = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.006, 0.008, 0.048, 8),
-      mat(0xecfdf5, { emissive: bodyCol, ei: 0.15, shininess: 55 })
-    );
-    fuselage.rotation.z = Math.PI / 2;
-    g.add(fuselage);
-
-    var nose = new THREE.Mesh(
-      new THREE.ConeGeometry(0.006, 0.016, 8),
-      mat(bodyCol, { emissive: bodyCol, ei: 0.3 })
-    );
-    nose.rotation.z = -Math.PI / 2;
-    nose.position.x = 0.03;
-    g.add(nose);
-
-    var wing = new THREE.Mesh(
-      new THREE.BoxGeometry(0.016, 0.002, 0.055),
-      mat(0x166534)
-    );
-    g.add(wing);
-
-    var tail = new THREE.Mesh(
-      new THREE.BoxGeometry(0.01, 0.014, 0.002),
-      mat(0x166534)
-    );
-    tail.position.set(-0.02, 0.008, 0);
+    var rotors = [];
+    var white = 0xf8fafc;
+    var wingC = 0xc5d0dc;
+    fuselage(g, 0.058, 0.0085, white);
+    wingHalf(g, 0.042, 0.016, 0.0022, wingC, 0.003, -0.002, 0.05);
+    wingHalf(g, 0.042, 0.016, 0.0022, wingC, 0.003, -0.002, -0.05);
+    var tail = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.0016, 0.008), paint(wingC, 0.16));
+    tail.position.set(0, 0.002, 0.032);
     g.add(tail);
-
-    // Twin lift props on wingtips (eVTOL cue)
-    [-0.024, 0.024].forEach(function (z) {
-      var disc = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.009, 0.009, 0.001, 10),
-        new THREE.MeshBasicMaterial({
-          color: bodyCol,
-          transparent: true,
-          opacity: 0.45,
-          depthWrite: false
-        })
-      );
-      disc.position.set(0, 0.006, z);
-      g.add(disc);
+    var fin = new THREE.Mesh(new THREE.BoxGeometry(0.0018, 0.014, 0.01), paint(wingC, 0.16));
+    fin.position.set(0, 0.008, 0.032);
+    g.add(fin);
+    [-0.036, -0.022, -0.01, 0.01, 0.022, 0.036].forEach(function (x, i) {
+      addRotor(g, rotors, x, 0.009, i % 2 ? 0.002 : -0.006, 0.0072, accent);
     });
+    g.userData.rotors = rotors;
+    g.scale.setScalar(2.15);
+    return g;
+  }
 
-    g.scale.setScalar(2.7);
+  // Winged tricopter: two rotors on the wing, one tilting rotor on the tail boom.
+  function makeTriWing(accent) {
+    var g = new THREE.Group();
+    var rotors = [];
+    var bodyC = 0xe8eef5;
+    var carbon = 0x334155;
+    var pod = new THREE.Mesh(
+      new THREE.SphereGeometry(0.01, 12, 10),
+      paint(bodyC, 0.3)
+    );
+    pod.scale.set(0.85, 0.7, 1.45);
+    pod.position.z = -0.004;
+    g.add(pod);
+    var canopy = new THREE.Mesh(
+      new THREE.SphereGeometry(0.006, 10, 8),
+      mat(0x0f172a, { emissive: 0x155e75, ei: 0.5, shininess: 70 })
+    );
+    canopy.scale.set(1, 0.7, 1.2);
+    canopy.position.set(0, 0.005, -0.006);
+    g.add(canopy);
+    wingHalf(g, 0.03, 0.012, 0.0022, carbon, 0.001, -0.002, 0.12);
+    wingHalf(g, 0.03, 0.012, 0.0022, carbon, 0.001, -0.002, -0.12);
+    var boom = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.0016, 0.0016, 0.034, 6),
+      mat(carbon, { emissive: 0x1e293b, ei: 0.2 })
+    );
+    boom.rotation.x = Math.PI / 2;
+    boom.position.z = 0.016;
+    g.add(boom);
+    var fin = new THREE.Mesh(new THREE.BoxGeometry(0.0014, 0.012, 0.008), paint(carbon, 0.15));
+    fin.position.set(0, 0.006, 0.03);
+    g.add(fin);
+    // Front pair sits on the wing; rear rotor is the yaw-tilt prop.
+    addRotor(g, rotors, -0.026, 0.008, -0.004, 0.011, accent);
+    addRotor(g, rotors, 0.026, 0.008, -0.004, 0.011, accent);
+    addRotor(g, rotors, 0, 0.01, 0.032, 0.01, accent);
+    // Skids
+    [-0.006, 0.006].forEach(function (x) {
+      var skid = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.0007, 0.0007, 0.02, 5),
+        mat(0x94a3b8, { shininess: 40 })
+      );
+      skid.rotation.x = Math.PI / 2;
+      skid.position.set(x, -0.008, -0.002);
+      g.add(skid);
+    });
+    g.userData.rotors = rotors;
+    g.scale.setScalar(2.25);
+    return g;
+  }
+
+  // Shop hexacopter: carbon hub, six arms, motor bells, real two-blade props.
+  function makeHexacopter(accent) {
+    var g = new THREE.Group();
+    var rotors = [];
+    var hub = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.011, 0.013, 0.008, 6),
+      mat(0x1e293b, { emissive: 0x0f172a, ei: 0.35, flat: true, shininess: 12 })
+    );
+    g.add(hub);
+    var deck = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.008, 0.008, 0.003, 12),
+      paint(0xcbd5e1, 0.2)
+    );
+    deck.position.y = 0.005;
+    g.add(deck);
+    for (var i = 0; i < 6; i++) {
+      var ang = (i / 6) * Math.PI * 2 + 0.15;
+      var reach = 0.03;
+      var ax = Math.cos(ang) * reach;
+      var az = Math.sin(ang) * reach;
+      var arm = new THREE.Mesh(
+        new THREE.BoxGeometry(reach, 0.0022, 0.0032),
+        mat(0x334155, { emissive: 0x1e293b, ei: 0.15 })
+      );
+      arm.position.set(ax * 0.5, 0.001, az * 0.5);
+      arm.rotation.y = -ang;
+      g.add(arm);
+      addRotor(g, rotors, ax, 0.006, az, 0.01, accent);
+    }
+    g.userData.rotors = rotors;
+    g.scale.setScalar(2.2);
     return g;
   }
 
   var VEHICLE_BUILDERS = [
-    makePassengerDrone,
-    makeRocket,
+    makeJoby,
+    makeArcher,
+    makeTriWing,
     makeHexacopter,
-    makeWingedCraft,
-    makePassengerDrone,
-    makeRocket,
-    makeHexacopter,
-    makeWingedCraft
+    makeJoby,
+    makeArcher,
+    makeTriWing,
+    makeHexacopter
   ];
 
   // World eVTOL-hub arcs — context, not Flight Enabled routes.
@@ -812,7 +781,7 @@
       t: idx / ARCS.length,
       speed: 0.00032 + idx * 0.000035,
       kind: idx % 4,
-      isRocket: (idx % 4) === 1
+      isRocket: false
     });
   });
 
@@ -924,7 +893,7 @@
         // Spin rotors / flicker rocket exhaust
         if (tr.mesh.userData.rotors) {
           tr.mesh.userData.rotors.forEach(function (r, ri) {
-            r.rotation.y += (0.04 + ri * 0.01) * dt;
+            r.rotation.y += (0.22 + (ri % 5) * 0.03) * dt * (ri % 2 ? 1 : -1);
           });
         }
         if (tr.mesh.userData.flame) {
