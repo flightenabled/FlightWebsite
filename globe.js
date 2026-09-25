@@ -497,7 +497,7 @@
         p = a.clone().multiplyScalar(Math.sin((1 - t) * omega) / sin)
           .add(b.clone().multiplyScalar(Math.sin(t * omega) / sin));
       }
-      var lift = 1 + 0.09 * Math.sin(Math.PI * t);
+      var lift = 1;
       pts.push(p.normalize().multiplyScalar(R * lift));
     }
     return pts;
@@ -569,14 +569,15 @@
       paint(color, 0.28)
     );
     body.rotation.x = Math.PI / 2;
-    body.position.z = len * 0.05;
+    body.position.z = 0;
     g.add(body);
     var nose = new THREE.Mesh(
-      new THREE.ConeGeometry(rad * 0.72, len * 0.38, 12),
+      new THREE.ConeGeometry(rad * 0.92, len * 0.4, 12),
       paint(color, 0.3)
     );
-    nose.rotation.x = Math.PI / 2;
-    nose.position.z = -len * 0.55;
+    // Tip toward -Z, which is the nose once the craft is aimed along its route.
+    nose.rotation.x = -Math.PI / 2;
+    nose.position.z = -len * 0.5;
     g.add(nose);
     var canopy = new THREE.Mesh(
       new THREE.SphereGeometry(rad * 0.78, 12, 8),
@@ -731,6 +732,64 @@
     return g;
   }
 
+  // Stainless Starship: nose at -Z, flaps, engines and plume at +Z.
+  function makeStarship() {
+    var g = new THREE.Group();
+    var steel = 0xd5dbe3;
+    var body = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.0064, 0.0064, 0.086, 16),
+      paint(steel, 0.42)
+    );
+    body.rotation.x = Math.PI / 2;
+    g.add(body);
+    var nose = new THREE.Mesh(
+      new THREE.ConeGeometry(0.0064, 0.026, 16),
+      paint(steel, 0.5)
+    );
+    nose.rotation.x = -Math.PI / 2;
+    nose.position.z = -0.054;
+    g.add(nose);
+    [-1, 1].forEach(function (s) {
+      var fwd = new THREE.Mesh(
+        new THREE.BoxGeometry(0.013, 0.0011, 0.007),
+        paint(0xb7c0ca, 0.25)
+      );
+      fwd.position.set(s * 0.009, 0, -0.026);
+      fwd.rotation.z = s * -0.15;
+      g.add(fwd);
+      var aft = new THREE.Mesh(
+        new THREE.BoxGeometry(0.016, 0.0013, 0.009),
+        paint(0xa8b3bf, 0.22)
+      );
+      aft.position.set(s * 0.011, 0.001, 0.03);
+      aft.rotation.y = s * -0.35;
+      g.add(aft);
+    });
+    var bell = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.0034, 0.0056, 0.007, 10),
+      mat(0x1f2937, { emissive: 0x0f172a, ei: 0.45, shininess: 20 })
+    );
+    bell.rotation.x = Math.PI / 2;
+    bell.position.z = 0.048;
+    g.add(bell);
+    var flame = new THREE.Mesh(
+      new THREE.ConeGeometry(0.0046, 0.022, 8),
+      new THREE.MeshBasicMaterial({
+        color: 0x7dd3fc,
+        transparent: true,
+        opacity: 0.8,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+      })
+    );
+    flame.rotation.x = Math.PI / 2;
+    flame.position.z = 0.062;
+    g.add(flame);
+    g.userData.flame = flame;
+    g.scale.setScalar(2.45);
+    return g;
+  }
+
   var VEHICLE_BUILDERS = [
     makeJoby,
     makeArcher,
@@ -742,7 +801,7 @@
     makeHexacopter
   ];
 
-  // World eVTOL-hub arcs — context, not Flight Enabled routes.
+  // eVTOL city hops, plus a few Starship arcs. Not Flight Enabled routes.
   var ARCS = [
     [[37.44, -122.16], [48.86, 2.35]],
     [[48.14, 11.58], [25.20, 55.27]],
@@ -753,36 +812,149 @@
     [[34.05, -118.24], [40.6553, -111.9073]],
     [[48.86, 2.35], [40.6553, -111.9073]]
   ];
+  var SHIP_ARCS = [
+    [[25.997, -97.157], [-8.4, 74.8]],
+    [[25.997, -97.157], [28.45, -80.55]],
+    [[28.45, -80.55], [21.31, -157.86]]
+  ];
 
-  var _fwd = new THREE.Vector3();
+  var _x = new THREE.Vector3();
+  var _y = new THREE.Vector3();
+  var _z = new THREE.Vector3();
+  var _m = new THREE.Matrix4();
+
+  function smooth(x) {
+    x = x < 0 ? 0 : x > 1 ? 1 : x;
+    return x * x * (3 - 2 * x);
+  }
+
+  function sampleArc(pts, t) {
+    var n = pts.length - 1;
+    var f = Math.max(0, Math.min(n, t * n));
+    var i = Math.floor(f);
+    if (i >= n) return pts[n].clone().normalize();
+    return pts[i].clone().lerp(pts[i + 1], f - i).normalize();
+  }
+
+  function legU(tr) {
+    return tr.dir > 0 ? tr.t : 1 - tr.t;
+  }
+
+  function altitudeOf(tr, landed) {
+    if (landed) return 1.011;
+    var u = legU(tr);
+    var climb = smooth(Math.min(1, u / (tr.kind === "ship" ? 0.2 : 0.16)));
+    var sink = smooth(Math.min(1, (1 - u) / (tr.kind === "ship" ? 0.22 : 0.18)));
+    return 1.011 + tr.cruise * Math.min(climb, sink);
+  }
+
+  function pitchOf(tr, landed) {
+    var u = legU(tr);
+    if (tr.kind === "ship") {
+      if (landed) return 1.5;
+      if (u < 0.2) return 1.2 * (1 - smooth(u / 0.2));
+      if (u > 0.78) {
+        var p = smooth((u - 0.78) / 0.22);
+        return -0.12 * (1 - p) + 1.42 * p;
+      }
+      return 0.02;
+    }
+    if (landed) return 0;
+    if (u < 0.16) return 0.4 * (1 - smooth(u / 0.16));
+    if (u > 0.82) {
+      var d = (u - 0.82) / 0.18;
+      return d < 0.62 ? -0.18 : -0.18 + 0.42 * smooth((d - 0.62) / 0.38);
+    }
+    return 0.04;
+  }
+
+  function paceOf(tr) {
+    var u = legU(tr);
+    if (u < 0.14 || u > 0.86) return tr.kind === "ship" ? 0.34 : 0.48;
+    return tr.kind === "ship" ? 1.15 : 1;
+  }
+
+  function poseCraft(tr, landed) {
+    var probe = tr.t + tr.dir * 0.028;
+    if (probe < 0) probe = 0.028;
+    if (probe > 1) probe = 0.972;
+    var p0 = sampleArc(tr.pts, tr.t);
+    var p1 = sampleArc(tr.pts, probe);
+    var fwd = p1.sub(p0);
+    if (fwd.lengthSq() < 1e-10) fwd.set(1, 0, 0);
+    fwd.normalize();
+    var pos = sampleArc(tr.pts, tr.t).multiplyScalar(altitudeOf(tr, landed));
+    tr.mesh.position.copy(pos);
+    var radial = pos.clone().normalize();
+    _z.copy(fwd).negate();
+    _x.crossVectors(radial, _z);
+    if (_x.lengthSq() < 1e-8) _x.set(1, 0, 0);
+    _x.normalize();
+    _y.crossVectors(_z, _x).normalize();
+    _m.makeBasis(_x, _y, _z);
+    tr.mesh.quaternion.setFromRotationMatrix(_m);
+    tr.mesh.rotateX(pitchOf(tr, landed));
+    var u = legU(tr);
+    if (!landed && u > 0.2 && u < 0.8) {
+      var c = sampleArc(tr.pts, Math.max(0, Math.min(1, probe + tr.dir * 0.04)));
+      var ahead = c.sub(sampleArc(tr.pts, probe));
+      if (ahead.lengthSq() > 1e-10) {
+        ahead.normalize();
+        var turn = fwd.clone().cross(ahead).dot(radial);
+        tr.mesh.rotateZ(Math.max(-0.42, Math.min(0.42, -turn * 26)));
+      }
+    }
+    tr.burn = 0;
+    if (tr.kind === "ship") {
+      tr.burn = landed ? 0 : (u < 0.2 || u > 0.84 ? 1 : 0.08);
+    }
+  }
+
+  function addRoute(pair, kind, builder, accent, t0, speedK) {
+    var pts = greatCircle(pair[0], pair[1], mobile ? 48 : 80);
+    var span = Math.max(0.35, pts[0].clone().normalize().angleTo(pts[pts.length - 1].clone().normalize()));
+    var geo = new THREE.BufferGeometry().setFromPoints(pts.map(function (p) {
+      return p.clone().normalize().multiplyScalar(R * 1.008);
+    }));
+    var line = new THREE.Line(geo, new THREE.LineBasicMaterial({
+      color: kind === "ship" ? 0x93c5fd : (accent === 0xd97706 ? 0xd97706 : 0x34d399),
+      transparent: true,
+      opacity: kind === "ship" ? 0.28 : 0.5,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    }));
+    earth.add(line);
+    var craft = builder(accent);
+    earth.add(craft);
+    var tr = {
+      mesh: craft,
+      pts: pts,
+      t: t0,
+      dir: 1,
+      dwell: 0,
+      kind: kind,
+      cruise: kind === "ship" ? 0.068 : 0.032,
+      speed: speedK / span,
+      burn: 0
+    };
+    poseCraft(tr, false);
+    travelers.push(tr);
+  }
 
   var travelers = [];
   ARCS.forEach(function (pair, idx) {
-    var pts = greatCircle(pair[0], pair[1], mobile ? 40 : 72);
-    var geo = new THREE.BufferGeometry().setFromPoints(pts);
     var isMurray = idx >= 6;
-    var matLine = new THREE.LineBasicMaterial({
-      color: isMurray ? 0xd97706 : 0x34d399,
-      transparent: true,
-      opacity: isMurray ? 0.38 : 0.52,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false
-    });
-    var line = new THREE.Line(geo, matLine);
-    earth.add(line);
-
-    var accent = isMurray ? 0xd97706 : 0x6ee7b7;
-    var craft = VEHICLE_BUILDERS[idx % VEHICLE_BUILDERS.length](accent);
-    earth.add(craft);
-
-    travelers.push({
-      mesh: craft,
-      pts: pts,
-      t: idx / ARCS.length,
-      speed: 0.00032 + idx * 0.000035,
-      kind: idx % 4,
-      isRocket: false
-    });
+    addRoute(
+      pair,
+      "evtol",
+      VEHICLE_BUILDERS[idx % VEHICLE_BUILDERS.length],
+      isMurray ? 0xd97706 : 0x6ee7b7,
+      (idx + 0.35) / ARCS.length,
+      0.00015
+    );
+  });
+  SHIP_ARCS.forEach(function (pair, idx) {
+    addRoute(pair, "ship", makeStarship, 0xd5dbe3, 0.2 + idx * 0.26, 0.00011);
   });
 
   // Murray marker
@@ -868,41 +1040,36 @@
       ring2.material.opacity = 0.35 - pulse * 0.25;
 
       travelers.forEach(function (tr) {
-        tr.t = (tr.t + tr.speed * dt) % 1;
-        var pts = tr.pts;
-        var f = tr.t * (pts.length - 1);
-        var i = Math.floor(f);
-        var frac = f - i;
-        var a = pts[i];
-        var b = pts[Math.min(i + 1, pts.length - 1)];
-        tr.mesh.position.lerpVectors(a, b, frac);
-
-        // Orient craft along path; rockets nose-forward, drones belly-to-globe
-        _fwd.subVectors(b, a);
-        if (_fwd.lengthSq() > 1e-10) {
-          _fwd.normalize();
-          var radial = tr.mesh.position.clone().normalize();
-          tr.mesh.up.copy(radial);
-          tr.mesh.lookAt(tr.mesh.position.clone().add(_fwd));
-          if (tr.isRocket) {
-            // Rocket mesh nose is +Y; lookAt aims -Z, so tip nose into flight
-            tr.mesh.rotateX(-Math.PI / 2);
+        var landed = tr.dwell > 0;
+        if (landed) {
+          tr.dwell -= dt;
+        } else {
+          tr.t += tr.dir * tr.speed * paceOf(tr) * dt;
+          if (tr.dir > 0 && tr.t >= 1) {
+            tr.t = 1;
+            tr.dir = -1;
+            tr.dwell = tr.kind === "ship" ? 2200 : 1400;
+            landed = true;
+          } else if (tr.dir < 0 && tr.t <= 0) {
+            tr.t = 0;
+            tr.dir = 1;
+            tr.dwell = tr.kind === "ship" ? 2200 : 1400;
+            landed = true;
           }
         }
+        poseCraft(tr, landed);
 
-        // Spin rotors / flicker rocket exhaust
         if (tr.mesh.userData.rotors) {
           tr.mesh.userData.rotors.forEach(function (r, ri) {
             r.rotation.y += (0.22 + (ri % 5) * 0.03) * dt * (ri % 2 ? 1 : -1);
           });
         }
         if (tr.mesh.userData.flame) {
-          var flicker = 0.55 + 0.35 * Math.sin(now * 0.02 + tr.t * 20);
-          tr.mesh.userData.flame.scale.setScalar(0.85 + flicker * 0.4);
-          tr.mesh.userData.flame.material.opacity = 0.45 + flicker * 0.4;
-          if (tr.mesh.userData.glow) {
-            tr.mesh.userData.glow.material.opacity = 0.3 + flicker * 0.35;
-          }
+          var flicker = 0.65 + 0.35 * Math.sin(now * 0.02 + tr.t * 20);
+          var burn = tr.burn || 0;
+          tr.mesh.userData.flame.visible = burn > 0.04;
+          tr.mesh.userData.flame.scale.setScalar(0.7 + flicker * 0.55);
+          tr.mesh.userData.flame.material.opacity = burn * (0.35 + flicker * 0.5);
         }
       });
     } else {
