@@ -79,13 +79,13 @@
     c.height = h;
     var ctx = c.getContext("2d");
 
-    // Deep ocean base — green-tinted so the sphere reads as a planet
+    // Deep ocean base — realistic dark Earth blue (keeps page text readable)
     var g = ctx.createLinearGradient(0, 0, 0, h);
-    g.addColorStop(0, "#041210");
-    g.addColorStop(0.18, "#062a22");
-    g.addColorStop(0.5, "#08382c");
-    g.addColorStop(0.82, "#062a22");
-    g.addColorStop(1, "#041210");
+    g.addColorStop(0, "#020814");
+    g.addColorStop(0.18, "#061830");
+    g.addColorStop(0.5, "#0a2748");
+    g.addColorStop(0.82, "#061830");
+    g.addColorStop(1, "#020814");
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, w, h);
 
@@ -93,7 +93,7 @@
     ctx.globalAlpha = 0.18;
     for (var band = 0; band < 8; band++) {
       var by = (band / 8) * h;
-      ctx.fillStyle = band % 2 === 0 ? "#0a4a38" : "#052820";
+      ctx.fillStyle = band % 2 === 0 ? "#0c3a5c" : "#041828";
       ctx.fillRect(0, by, w, h / 8);
     }
     ctx.globalAlpha = 1;
@@ -102,20 +102,20 @@
       return [(lon + 180) / 360 * w, (90 - lat) / 180 * h];
     }
 
-    // Land masses — brighter green so continents are obvious
+    // Land masses — muted natural greens/browns (continents still read on blue ocean)
     var lands = [
-      { lon: -100, lat: 45, rx: 0.17, ry: 0.15, color: "#248a52" },
-      { lon: -100, lat: 55, rx: 0.19, ry: 0.11, color: "#1f7a48" },
-      { lon: -62, lat: -10, rx: 0.10, ry: 0.19, color: "#269456" },
-      { lon: 15, lat: 10, rx: 0.13, ry: 0.19, color: "#228850" },
-      { lon: 20, lat: 50, rx: 0.11, ry: 0.09, color: "#1e7644" },
-      { lon: 90, lat: 45, rx: 0.23, ry: 0.15, color: "#1c7342" },
-      { lon: 105, lat: 25, rx: 0.17, ry: 0.13, color: "#21864e" },
-      { lon: 135, lat: -25, rx: 0.09, ry: 0.08, color: "#249052" },
-      { lon: 25, lat: -25, rx: 0.07, ry: 0.09, color: "#20824c" },
-      { lon: -45, lat: 70, rx: 0.11, ry: 0.07, color: "#1a6840" },
-      { lon: -70, lat: -40, rx: 0.05, ry: 0.12, color: "#1e7846" },
-      { lon: 38, lat: -5, rx: 0.05, ry: 0.06, color: "#248c50" }
+      { lon: -100, lat: 45, rx: 0.17, ry: 0.15, color: "#2a5a3c" },
+      { lon: -100, lat: 55, rx: 0.19, ry: 0.11, color: "#254f36" },
+      { lon: -62, lat: -10, rx: 0.10, ry: 0.19, color: "#2d6340" },
+      { lon: 15, lat: 10, rx: 0.13, ry: 0.19, color: "#295a38" },
+      { lon: 20, lat: 50, rx: 0.11, ry: 0.09, color: "#3a5640" },
+      { lon: 90, lat: 45, rx: 0.23, ry: 0.15, color: "#345038" },
+      { lon: 105, lat: 25, rx: 0.17, ry: 0.13, color: "#3d5c36" },
+      { lon: 135, lat: -25, rx: 0.09, ry: 0.08, color: "#2f5a3a" },
+      { lon: 25, lat: -25, rx: 0.07, ry: 0.09, color: "#2c5538" },
+      { lon: -45, lat: 70, rx: 0.11, ry: 0.07, color: "#3a4e48" },
+      { lon: -70, lat: -40, rx: 0.05, ry: 0.12, color: "#3d5238" },
+      { lon: 38, lat: -5, rx: 0.05, ry: 0.06, color: "#2e5c3c" }
     ];
     lands.forEach(function (L) {
       var p = lonLatToXY(L.lon, L.lat);
@@ -123,7 +123,7 @@
       var rg = ctx.createRadialGradient(p[0], p[1], 0, p[0], p[1], L.rx * w);
       rg.addColorStop(0, L.color);
       rg.addColorStop(0.55, L.color);
-      rg.addColorStop(1, "rgba(8, 40, 28, 0)");
+      rg.addColorStop(1, "rgba(6, 24, 48, 0)");
       ctx.fillStyle = rg;
       ctx.beginPath();
       ctx.ellipse(p[0], p[1], L.rx * w, L.ry * h, 0, 0, Math.PI * 2);
@@ -135,16 +135,16 @@
       ctx.fill();
     });
 
-    // Ice caps — pale mint so poles read as globe features
-    ctx.fillStyle = "rgba(180, 220, 200, 0.35)";
+    // Ice caps — pale blue-white so poles read as globe features
+    ctx.fillStyle = "rgba(200, 220, 240, 0.38)";
     ctx.fillRect(0, 0, w, h * 0.06);
     ctx.fillRect(0, h * 0.94, w, h * 0.06);
-    ctx.fillStyle = "rgba(160, 210, 190, 0.22)";
+    ctx.fillStyle = "rgba(170, 200, 230, 0.22)";
     ctx.fillRect(0, h * 0.06, w, h * 0.04);
     ctx.fillRect(0, h * 0.90, w, h * 0.04);
 
     // Lat/lon grid — stronger so curvature is obvious
-    ctx.strokeStyle = "rgba(110, 200, 160, 0.22)";
+    ctx.strokeStyle = "rgba(100, 160, 210, 0.18)";
     ctx.lineWidth = 1;
     var i;
     for (i = 1; i < 12; i++) {
@@ -154,7 +154,7 @@
       ctx.lineTo(w, y);
       ctx.stroke();
     }
-    ctx.strokeStyle = "rgba(110, 200, 160, 0.16)";
+    ctx.strokeStyle = "rgba(90, 150, 200, 0.12)";
     for (i = 1; i < 24; i++) {
       var x = (i / 24) * w;
       ctx.beginPath();
@@ -163,7 +163,7 @@
       ctx.stroke();
     }
     // Equator + prime meridian emphasis
-    ctx.strokeStyle = "rgba(150, 230, 190, 0.28)";
+    ctx.strokeStyle = "rgba(140, 190, 230, 0.22)";
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(0, h / 2);
@@ -182,7 +182,7 @@
       var px = (Math.random() * w) | 0;
       var py = (Math.random() * h) | 0;
       var idx = (py * w + px) * 4;
-      if (d[idx + 1] > 55) {
+      if (d[idx + 1] > 48 && d[idx + 1] > d[idx + 2] - 10) {
         var a = Math.random();
         if (a > 0.5) {
           d[idx] = 200 + (Math.random() * 40) | 0;
@@ -250,10 +250,10 @@
     bumpMap: tex.bump,
     bumpScale: 0.035,
     color: 0xffffff,
-    specular: 0x4a8f6e,
-    shininess: 42,
-    emissive: 0x041a12,
-    emissiveIntensity: 0.22
+    specular: 0x4a7a9f,
+    shininess: 48,
+    emissive: 0x030a14,
+    emissiveIntensity: 0.12
   });
   var earth = new THREE.Mesh(
     new THREE.SphereGeometry(R, segs, segs),
@@ -270,7 +270,7 @@
     cc.height = ch;
     var cctx = cc.getContext("2d");
     cctx.clearRect(0, 0, cw, ch);
-    cctx.fillStyle = "rgba(200, 240, 220, 0.55)";
+    cctx.fillStyle = "rgba(220, 230, 245, 0.55)";
     var cn = mobile ? 40 : 70;
     for (var i = 0; i < cn; i++) {
       var cx = Math.random() * cw;
@@ -305,9 +305,9 @@
   var atmos = new THREE.Mesh(
     new THREE.SphereGeometry(R * 1.08, segs, segs),
     new THREE.MeshBasicMaterial({
-      color: 0x34d399,
+      color: 0x3b82f6,
       transparent: true,
-      opacity: 0.14,
+      opacity: 0.12,
       side: THREE.BackSide,
       depthWrite: false,
       blending: THREE.AdditiveBlending
@@ -318,9 +318,9 @@
   var atmos2 = new THREE.Mesh(
     new THREE.SphereGeometry(R * 1.035, segs, segs),
     new THREE.MeshBasicMaterial({
-      color: 0x6ee7b7,
+      color: 0x60a5fa,
       transparent: true,
-      opacity: 0.10,
+      opacity: 0.09,
       side: THREE.BackSide,
       depthWrite: false,
       blending: THREE.AdditiveBlending
@@ -337,7 +337,7 @@
       side: THREE.FrontSide,
       blending: THREE.AdditiveBlending,
       uniforms: {
-        glowColor: { value: new THREE.Color(0x5eead4) }
+        glowColor: { value: new THREE.Color(0x7dd3fc) }
       },
       vertexShader: [
         "varying vec3 vNormal;",
@@ -363,19 +363,19 @@
   root.add(limb);
 
   // Lighting: strong key + fill so day/night terminator reads as a sphere
-  scene.add(new THREE.AmbientLight(0x3d5c4a, 0.28));
-  var hemi = new THREE.HemisphereLight(0xa8e6c8, 0x04120e, 0.45);
+  scene.add(new THREE.AmbientLight(0x2a3a52, 0.26));
+  var hemi = new THREE.HemisphereLight(0xb8d4f0, 0x020810, 0.42);
   scene.add(hemi);
 
-  var sun = new THREE.DirectionalLight(0xe8fff0, 1.15);
+  var sun = new THREE.DirectionalLight(0xf0f4ff, 1.15);
   sun.position.set(-2.4, 0.85, 1.6);
   scene.add(sun);
 
-  var sun2 = new THREE.DirectionalLight(0x9fd4b8, 0.35);
+  var sun2 = new THREE.DirectionalLight(0x8ab4d8, 0.32);
   sun2.position.set(-1.2, -0.6, 2.0);
   scene.add(sun2);
 
-  var rim = new THREE.DirectionalLight(0x10b981, 0.55);
+  var rim = new THREE.DirectionalLight(0x2563eb, 0.45);
   rim.position.set(2.8, 0.15, -1.4);
   scene.add(rim);
 
@@ -551,7 +551,7 @@
     var disc = new THREE.Mesh(
       new THREE.CircleGeometry(radius * 0.92, 18),
       new THREE.MeshBasicMaterial({
-        color: tint || 0xd1fae5,
+        color: tint || 0xbfdbfe,
         transparent: true,
         opacity: 0.22,
         side: THREE.DoubleSide,
