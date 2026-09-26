@@ -454,13 +454,16 @@ layout: null
       letter-spacing: 0.01em;
       line-height: 1.1;
     }
-    article.sim .card-logo img {
-      max-height: 64px;
-      width: 64px;
-      height: 64px;
+    article.sim .card-logo {
+      align-self: stretch;
+      width: 100%;
     }
-    article.sim .card-brand {
-      margin-bottom: 0.15rem;
+    article.sim .card-logo img {
+      max-height: none;
+      width: 100%;
+      max-width: 420px;
+      height: auto;
+      border-radius: 10px;
     }
     .card-actions { margin-top: auto; padding-top: 0.7rem; }
 
@@ -721,12 +724,9 @@ layout: null
           </div>
         </article>
         <article class="card sim">
-          <div class="card-brand">
-            <a class="card-logo" href="https://similarize.com" aria-label="Similarize">
-              <img src="img/similarize-imi.png" alt="" width="64" height="64">
-            </a>
-            <h3>Similarize</h3>
-          </div>
+          <a class="card-logo" href="https://similarize.com" aria-label="Similarize">
+            <img src="img/fe-card-drive.png?v=drivecollapse5" alt="Similarize" width="960" height="340">
+          </a>
           <p>Rewrites what you mean so different perspectives can hear it — same honest point, clearer and more receivable.</p>
           <div class="card-actions">
             <a class="btn btn-ghost" href="https://similarize.com">Try Similarize</a>
