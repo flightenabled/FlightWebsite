@@ -454,7 +454,16 @@ layout: null
       letter-spacing: 0.01em;
       line-height: 1.1;
     }
-    /* Similarize uses same card-logo sizing as SHV (max-height 120) */
+    article.sim .card-logo {
+      align-self: stretch;
+      width: 100%;
+    }
+    article.sim .card-logo img {
+      width: 100%;
+      max-height: none;
+      height: auto;
+      object-fit: contain;
+    }
     .card-actions { margin-top: auto; padding-top: 0.7rem; }
 
     .join { background: var(--bg-2); border-top: 1px solid var(--line); }
@@ -715,9 +724,9 @@ layout: null
         </article>
         <article class="card sim">
           <a class="card-logo" href="https://similarize.com" aria-label="Similarize">
-            <img src="img/similarize-card.svg?v=vector1" alt="Similarize" width="358" height="240">
+            <img src="img/fe-card-drive.png?v=rollback-drivecollapse5" alt="Similarize" width="960" height="340">
           </a>
-          <p>Same honest point, clearer — so different perspectives can hear it.</p>
+          <p>Rewrites what you mean so different perspectives can hear it — same honest point, clearer and more receivable.</p>
           <div class="card-actions">
             <a class="btn btn-ghost" href="https://similarize.com">Try Similarize</a>
           </div>
