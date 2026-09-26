@@ -432,6 +432,8 @@ layout: null
       align-self: flex-start;
       text-decoration: none;
       line-height: 0;
+      /* Fixed band so SHV + Sim taglines line up */
+      min-height: 120px;
     }
     .card-logo img {
       display: block;
@@ -454,13 +456,16 @@ layout: null
       letter-spacing: 0.01em;
       line-height: 1.1;
     }
+    /* Existing Drive mid-word lockup — same mark, sized like SHV (not full-bleed/fuzzy) */
     article.sim .card-logo {
-      align-self: stretch;
-      width: 100%;
+      align-self: flex-start;
+      width: auto;
+      max-width: 100%;
     }
     article.sim .card-logo img {
-      width: 100%;
-      max-height: none;
+      width: auto;
+      max-width: min(100%, 340px);
+      max-height: 100px;
       height: auto;
       object-fit: contain;
     }
@@ -724,7 +729,7 @@ layout: null
         </article>
         <article class="card sim">
           <a class="card-logo" href="https://similarize.com" aria-label="Similarize">
-            <img src="img/fe-card-drive.png?v=rollback-drivecollapse5" alt="Similarize" width="960" height="340">
+            <img src="img/fe-card-drive.png?v=rollback-size1" alt="Similarize" width="960" height="340">
           </a>
           <p>Rewrites what you mean so different perspectives can hear it — same honest point, clearer and more receivable.</p>
           <div class="card-actions">
