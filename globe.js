@@ -1,1090 +1,265 @@
+/* Flight Enabled hero globe (Oct 2026 redesign).
+   Photoreal Earth: NASA Blue Marble (day) + Black Marble 2016 (night lights), both public domain, self-hosted WebP.
+   Thin great-circle arcs for regional hops out of Salt Lake City, each with one small point of light that fades in and out.
+   Light on phones: DPR cap, 30 fps cap, pauses off-screen and in hidden tabs. prefers-reduced-motion: one static frame. */
 (function () {
   "use strict";
 
   var canvas = document.getElementById("globe");
-  var fallback = document.getElementById("globe-fallback");
   var stage = document.getElementById("globe-stage");
+  var fallback = document.getElementById("globe-fallback");
   if (!canvas) return;
 
   function showFallback() {
     canvas.hidden = true;
-    canvas.setAttribute("aria-hidden", "true");
-    if (fallback) {
-      fallback.hidden = false;
-      fallback.removeAttribute("hidden");
-    }
+    if (fallback) fallback.hidden = false;
+    if (stage) stage.classList.add("is-ready");
   }
-
-  if (typeof THREE === "undefined") {
-    showFallback();
-    return;
-  }
+  if (typeof THREE === "undefined") { showFallback(); return; }
 
   var reduced = false;
-  try {
-    reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  } catch (err) {}
-
+  try { reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
   function isMobile() {
-    return window.matchMedia("(max-width: 720px)").matches ||
-      (navigator.maxTouchPoints > 1 && window.innerWidth < 900);
+    return window.matchMedia("(max-width: 720px)").matches || (navigator.maxTouchPoints > 1 && window.innerWidth < 900);
   }
+  var mobile = isMobile();
+  var lowMem = (navigator.deviceMemory && navigator.deviceMemory <= 2);
 
   var renderer;
   try {
-    renderer = new THREE.WebGLRenderer({
-      canvas: canvas,
-      antialias: !isMobile(),
-      alpha: true,
-      powerPreference: "low-power"
-    });
-  } catch (err) {
-    showFallback();
-    return;
-  }
-  if (!renderer.getContext()) {
-    showFallback();
-    return;
-  }
-
+    renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: !mobile, alpha: true, powerPreference: "low-power" });
+  } catch (e) { showFallback(); return; }
+  if (!renderer.getContext()) { showFallback(); return; }
   renderer.setClearColor(0x000000, 0);
-  renderer.outputEncoding = THREE.sRGBEncoding;
 
   var scene = new THREE.Scene();
-  var camera = new THREE.PerspectiveCamera(42, 1, 0.1, 40);
-  camera.position.set(0, 0.22, 2.55);
+  var camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
+  camera.position.set(0, 0, 4.2);
 
-  var root = new THREE.Group();
+  var root = new THREE.Group();          // positions the globe in the frame
+  var globe = new THREE.Group();         // rotates (yaw/pitch); everything on the Earth lives here
+  root.add(globe);
   scene.add(root);
 
-  var R = 1;
-  var mobile = isMobile();
-  var segs = mobile ? 48 : 96;
-
-  function latLonToVec3(lat, lon, radius) {
-    var phi = (90 - lat) * Math.PI / 180;
-    var theta = (lon + 180) * Math.PI / 180;
-    return new THREE.Vector3(
-      -radius * Math.sin(phi) * Math.cos(theta),
-      radius * Math.cos(phi),
-      radius * Math.sin(phi) * Math.sin(theta)
-    );
+  function ll(lat, lon, r) {
+    var phi = (90 - lat) * Math.PI / 180, th = (lon + 180) * Math.PI / 180;
+    return new THREE.Vector3(-r * Math.sin(phi) * Math.cos(th), r * Math.cos(phi), r * Math.sin(phi) * Math.sin(th));
   }
 
-  function makeEarthTextures() {
-    var w = mobile ? 1024 : 1536;
-    var h = w / 2;
-    var c = document.createElement("canvas");
-    c.width = w;
-    c.height = h;
-    var ctx = c.getContext("2d");
+  // Sun from the upper left, a little behind the viewer's plane: the right side of the globe falls into night.
+  var SUN = new THREE.Vector3(-0.82, 0.36, 0.45).normalize();
 
-    // Deep ocean base — realistic dark Earth blue (keeps page text readable)
-    var g = ctx.createLinearGradient(0, 0, 0, h);
-    g.addColorStop(0, "#020814");
-    g.addColorStop(0.18, "#061830");
-    g.addColorStop(0.5, "#0a2748");
-    g.addColorStop(0.82, "#061830");
-    g.addColorStop(1, "#020814");
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, w, h);
-
-    // Subtle ocean depth bands (latitude shading helps the sphere read)
-    ctx.globalAlpha = 0.18;
-    for (var band = 0; band < 8; band++) {
-      var by = (band / 8) * h;
-      ctx.fillStyle = band % 2 === 0 ? "#0c3a5c" : "#041828";
-      ctx.fillRect(0, by, w, h / 8);
-    }
-    ctx.globalAlpha = 1;
-
-    function lonLatToXY(lon, lat) {
-      return [(lon + 180) / 360 * w, (90 - lat) / 180 * h];
-    }
-
-    // Land masses — muted natural greens/browns (continents still read on blue ocean)
-    var lands = [
-      { lon: -100, lat: 45, rx: 0.17, ry: 0.15, color: "#2a5a3c" },
-      { lon: -100, lat: 55, rx: 0.19, ry: 0.11, color: "#254f36" },
-      { lon: -62, lat: -10, rx: 0.10, ry: 0.19, color: "#2d6340" },
-      { lon: 15, lat: 10, rx: 0.13, ry: 0.19, color: "#295a38" },
-      { lon: 20, lat: 50, rx: 0.11, ry: 0.09, color: "#3a5640" },
-      { lon: 90, lat: 45, rx: 0.23, ry: 0.15, color: "#345038" },
-      { lon: 105, lat: 25, rx: 0.17, ry: 0.13, color: "#3d5c36" },
-      { lon: 135, lat: -25, rx: 0.09, ry: 0.08, color: "#2f5a3a" },
-      { lon: 25, lat: -25, rx: 0.07, ry: 0.09, color: "#2c5538" },
-      { lon: -45, lat: 70, rx: 0.11, ry: 0.07, color: "#3a4e48" },
-      { lon: -70, lat: -40, rx: 0.05, ry: 0.12, color: "#3d5238" },
-      { lon: 38, lat: -5, rx: 0.05, ry: 0.06, color: "#2e5c3c" }
-    ];
-    lands.forEach(function (L) {
-      var p = lonLatToXY(L.lon, L.lat);
-      // Soft outer glow for continent edges
-      var rg = ctx.createRadialGradient(p[0], p[1], 0, p[0], p[1], L.rx * w);
-      rg.addColorStop(0, L.color);
-      rg.addColorStop(0.55, L.color);
-      rg.addColorStop(1, "rgba(6, 24, 48, 0)");
-      ctx.fillStyle = rg;
-      ctx.beginPath();
-      ctx.ellipse(p[0], p[1], L.rx * w, L.ry * h, 0, 0, Math.PI * 2);
-      ctx.fill();
-      // Core fill for solid land read
-      ctx.fillStyle = L.color;
-      ctx.beginPath();
-      ctx.ellipse(p[0], p[1], L.rx * w * 0.72, L.ry * h * 0.72, 0, 0, Math.PI * 2);
-      ctx.fill();
-    });
-
-    // Ice caps — pale blue-white so poles read as globe features
-    ctx.fillStyle = "rgba(200, 220, 240, 0.38)";
-    ctx.fillRect(0, 0, w, h * 0.06);
-    ctx.fillRect(0, h * 0.94, w, h * 0.06);
-    ctx.fillStyle = "rgba(170, 200, 230, 0.22)";
-    ctx.fillRect(0, h * 0.06, w, h * 0.04);
-    ctx.fillRect(0, h * 0.90, w, h * 0.04);
-
-    // Lat/lon grid — stronger so curvature is obvious
-    ctx.strokeStyle = "rgba(100, 160, 210, 0.18)";
-    ctx.lineWidth = 1;
-    var i;
-    for (i = 1; i < 12; i++) {
-      var y = (i / 12) * h;
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(w, y);
-      ctx.stroke();
-    }
-    ctx.strokeStyle = "rgba(90, 150, 200, 0.12)";
-    for (i = 1; i < 24; i++) {
-      var x = (i / 24) * w;
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, h);
-      ctx.stroke();
-    }
-    // Equator + prime meridian emphasis
-    ctx.strokeStyle = "rgba(140, 190, 230, 0.22)";
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.moveTo(0, h / 2);
-    ctx.lineTo(w, h / 2);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(w / 2, 0);
-    ctx.lineTo(w / 2, h);
-    ctx.stroke();
-
-    // City-light speckles on land
-    var img = ctx.getImageData(0, 0, w, h);
-    var d = img.data;
-    var n = mobile ? 5000 : 11000;
-    for (i = 0; i < n; i++) {
-      var px = (Math.random() * w) | 0;
-      var py = (Math.random() * h) | 0;
-      var idx = (py * w + px) * 4;
-      if (d[idx + 1] > 48 && d[idx + 1] > d[idx + 2] - 10) {
-        var a = Math.random();
-        if (a > 0.5) {
-          d[idx] = 200 + (Math.random() * 40) | 0;
-          d[idx + 1] = 180 + (Math.random() * 50) | 0;
-          d[idx + 2] = 90 + (Math.random() * 40) | 0;
-          d[idx + 3] = 255;
-        }
-      }
-    }
-    ctx.putImageData(img, 0, 0);
-
-    var colorTex = new THREE.CanvasTexture(c);
-    colorTex.encoding = THREE.sRGBEncoding;
-    colorTex.anisotropy = 4;
-    colorTex.wrapS = THREE.ClampToEdgeWrapping;
-    colorTex.wrapT = THREE.ClampToEdgeWrapping;
-
-    // Specular map: oceans shiny, land matte
-    var sc = document.createElement("canvas");
-    sc.width = w;
-    sc.height = h;
-    var sctx = sc.getContext("2d");
-    sctx.fillStyle = "#888888";
-    sctx.fillRect(0, 0, w, h);
-    lands.forEach(function (L) {
-      var p = lonLatToXY(L.lon, L.lat);
-      sctx.fillStyle = "#111111";
-      sctx.beginPath();
-      sctx.ellipse(p[0], p[1], L.rx * w * 0.85, L.ry * h * 0.85, 0, 0, Math.PI * 2);
-      sctx.fill();
-    });
-    // Ice caps less specular
-    sctx.fillStyle = "#333333";
-    sctx.fillRect(0, 0, w, h * 0.08);
-    sctx.fillRect(0, h * 0.92, w, h * 0.08);
-    var specTex = new THREE.CanvasTexture(sc);
-    specTex.wrapS = THREE.ClampToEdgeWrapping;
-    specTex.wrapT = THREE.ClampToEdgeWrapping;
-
-    // Bump from land silhouettes
-    var bc = document.createElement("canvas");
-    bc.width = w;
-    bc.height = h;
-    var bctx = bc.getContext("2d");
-    bctx.fillStyle = "#404040";
-    bctx.fillRect(0, 0, w, h);
-    lands.forEach(function (L) {
-      var p = lonLatToXY(L.lon, L.lat);
-      bctx.fillStyle = "#a0a0a0";
-      bctx.beginPath();
-      bctx.ellipse(p[0], p[1], L.rx * w * 0.8, L.ry * h * 0.8, 0, 0, Math.PI * 2);
-      bctx.fill();
-    });
-    var bumpTex = new THREE.CanvasTexture(bc);
-    bumpTex.wrapS = THREE.ClampToEdgeWrapping;
-    bumpTex.wrapT = THREE.ClampToEdgeWrapping;
-
-    return { color: colorTex, specular: specTex, bump: bumpTex };
+  var dayRes = lowMem ? 1024 : 2048;
+  var nightRes = (mobile || lowMem) ? 1024 : 2048;
+  var loader = new THREE.TextureLoader();
+  var pending = 2;
+  var uniforms = {
+    dayMap: { value: null },
+    nightMap: { value: null },
+    sunDir: { value: SUN }
+  };
+  function loaded() {
+    pending -= 1;
+    if (pending === 0) { ready(); }
   }
-
-  var tex = makeEarthTextures();
-  var earthMat = new THREE.MeshPhongMaterial({
-    map: tex.color,
-    specularMap: tex.specular,
-    bumpMap: tex.bump,
-    bumpScale: 0.035,
-    color: 0xffffff,
-    specular: 0x4a7a9f,
-    shininess: 48,
-    emissive: 0x030a14,
-    emissiveIntensity: 0.12
+  function fail() { showFallback(); }
+  uniforms.dayMap.value = loader.load("assets/globe/earth-day-" + dayRes + ".webp", loaded, undefined, fail);
+  uniforms.nightMap.value = loader.load("assets/globe/earth-night-" + nightRes + ".webp", loaded, undefined, fail);
+  [uniforms.dayMap.value, uniforms.nightMap.value].forEach(function (t) {
+    t.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
   });
-  var earth = new THREE.Mesh(
-    new THREE.SphereGeometry(R, segs, segs),
-    earthMat
-  );
-  root.add(earth);
 
-  // Soft cloud layer for depth / spherical read
-  (function clouds() {
-    var cw = mobile ? 512 : 768;
-    var ch = cw / 2;
-    var cc = document.createElement("canvas");
-    cc.width = cw;
-    cc.height = ch;
-    var cctx = cc.getContext("2d");
-    cctx.clearRect(0, 0, cw, ch);
-    cctx.fillStyle = "rgba(220, 230, 245, 0.55)";
-    var cn = mobile ? 40 : 70;
-    for (var i = 0; i < cn; i++) {
-      var cx = Math.random() * cw;
-      var cy = Math.random() * ch;
-      var crx = (0.02 + Math.random() * 0.08) * cw;
-      var cry = crx * (0.25 + Math.random() * 0.35);
-      cctx.globalAlpha = 0.15 + Math.random() * 0.25;
-      cctx.beginPath();
-      cctx.ellipse(cx, cy, crx, cry, Math.random() * Math.PI, 0, Math.PI * 2);
-      cctx.fill();
-    }
-    cctx.globalAlpha = 1;
-    var cloudTex = new THREE.CanvasTexture(cc);
-    cloudTex.encoding = THREE.sRGBEncoding;
-    var cloudMesh = new THREE.Mesh(
-      new THREE.SphereGeometry(R * 1.012, segs, segs),
-      new THREE.MeshPhongMaterial({
-        map: cloudTex,
-        transparent: true,
-        opacity: 0.32,
-        depthWrite: false,
-        specular: 0x222222,
-        shininess: 4,
-        emissive: 0x000000
-      })
-    );
-    root.add(cloudMesh);
-    earth.userData.clouds = cloudMesh;
-  })();
+  var segs = mobile ? 72 : 112;
+  var earthMat = new THREE.ShaderMaterial({
+    uniforms: uniforms,
+    vertexShader: [
+      "varying vec2 vUv; varying vec3 vN; varying vec3 vV;",
+      "void main(){",
+      "  vUv = uv;",
+      "  vN = normalize(mat3(modelMatrix) * normal);",
+      "  vec4 wp = modelMatrix * vec4(position, 1.0);",
+      "  vV = normalize(cameraPosition - wp.xyz);",
+      "  gl_Position = projectionMatrix * viewMatrix * wp;",
+      "}"
+    ].join("\n"),
+    fragmentShader: [
+      "uniform sampler2D dayMap; uniform sampler2D nightMap; uniform vec3 sunDir;",
+      "varying vec2 vUv; varying vec3 vN; varying vec3 vV;",
+      "void main(){",
+      "  vec3 n = normalize(vN);",
+      "  float d = dot(n, sunDir);",
+      "  float dayK = smoothstep(-0.12, 0.28, d);",
+      "  vec3 day = texture2D(dayMap, vUv).rgb;",
+      "  float lights = texture2D(nightMap, vUv).r;",
+      "  float ocean = smoothstep(0.0, 0.22, day.b - day.r);",
+      "  vec3 h = normalize(sunDir + normalize(vV));",
+      "  float spec = pow(max(dot(n, h), 0.0), 30.0) * ocean * 0.22 * dayK;",
+      "  vec3 lit = day * (0.18 + 0.95 * max(d, 0.0)) + vec3(0.75, 0.82, 0.9) * spec;",
+      "  vec3 night = day * 0.025 + vec3(1.0, 0.80, 0.55) * pow(lights, 1.6) * 0.95;",
+      "  vec3 col = mix(night, lit, dayK);",
+      "  float rim = pow(1.0 - max(dot(n, normalize(vV)), 0.0), 3.0);",
+      "  col += vec3(0.30, 0.55, 1.0) * rim * (0.12 + 0.55 * smoothstep(-0.2, 0.6, d));",
+      "  gl_FragColor = vec4(col, 1.0);",
+      "}"
+    ].join("\n")
+  });
+  var earth = new THREE.Mesh(new THREE.SphereGeometry(1, segs, segs / 2), earthMat);
+  globe.add(earth);
 
-  // Atmosphere rim — BackSide glow for clear limb / spherical silhouette
-  var atmos = new THREE.Mesh(
-    new THREE.SphereGeometry(R * 1.08, segs, segs),
-    new THREE.MeshBasicMaterial({
-      color: 0x3b82f6,
-      transparent: true,
-      opacity: 0.12,
-      side: THREE.BackSide,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending
-    })
-  );
-  root.add(atmos);
+  // Thin atmosphere: soft blue halo just outside the limb, brighter on the day side.
+  var atmo = new THREE.Mesh(new THREE.SphereGeometry(1.03, segs, segs / 2), new THREE.ShaderMaterial({
+    uniforms: { sunDir: uniforms.sunDir },
+    vertexShader: [
+      "varying vec3 vN; varying vec3 vV;",
+      "void main(){ vN = normalize(mat3(modelMatrix) * normal); vec4 wp = modelMatrix * vec4(position,1.0);",
+      "  vV = normalize(cameraPosition - wp.xyz); gl_Position = projectionMatrix * viewMatrix * wp; }"
+    ].join("\n"),
+    fragmentShader: [
+      "uniform vec3 sunDir; varying vec3 vN; varying vec3 vV;",
+      "void main(){ float f = pow(clamp(1.0 + dot(normalize(vN), normalize(vV)), 0.0, 1.0), 3.2);",
+      "  float s = 0.25 + 0.75 * smoothstep(-0.3, 0.7, dot(normalize(vN), sunDir));",
+      "  gl_FragColor = vec4(vec3(0.35, 0.62, 1.0) * f * s * 0.9, f * s * 0.8); }"
+    ].join("\n"),
+    side: THREE.BackSide, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending
+  }));
+  root.add(atmo); // not rotated: the halo is view-dependent only
 
-  var atmos2 = new THREE.Mesh(
-    new THREE.SphereGeometry(R * 1.035, segs, segs),
-    new THREE.MeshBasicMaterial({
-      color: 0x60a5fa,
-      transparent: true,
-      opacity: 0.09,
-      side: THREE.BackSide,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending
-    })
-  );
-  root.add(atmos2);
-
-  // Thin bright limb ring (helps silhouette against dark bg)
-  var limb = new THREE.Mesh(
-    new THREE.SphereGeometry(R * 1.002, segs, segs),
-    new THREE.ShaderMaterial({
-      transparent: true,
-      depthWrite: false,
-      side: THREE.FrontSide,
-      blending: THREE.AdditiveBlending,
-      uniforms: {
-        glowColor: { value: new THREE.Color(0x7dd3fc) }
-      },
-      vertexShader: [
-        "varying vec3 vNormal;",
-        "varying vec3 vView;",
-        "void main() {",
-        "  vNormal = normalize(normalMatrix * normal);",
-        "  vec4 mv = modelViewMatrix * vec4(position, 1.0);",
-        "  vView = normalize(-mv.xyz);",
-        "  gl_Position = projectionMatrix * mv;",
-        "}"
-      ].join("\n"),
-      fragmentShader: [
-        "uniform vec3 glowColor;",
-        "varying vec3 vNormal;",
-        "varying vec3 vView;",
-        "void main() {",
-        "  float fresnel = pow(1.0 - max(dot(vNormal, vView), 0.0), 3.2);",
-        "  gl_FragColor = vec4(glowColor, fresnel * 0.55);",
-        "}"
-      ].join("\n")
-    })
-  );
-  root.add(limb);
-
-  // Lighting: strong key + fill so day/night terminator reads as a sphere
-  scene.add(new THREE.AmbientLight(0x2a3a52, 0.26));
-  var hemi = new THREE.HemisphereLight(0xb8d4f0, 0x020810, 0.42);
-  scene.add(hemi);
-
-  var sun = new THREE.DirectionalLight(0xf0f4ff, 1.15);
-  sun.position.set(-2.4, 0.85, 1.6);
-  scene.add(sun);
-
-  var sun2 = new THREE.DirectionalLight(0x8ab4d8, 0.32);
-  sun2.position.set(-1.2, -0.6, 2.0);
-  scene.add(sun2);
-
-  var rim = new THREE.DirectionalLight(0x2563eb, 0.45);
-  rim.position.set(2.8, 0.15, -1.4);
-  scene.add(rim);
-
-  var amberFill = new THREE.PointLight(0xd97706, 0.22, 6);
-  amberFill.position.set(0.8, 0.4, 2.2);
-  scene.add(amberFill);
-
-  // Starfield
+  // Faint stars on a far shell.
   (function stars() {
-    var count = mobile ? 350 : 900;
-    var geo = new THREE.BufferGeometry();
-    var pos = new Float32Array(count * 3);
-    for (var i = 0; i < count; i++) {
-      var r = 8 + Math.random() * 12;
-      var u = Math.random();
-      var v = Math.random();
-      var theta = 2 * Math.PI * u;
-      var phi = Math.acos(2 * v - 1);
-      pos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-      pos[i * 3 + 1] = r * Math.cos(phi);
-      pos[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
+    var n = mobile ? 420 : 900, pos = new Float32Array(n * 3), i, v = new THREE.Vector3();
+    for (i = 0; i < n; i++) {
+      v.set(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize().multiplyScalar(40);
+      if (v.z > 30) v.z = -v.z;
+      pos[i * 3] = v.x; pos[i * 3 + 1] = v.y; pos[i * 3 + 2] = v.z;
     }
-    geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-    var pts = new THREE.Points(
-      geo,
-      new THREE.PointsMaterial({
-        color: 0xb7c4b8,
-        size: mobile ? 0.018 : 0.012,
-        sizeAttenuation: true,
-        transparent: true,
-        opacity: 0.7,
-        depthWrite: false
-      })
-    );
-    scene.add(pts);
+    var g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+    scene.add(new THREE.Points(g, new THREE.PointsMaterial({ color: 0xcfd8e3, size: mobile ? 1.1 : 1.3, sizeAttenuation: false, transparent: true, opacity: 0.45, depthWrite: false })));
   })();
 
-  var CITIES = [
-    [40.6553, -111.9073],
-    [37.44, -122.16],
-    [34.05, -118.24],
-    [47.61, -122.33],
-    [40.71, -74.01],
-    [41.88, -87.63],
-    [29.76, -95.37],
-    [25.76, -80.19],
-    [51.51, -0.13],
-    [48.86, 2.35],
-    [48.14, 11.58],
-    [52.52, 13.40],
-    [52.41, -1.51],
-    [41.90, 12.50],
-    [40.42, -3.70],
-    [55.76, 37.62],
-    [25.20, 55.27],
-    [24.45, 54.38],
-    [1.35, 103.82],
-    [35.68, 139.69],
-    [37.57, 126.98],
-    [31.23, 121.47],
-    [23.13, 113.26],
-    [22.32, 114.17],
-    [39.90, 116.41],
-    [-33.87, 151.21],
-    [-27.47, 153.03],
-    [-37.81, 144.96],
-    [-23.55, -46.63],
-    [-34.60, -58.38],
-    [19.43, -99.13],
-    [45.50, -73.57],
-    [43.65, -79.38],
-    [35.68, -105.94],
-    [39.74, -104.99],
-    [32.78, -96.80],
-    [33.45, -112.07],
-    [49.28, -123.12],
-    [59.33, 18.07],
-    [50.11, 8.68]
+  // Regional hops from Salt Lake City.
+  var SLC = [40.7608, -111.8910];
+  var CITIES = {
+    boise: [43.6150, -116.2023], denver: [39.7392, -104.9903], vegas: [36.1699, -115.1398],
+    phoenix: [33.4484, -112.0740], reno: [39.5296, -119.8138], jackson: [43.4799, -110.7624],
+    stgeorge: [37.0965, -113.5684], albuquerque: [35.0844, -106.6504]
+  };
+  var HOPS = [
+    [SLC, CITIES.boise], [SLC, CITIES.denver], [SLC, CITIES.vegas], [SLC, CITIES.phoenix],
+    [SLC, CITIES.reno], [SLC, CITIES.jackson], [SLC, CITIES.stgeorge], [CITIES.denver, CITIES.albuquerque]
   ];
 
-  (function cityLights() {
-    var geo = new THREE.BufferGeometry();
-    var pos = new Float32Array(CITIES.length * 3);
-    var cols = new Float32Array(CITIES.length * 3);
-    for (var i = 0; i < CITIES.length; i++) {
-      var v = latLonToVec3(CITIES[i][0], CITIES[i][1], R * 1.006);
-      pos[i * 3] = v.x;
-      pos[i * 3 + 1] = v.y;
-      pos[i * 3 + 2] = v.z;
-      var murray = i === 0;
-      cols[i * 3] = murray ? 0.85 : 0.45;
-      cols[i * 3 + 1] = murray ? 0.47 : 0.85;
-      cols[i * 3 + 2] = murray ? 0.04 : 0.55;
-    }
-    geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-    geo.setAttribute("color", new THREE.BufferAttribute(cols, 3));
-    earth.add(new THREE.Points(geo, new THREE.PointsMaterial({
-      size: mobile ? 0.028 : 0.018,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.95,
-      depthWrite: false
-    })));
+  var glowTex = (function () {
+    var c = document.createElement("canvas"); c.width = c.height = 64;
+    var x = c.getContext("2d"), g = x.createRadialGradient(32, 32, 0, 32, 32, 32);
+    g.addColorStop(0, "rgba(255,255,255,1)"); g.addColorStop(0.18, "rgba(220,255,235,0.85)");
+    g.addColorStop(0.45, "rgba(120,230,170,0.22)"); g.addColorStop(1, "rgba(120,230,170,0)");
+    x.fillStyle = g; x.fillRect(0, 0, 64, 64);
+    return new THREE.CanvasTexture(c);
   })();
 
-  function greatCircle(from, to, n) {
-    n = n || 64;
-    var a = latLonToVec3(from[0], from[1], 1).normalize();
-    var b = latLonToVec3(to[0], to[1], 1).normalize();
-    var dot = Math.min(1, Math.max(-1, a.dot(b)));
-    var omega = Math.acos(dot);
-    var sin = Math.sin(omega);
-    var pts = [];
-    for (var i = 0; i <= n; i++) {
-      var t = i / n;
-      var p;
-      if (sin < 1e-5) p = a.clone();
-      else {
-        p = a.clone().multiplyScalar(Math.sin((1 - t) * omega) / sin)
-          .add(b.clone().multiplyScalar(Math.sin(t * omega) / sin));
-      }
-      var lift = 1;
-      pts.push(p.normalize().multiplyScalar(R * lift));
+  function arcPoints(a, b, n) {
+    var va = ll(a[0], a[1], 1), vb = ll(b[0], b[1], 1), ang = va.angleTo(vb), pts = [], i;
+    for (i = 0; i <= n; i++) {
+      var t = i / n, s = Math.sin(ang);
+      var p = va.clone().multiplyScalar(Math.sin((1 - t) * ang) / s).add(vb.clone().multiplyScalar(Math.sin(t * ang) / s));
+      p.normalize().multiplyScalar(1.002 + Math.sin(Math.PI * t) * (0.006 + ang * 0.22));
+      pts.push(p);
     }
     return pts;
   }
 
-  // ——— Vehicle meshes ———
-  // Nose is -Z, belly is -Y, so lookAt (which aims -Z) flies them along the arc
-  // with the belly toward the globe. Rotors spin on local +Y.
-  function mat(color, opts) {
-    opts = opts || {};
-    return new THREE.MeshPhongMaterial({
-      color: color,
-      emissive: opts.emissive || 0x000000,
-      emissiveIntensity: opts.ei || 0.18,
-      specular: opts.specular || 0x9fb4c4,
-      shininess: opts.shininess != null ? opts.shininess : 48,
-      flatShading: !!opts.flat
-    });
-  }
-
-  function paint(color, ei) {
-    return mat(color, { emissive: color, ei: ei == null ? 0.22 : ei, shininess: 28 });
-  }
-
-  function addRotor(g, rotors, x, y, z, radius, tint) {
-    var motor = new THREE.Mesh(
-      new THREE.CylinderGeometry(radius * 0.22, radius * 0.26, radius * 0.38, 8),
-      mat(0x1f2937, { emissive: 0x0f172a, ei: 0.3, shininess: 20 })
-    );
-    motor.position.set(x, y - radius * 0.12, z);
-    g.add(motor);
-
-    var hub = new THREE.Mesh(
-      new THREE.CylinderGeometry(radius * 0.1, radius * 0.1, radius * 0.16, 8),
-      mat(tint || 0xe2e8f0, { emissive: tint || 0xe2e8f0, ei: 0.25 })
-    );
-    hub.position.set(x, y + radius * 0.08, z);
-    g.add(hub);
-
-    var spin = new THREE.Group();
-    spin.position.set(x, y + radius * 0.16, z);
-    var bladeMat = mat(0xf8fafc, { emissive: 0xdbe4ee, ei: 0.35, shininess: 16 });
-    var blade = new THREE.Mesh(new THREE.BoxGeometry(radius * 1.85, radius * 0.06, radius * 0.22), bladeMat);
-    spin.add(blade);
-    var bladeB = blade.clone();
-    bladeB.rotation.y = Math.PI / 2;
-    spin.add(bladeB);
-    g.add(spin);
-    rotors.push(spin);
-
-    var disc = new THREE.Mesh(
-      new THREE.CircleGeometry(radius * 0.92, 18),
-      new THREE.MeshBasicMaterial({
-        color: tint || 0xbfdbfe,
-        transparent: true,
-        opacity: 0.22,
-        side: THREE.DoubleSide,
-        depthWrite: false
-      })
-    );
-    disc.rotation.x = -Math.PI / 2;
-    disc.position.set(x, y + radius * 0.2, z);
-    g.add(disc);
-  }
-
-  function fuselage(g, len, rad, color) {
-    var body = new THREE.Mesh(
-      new THREE.CylinderGeometry(rad * 0.72, rad, len, 12),
-      paint(color, 0.28)
-    );
-    body.rotation.x = Math.PI / 2;
-    body.position.z = 0;
-    g.add(body);
-    var nose = new THREE.Mesh(
-      new THREE.ConeGeometry(rad * 0.92, len * 0.4, 12),
-      paint(color, 0.3)
-    );
-    // Tip toward -Z, which is the nose once the craft is aimed along its route.
-    nose.rotation.x = -Math.PI / 2;
-    nose.position.z = -len * 0.5;
-    g.add(nose);
-    var canopy = new THREE.Mesh(
-      new THREE.SphereGeometry(rad * 0.78, 12, 8),
-      mat(0x0f172a, { emissive: 0x164e63, ei: 0.45, shininess: 80, specular: 0xb6e3f4 })
-    );
-    canopy.scale.set(0.85, 0.62, 1.25);
-    canopy.position.set(0, rad * 0.35, -len * 0.12);
-    g.add(canopy);
-  }
-
-  function wingHalf(g, span, chord, thick, color, y, z, dihedral) {
-    var wing = new THREE.Mesh(
-      new THREE.BoxGeometry(span, thick, chord),
-      paint(color, 0.16)
-    );
-    wing.position.set((span / 2) * (dihedral >= 0 ? 1 : -1), y, z);
-    wing.rotation.z = dihedral;
-    g.add(wing);
-  }
-
-  // Joby-style tilt-six: wing plus two tail rotors, six discs total.
-  function makeJoby(accent) {
-    var g = new THREE.Group();
-    var rotors = [];
-    var white = 0xf4f7fb;
-    var wingC = 0xd7dee8;
-    fuselage(g, 0.062, 0.009, white);
-    wingHalf(g, 0.034, 0.014, 0.0024, wingC, 0.004, -0.004, 0.08);
-    wingHalf(g, 0.034, 0.014, 0.0024, wingC, 0.004, -0.004, -0.08);
-    // V-tail
-    [-1, 1].forEach(function (s) {
-      var fin = new THREE.Mesh(new THREE.BoxGeometry(0.002, 0.016, 0.012), paint(wingC, 0.16));
-      fin.position.set(s * 0.008, 0.008, 0.03);
-      fin.rotation.z = s * -0.7;
-      g.add(fin);
-    });
-    [[-0.014, -0.006], [0.014, -0.006], [-0.03, -0.004], [0.03, -0.004]].forEach(function (p) {
-      addRotor(g, rotors, p[0], 0.01, p[1], 0.009, accent);
-    });
-    addRotor(g, rotors, -0.012, 0.012, 0.03, 0.008, accent);
-    addRotor(g, rotors, 0.012, 0.012, 0.03, 0.008, accent);
-    g.userData.rotors = rotors;
-    g.scale.setScalar(2.15);
-    return g;
-  }
-
-  // Archer-style lift-plus-cruise: long wing, a row of lift rotors, tail.
-  function makeArcher(accent) {
-    var g = new THREE.Group();
-    var rotors = [];
-    var white = 0xf8fafc;
-    var wingC = 0xc5d0dc;
-    fuselage(g, 0.058, 0.0085, white);
-    wingHalf(g, 0.042, 0.016, 0.0022, wingC, 0.003, -0.002, 0.05);
-    wingHalf(g, 0.042, 0.016, 0.0022, wingC, 0.003, -0.002, -0.05);
-    var tail = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.0016, 0.008), paint(wingC, 0.16));
-    tail.position.set(0, 0.002, 0.032);
-    g.add(tail);
-    var fin = new THREE.Mesh(new THREE.BoxGeometry(0.0018, 0.014, 0.01), paint(wingC, 0.16));
-    fin.position.set(0, 0.008, 0.032);
-    g.add(fin);
-    [-0.036, -0.022, -0.01, 0.01, 0.022, 0.036].forEach(function (x, i) {
-      addRotor(g, rotors, x, 0.009, i % 2 ? 0.002 : -0.006, 0.0072, accent);
-    });
-    g.userData.rotors = rotors;
-    g.scale.setScalar(2.15);
-    return g;
-  }
-
-  // Winged tricopter: two rotors on the wing, one tilting rotor on the tail boom.
-  function makeTriWing(accent) {
-    var g = new THREE.Group();
-    var rotors = [];
-    var bodyC = 0xe8eef5;
-    var carbon = 0x334155;
-    var pod = new THREE.Mesh(
-      new THREE.SphereGeometry(0.01, 12, 10),
-      paint(bodyC, 0.3)
-    );
-    pod.scale.set(0.85, 0.7, 1.45);
-    pod.position.z = -0.004;
-    g.add(pod);
-    var canopy = new THREE.Mesh(
-      new THREE.SphereGeometry(0.006, 10, 8),
-      mat(0x0f172a, { emissive: 0x155e75, ei: 0.5, shininess: 70 })
-    );
-    canopy.scale.set(1, 0.7, 1.2);
-    canopy.position.set(0, 0.005, -0.006);
-    g.add(canopy);
-    wingHalf(g, 0.03, 0.012, 0.0022, carbon, 0.001, -0.002, 0.12);
-    wingHalf(g, 0.03, 0.012, 0.0022, carbon, 0.001, -0.002, -0.12);
-    var boom = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.0016, 0.0016, 0.034, 6),
-      mat(carbon, { emissive: 0x1e293b, ei: 0.2 })
-    );
-    boom.rotation.x = Math.PI / 2;
-    boom.position.z = 0.016;
-    g.add(boom);
-    var fin = new THREE.Mesh(new THREE.BoxGeometry(0.0014, 0.012, 0.008), paint(carbon, 0.15));
-    fin.position.set(0, 0.006, 0.03);
-    g.add(fin);
-    // Front pair sits on the wing; rear rotor is the yaw-tilt prop.
-    addRotor(g, rotors, -0.026, 0.008, -0.004, 0.011, accent);
-    addRotor(g, rotors, 0.026, 0.008, -0.004, 0.011, accent);
-    addRotor(g, rotors, 0, 0.01, 0.032, 0.01, accent);
-    // Skids
-    [-0.006, 0.006].forEach(function (x) {
-      var skid = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.0007, 0.0007, 0.02, 5),
-        mat(0x94a3b8, { shininess: 40 })
-      );
-      skid.rotation.x = Math.PI / 2;
-      skid.position.set(x, -0.008, -0.002);
-      g.add(skid);
-    });
-    g.userData.rotors = rotors;
-    g.scale.setScalar(2.25);
-    return g;
-  }
-
-  // Shop hexacopter: carbon hub, six arms, motor bells, real two-blade props.
-  function makeHexacopter(accent) {
-    var g = new THREE.Group();
-    var rotors = [];
-    var hub = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.011, 0.013, 0.008, 6),
-      mat(0x1e293b, { emissive: 0x0f172a, ei: 0.35, flat: true, shininess: 12 })
-    );
-    g.add(hub);
-    var deck = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.008, 0.008, 0.003, 12),
-      paint(0xcbd5e1, 0.2)
-    );
-    deck.position.y = 0.005;
-    g.add(deck);
-    for (var i = 0; i < 6; i++) {
-      var ang = (i / 6) * Math.PI * 2 + 0.15;
-      var reach = 0.03;
-      var ax = Math.cos(ang) * reach;
-      var az = Math.sin(ang) * reach;
-      var arm = new THREE.Mesh(
-        new THREE.BoxGeometry(reach, 0.0022, 0.0032),
-        mat(0x334155, { emissive: 0x1e293b, ei: 0.15 })
-      );
-      arm.position.set(ax * 0.5, 0.001, az * 0.5);
-      arm.rotation.y = -ang;
-      g.add(arm);
-      addRotor(g, rotors, ax, 0.006, az, 0.01, accent);
-    }
-    g.userData.rotors = rotors;
-    g.scale.setScalar(2.2);
-    return g;
-  }
-
-  // Stainless Starship: nose at -Z, flaps, engines and plume at +Z.
-  function makeStarship() {
-    var g = new THREE.Group();
-    var steel = 0xd5dbe3;
-    var body = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.0064, 0.0064, 0.086, 16),
-      paint(steel, 0.42)
-    );
-    body.rotation.x = Math.PI / 2;
-    g.add(body);
-    var nose = new THREE.Mesh(
-      new THREE.ConeGeometry(0.0064, 0.026, 16),
-      paint(steel, 0.5)
-    );
-    nose.rotation.x = -Math.PI / 2;
-    nose.position.z = -0.054;
-    g.add(nose);
-    [-1, 1].forEach(function (s) {
-      var fwd = new THREE.Mesh(
-        new THREE.BoxGeometry(0.013, 0.0011, 0.007),
-        paint(0xb7c0ca, 0.25)
-      );
-      fwd.position.set(s * 0.009, 0, -0.026);
-      fwd.rotation.z = s * -0.15;
-      g.add(fwd);
-      var aft = new THREE.Mesh(
-        new THREE.BoxGeometry(0.016, 0.0013, 0.009),
-        paint(0xa8b3bf, 0.22)
-      );
-      aft.position.set(s * 0.011, 0.001, 0.03);
-      aft.rotation.y = s * -0.35;
-      g.add(aft);
-    });
-    var bell = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.0034, 0.0056, 0.007, 10),
-      mat(0x1f2937, { emissive: 0x0f172a, ei: 0.45, shininess: 20 })
-    );
-    bell.rotation.x = Math.PI / 2;
-    bell.position.z = 0.048;
-    g.add(bell);
-    var flame = new THREE.Mesh(
-      new THREE.ConeGeometry(0.0046, 0.022, 8),
-      new THREE.MeshBasicMaterial({
-        color: 0x7dd3fc,
-        transparent: true,
-        opacity: 0.8,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending
-      })
-    );
-    flame.rotation.x = Math.PI / 2;
-    flame.position.z = 0.062;
-    g.add(flame);
-    g.userData.flame = flame;
-    g.scale.setScalar(2.45);
-    return g;
-  }
-
-  var VEHICLE_BUILDERS = [
-    makeJoby,
-    makeArcher,
-    makeTriWing,
-    makeHexacopter,
-    makeJoby,
-    makeArcher,
-    makeTriWing,
-    makeHexacopter
-  ];
-
-  // eVTOL city hops, plus a few Starship arcs. Not Flight Enabled routes.
-  var ARCS = [
-    [[37.44, -122.16], [48.86, 2.35]],
-    [[48.14, 11.58], [25.20, 55.27]],
-    [[35.68, 139.69], [1.35, 103.82]],
-    [[23.13, 113.26], [37.57, 126.98]],
-    [[51.51, -0.13], [40.71, -74.01]],
-    [[-33.87, 151.21], [35.68, 139.69]],
-    [[34.05, -118.24], [40.6553, -111.9073]],
-    [[48.86, 2.35], [40.6553, -111.9073]]
-  ];
-  var SHIP_ARCS = [
-    [[25.997, -97.157], [-8.4, 74.8]],
-    [[25.997, -97.157], [28.45, -80.55]],
-    [[28.45, -80.55], [21.31, -157.86]]
-  ];
-
-  var _x = new THREE.Vector3();
-  var _y = new THREE.Vector3();
-  var _z = new THREE.Vector3();
-  var _m = new THREE.Matrix4();
-
-  function smooth(x) {
-    x = x < 0 ? 0 : x > 1 ? 1 : x;
-    return x * x * (3 - 2 * x);
-  }
-
-  function sampleArc(pts, t) {
-    var n = pts.length - 1;
-    var f = Math.max(0, Math.min(n, t * n));
-    var i = Math.floor(f);
-    if (i >= n) return pts[n].clone().normalize();
-    return pts[i].clone().lerp(pts[i + 1], f - i).normalize();
-  }
-
-  function legU(tr) {
-    return tr.dir > 0 ? tr.t : 1 - tr.t;
-  }
-
-  function altitudeOf(tr, landed) {
-    if (landed) return 1.011;
-    var u = legU(tr);
-    var climb = smooth(Math.min(1, u / (tr.kind === "ship" ? 0.2 : 0.16)));
-    var sink = smooth(Math.min(1, (1 - u) / (tr.kind === "ship" ? 0.22 : 0.18)));
-    return 1.011 + tr.cruise * Math.min(climb, sink);
-  }
-
-  function pitchOf(tr, landed) {
-    var u = legU(tr);
-    if (tr.kind === "ship") {
-      if (landed) return 1.5;
-      if (u < 0.2) return 1.2 * (1 - smooth(u / 0.2));
-      if (u > 0.78) {
-        var p = smooth((u - 0.78) / 0.22);
-        return -0.12 * (1 - p) + 1.42 * p;
-      }
-      return 0.02;
-    }
-    if (landed) return 0;
-    if (u < 0.16) return 0.4 * (1 - smooth(u / 0.16));
-    if (u > 0.82) {
-      var d = (u - 0.82) / 0.18;
-      return d < 0.62 ? -0.18 : -0.18 + 0.42 * smooth((d - 0.62) / 0.38);
-    }
-    return 0.04;
-  }
-
-  function paceOf(tr) {
-    var u = legU(tr);
-    if (u < 0.14 || u > 0.86) return tr.kind === "ship" ? 0.34 : 0.48;
-    return tr.kind === "ship" ? 1.15 : 1;
-  }
-
-  function poseCraft(tr, landed) {
-    var probe = tr.t + tr.dir * 0.028;
-    if (probe < 0) probe = 0.028;
-    if (probe > 1) probe = 0.972;
-    var p0 = sampleArc(tr.pts, tr.t);
-    var p1 = sampleArc(tr.pts, probe);
-    var fwd = p1.sub(p0);
-    if (fwd.lengthSq() < 1e-10) fwd.set(1, 0, 0);
-    fwd.normalize();
-    var pos = sampleArc(tr.pts, tr.t).multiplyScalar(altitudeOf(tr, landed));
-    tr.mesh.position.copy(pos);
-    var radial = pos.clone().normalize();
-    _z.copy(fwd).negate();
-    _x.crossVectors(radial, _z);
-    if (_x.lengthSq() < 1e-8) _x.set(1, 0, 0);
-    _x.normalize();
-    _y.crossVectors(_z, _x).normalize();
-    _m.makeBasis(_x, _y, _z);
-    tr.mesh.quaternion.setFromRotationMatrix(_m);
-    tr.mesh.rotateX(pitchOf(tr, landed));
-    var u = legU(tr);
-    if (!landed && u > 0.2 && u < 0.8) {
-      var c = sampleArc(tr.pts, Math.max(0, Math.min(1, probe + tr.dir * 0.04)));
-      var ahead = c.sub(sampleArc(tr.pts, probe));
-      if (ahead.lengthSq() > 1e-10) {
-        ahead.normalize();
-        var turn = fwd.clone().cross(ahead).dot(radial);
-        tr.mesh.rotateZ(Math.max(-0.42, Math.min(0.42, -turn * 26)));
-      }
-    }
-    tr.burn = 0;
-    if (tr.kind === "ship") {
-      tr.burn = landed ? 0 : (u < 0.2 || u > 0.84 ? 1 : 0.08);
-    }
-  }
-
-  function addRoute(pair, kind, builder, accent, t0, speedK) {
-    var pts = greatCircle(pair[0], pair[1], mobile ? 48 : 80);
-    var span = Math.max(0.35, pts[0].clone().normalize().angleTo(pts[pts.length - 1].clone().normalize()));
-    var geo = new THREE.BufferGeometry().setFromPoints(pts.map(function (p) {
-      return p.clone().normalize().multiplyScalar(R * 1.008);
-    }));
-    var line = new THREE.Line(geo, new THREE.LineBasicMaterial({
-      color: kind === "ship" ? 0x93c5fd : (accent === 0xd97706 ? 0xd97706 : 0x34d399),
-      transparent: true,
-      opacity: kind === "ship" ? 0.28 : 0.5,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false
-    }));
-    earth.add(line);
-    var craft = builder(accent);
-    earth.add(craft);
-    var tr = {
-      mesh: craft,
-      pts: pts,
-      t: t0,
-      dir: 1,
-      dwell: 0,
-      kind: kind,
-      cruise: kind === "ship" ? 0.068 : 0.032,
-      speed: speedK / span,
-      burn: 0
-    };
-    poseCraft(tr, false);
-    travelers.push(tr);
-  }
-
-  var travelers = [];
-  ARCS.forEach(function (pair, idx) {
-    var isMurray = idx >= 6;
-    addRoute(
-      pair,
-      "evtol",
-      VEHICLE_BUILDERS[idx % VEHICLE_BUILDERS.length],
-      isMurray ? 0xd97706 : 0x6ee7b7,
-      (idx + 0.35) / ARCS.length,
-      0.00015
-    );
-  });
-  SHIP_ARCS.forEach(function (pair, idx) {
-    addRoute(pair, "ship", makeStarship, 0xd5dbe3, 0.2 + idx * 0.26, 0.00011);
+  var arcs = [];
+  var lineMat = new THREE.LineBasicMaterial({ color: 0xa7f3d0, transparent: true, opacity: 0.42, blending: THREE.AdditiveBlending, depthWrite: false });
+  HOPS.forEach(function (hop, i) {
+    var pts = arcPoints(hop[0], hop[1], 48);
+    globe.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), lineMat));
+    var sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+    sp.scale.setScalar(0.028);
+    globe.add(sp);
+    arcs.push({ pts: pts, sprite: sp, period: 5200 + (i % 4) * 900, offset: i * 1370, dir: i % 2 ? -1 : 1 });
   });
 
-  // Murray marker
-  var murray = latLonToVec3(40.6553, -111.9073, R * 1.02);
-  var pin = new THREE.Mesh(
-    new THREE.SphereGeometry(0.022, 16, 16),
-    new THREE.MeshBasicMaterial({ color: 0xd97706 })
-  );
-  pin.position.copy(murray);
-  earth.add(pin);
+  // City dots: brighter hub, quiet endpoints.
+  (function cityDots() {
+    var all = [SLC].concat(Object.keys(CITIES).map(function (k) { return CITIES[k]; }));
+    all.forEach(function (c, i) {
+      var sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, transparent: true, opacity: i === 0 ? 0.95 : 0.5, blending: THREE.AdditiveBlending, depthWrite: false }));
+      sp.scale.setScalar(i === 0 ? 0.034 : 0.018);
+      sp.position.copy(ll(c[0], c[1], 1.003));
+      globe.add(sp);
+    });
+  })();
 
-  var ringGeo = new THREE.RingGeometry(0.04, 0.048, 32);
-  var ringMat = new THREE.MeshBasicMaterial({
-    color: 0xd97706,
-    side: THREE.DoubleSide,
-    transparent: true,
-    opacity: 0.85,
-    depthWrite: false
-  });
-  var ring = new THREE.Mesh(ringGeo, ringMat);
-  ring.position.copy(murray);
-  ring.lookAt(0, 0, 0);
-  earth.add(ring);
+  function sample(pts, t) {
+    var f = t * (pts.length - 1), i = Math.min(pts.length - 2, Math.floor(f));
+    return pts[i].clone().lerp(pts[i + 1], f - i);
+  }
 
-  var ring2 = ring.clone();
-  ring2.material = ringMat.clone();
-  ring2.material.opacity = 0.4;
-  earth.add(ring2);
+  // Orientation: face the Intermountain West, north up, hub a little above center.
+  var face = ll(SLC[0] - 8, SLC[1] + 14, 1);
+  var baseYaw = Math.atan2(-face.x, face.z);
+  var zAfter = -face.x * Math.sin(baseYaw) + face.z * Math.cos(baseYaw);
+  var basePitch = Math.atan2(face.y, zAfter);
+  globe.rotation.order = "XYZ";
 
-  // Face Murray at start
-  var face = latLonToVec3(40.6553, -111.9073, 1);
-  root.rotation.y = Math.atan2(face.x, face.z);
-  root.rotation.x = 0.18;
-
-  function resize() {
-    var w = stage ? stage.clientWidth : canvas.clientWidth;
-    var h = stage ? stage.clientHeight : canvas.clientHeight;
-    if (!w || !h) {
-      w = window.innerWidth;
-      h = window.innerHeight;
-    }
-    var pr = Math.min(window.devicePixelRatio || 1, mobile ? 1.5 : 1.75);
-    renderer.setPixelRatio(pr);
+  function frame() {
+    var w = stage ? stage.clientWidth : window.innerWidth, h = stage ? stage.clientHeight : window.innerHeight;
+    if (!w || !h) { w = window.innerWidth; h = window.innerHeight; }
+    mobile = isMobile();
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 1.5 : 1.75));
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
+    if (w / h >= 1) {          // landscape: globe large on the right, copy on the left
+      camera.fov = 30; camera.position.z = 4.0;
+      root.position.set(0.25 + 0.55 * Math.min(1.8, w / h) / 1.6, -0.12, 0);
+    } else {                   // portrait: globe in the top half, copy below it
+      camera.fov = 38; camera.position.z = 5.4;
+      root.position.set(0.16, 0.42, 0);
+    }
     camera.updateProjectionMatrix();
   }
-  resize();
-  window.addEventListener("resize", function () {
-    mobile = isMobile();
-    resize();
-  }, { passive: true });
+  frame();
+  var rt;
+  if (stage && "ResizeObserver" in window) { new ResizeObserver(function () { clearTimeout(rt); rt = setTimeout(function () { frame(); if (reduced || !looping) draw(performance.now()); }, 80); }).observe(stage); }
+  window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(function () { frame(); if (reduced || !looping) draw(0); }, 120); }, { passive: true });
 
-  var visible = true;
+  var start = performance.now();
+  function draw(now) {
+    var t = now - start;
+    globe.rotation.y = baseYaw + (reduced ? 0 : Math.sin(t / 90000 * Math.PI * 2) * 0.10);
+    globe.rotation.x = basePitch;
+    arcs.forEach(function (a) {
+      if (reduced) { a.sprite.material.opacity = 0; return; }
+      var u = ((t + a.offset) % (a.period + 2400)) / a.period; // travel, then a rest
+      if (u > 1) { a.sprite.material.opacity = 0; return; }
+      var e = u * u * (3 - 2 * u);
+      a.sprite.position.copy(sample(a.pts, a.dir > 0 ? e : 1 - e));
+      a.sprite.material.opacity = Math.sin(Math.PI * u) * 0.95;
+    });
+    renderer.render(scene, camera);
+  }
+
+  var visible = true, shown = document.visibilityState !== "hidden", looping = false, last = 0;
+  function loop(now) {
+    if (!(visible && shown)) { looping = false; return; }
+    requestAnimationFrame(loop);
+    if (mobile && now - last < 32) return; // ~30 fps on phones
+    last = now;
+    draw(now);
+  }
+  function kick() {
+    if (reduced || pending > 0 || looping || !(visible && shown)) return;
+    looping = true; requestAnimationFrame(loop);
+  }
   if (stage && "IntersectionObserver" in window) {
-    var io = new IntersectionObserver(function (entries) {
-      visible = entries[0] && entries[0].isIntersecting;
-    }, { threshold: 0.05 });
-    io.observe(stage);
+    new IntersectionObserver(function (en) { visible = !!(en[0] && en[0].isIntersecting); kick(); }, { threshold: 0.02 }).observe(stage);
   }
+  document.addEventListener("visibilitychange", function () { shown = document.visibilityState !== "hidden"; kick(); });
 
-  var running = true;
-  document.addEventListener("visibilitychange", function () {
-    running = document.visibilityState !== "hidden";
-  });
-
-  var t0 = performance.now();
-  function tick(now) {
-    requestAnimationFrame(tick);
-    if (!visible || !running) return;
-    var dt = Math.min(40, now - t0);
-    t0 = now;
-
-    if (!reduced) {
-      root.rotation.y += 0.00018 * dt;
-      if (earth.userData.clouds) {
-        earth.userData.clouds.rotation.y += 0.00005 * dt;
-      }
-      var pulse = (Math.sin(now * 0.0024) + 1) * 0.5;
-      ring.scale.setScalar(1 + pulse * 0.55);
-      ring.material.opacity = 0.75 - pulse * 0.45;
-      ring2.scale.setScalar(1.4 + pulse * 0.9);
-      ring2.material.opacity = 0.35 - pulse * 0.25;
-
-      travelers.forEach(function (tr) {
-        var landed = tr.dwell > 0;
-        if (landed) {
-          tr.dwell -= dt;
-        } else {
-          tr.t += tr.dir * tr.speed * paceOf(tr) * dt;
-          if (tr.dir > 0 && tr.t >= 1) {
-            tr.t = 1;
-            tr.dir = -1;
-            tr.dwell = tr.kind === "ship" ? 2200 : 1400;
-            landed = true;
-          } else if (tr.dir < 0 && tr.t <= 0) {
-            tr.t = 0;
-            tr.dir = 1;
-            tr.dwell = tr.kind === "ship" ? 2200 : 1400;
-            landed = true;
-          }
-        }
-        poseCraft(tr, landed);
-
-        if (tr.mesh.userData.rotors) {
-          tr.mesh.userData.rotors.forEach(function (r, ri) {
-            r.rotation.y += (0.22 + (ri % 5) * 0.03) * dt * (ri % 2 ? 1 : -1);
-          });
-        }
-        if (tr.mesh.userData.flame) {
-          var flicker = 0.65 + 0.35 * Math.sin(now * 0.02 + tr.t * 20);
-          var burn = tr.burn || 0;
-          tr.mesh.userData.flame.visible = burn > 0.04;
-          tr.mesh.userData.flame.scale.setScalar(0.7 + flicker * 0.55);
-          tr.mesh.userData.flame.material.opacity = burn * (0.35 + flicker * 0.5);
-        }
-      });
-    } else {
-      ring.scale.setScalar(1.15);
-      ring2.scale.setScalar(1.7);
-      ring2.material.opacity = 0.25;
-      travelers.forEach(function (tr) {
-        tr.mesh.visible = false;
-      });
-    }
-    renderer.render(scene, camera);
-  }
-  requestAnimationFrame(tick);
-
-  if (reduced) {
-    renderer.render(scene, camera);
+  function ready() {
+    draw(performance.now());
+    if (stage) stage.classList.add("is-ready");
+    kick();
   }
 })();

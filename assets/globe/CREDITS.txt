@@ -1,0 +1,7 @@
+Earth textures (public domain, NASA):
+- earth-day-*.webp: NASA Visible Earth, Blue Marble Next Generation w/ Topography and Bathymetry, July 2004 (world.topo.bathy.200407), resized + slightly desaturated.
+  https://visibleearth.nasa.gov/images/73751
+- earth-night-*.webp: NASA Earth Observatory, Black Marble 2016 (BlackMarble_2016_01deg), resized, noise floor removed.
+  https://earthobservatory.nasa.gov/features/NightLights
+- hero-poster.webp: a render of the globe, used only when WebGL is unavailable.
+NASA imagery is not copyrighted; no NASA endorsement implied.
